@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Card, Grid} from 'semantic-ui-react';
+import {Card, Grid, Icon, Table} from 'semantic-ui-react';
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -16,7 +16,40 @@ import {
 import axios from 'axios';
 import './Dashboard.css';
 
-// 在 Dashboard 组件内添加自定义配置
+const ChartTooltip = ({ active, payload, label, formatter, labelFormatter }) => {
+  if (!active || !payload || payload.length === 0) return null;
+  return (
+    <div className='chart-tooltip'>
+      <div className='chart-tooltip-label'>
+        {labelFormatter ? labelFormatter(label) : label}
+      </div>
+      {payload.map((entry) => (
+        <div key={entry.dataKey} className='chart-tooltip-row'>
+          <span
+            className='chart-tooltip-dot'
+            style={{ background: entry.stroke || entry.fill }}
+          />
+          <span className='chart-tooltip-name'>{entry.name}</span>
+          <span className='chart-tooltip-value'>
+            {formatter
+              ? formatter(entry.value)
+              : Number(entry.value).toLocaleString()}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const fmtDateLabel = (dateStr) => {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+  });
+};
+
+// Add custom config within the Dashboard component
 const chartConfig = {
   lineChart: {
     style: {
@@ -40,16 +73,16 @@ const chartConfig = {
     tokens: '#6C63FF',
   },
   barColors: [
-    '#4318FF', // 深紫色
-    '#00B5D8', // 青色
-    '#6C63FF', // 紫色
-    '#05CD99', // 绿色
-    '#FFB547', // 橙色
-    '#FF5E7D', // 粉色
-    '#41B883', // 翠绿
-    '#7983FF', // 淡紫
-    '#FF8F6B', // 珊瑚色
-    '#49BEFF', // 天蓝
+    '#4318FF', // deep purple
+    '#00B5D8', // cyan
+    '#6C63FF', // purple
+    '#05CD99', // green
+    '#FFB547', // orange
+    '#FF5E7D', // pink
+    '#41B883', // emerald
+    '#7983FF', // light purple
+    '#FF8F6B', // coral
+    '#49BEFF', // sky blue
   ],
 };
 
@@ -110,26 +143,26 @@ const Dashboard = () => {
     setSummaryData(summary);
   };
 
-  // 处理数据以供折线图使用，补充缺失的日期
+  // Process data for the line chart, filling in missing dates
   const processTimeSeriesData = () => {
     const dailyData = {};
 
-    // 获取日期范围
+    // Get date range
     const dates = data.map((item) => item.Day);
-    const maxDate = new Date(); // 总是使用今天作为最后一天
+    const maxDate = new Date(); // always use today as the last day
     let minDate =
       dates.length > 0
         ? new Date(Math.min(...dates.map((d) => new Date(d))))
         : new Date();
 
-    // 确保至少显示7天的数据
+    // Ensure at least 7 days of data are shown
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6是因为包含今天
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6 because today is included
     if (minDate > sevenDaysAgo) {
       minDate = sevenDaysAgo;
     }
 
-    // 生成所有日期
+    // Generate all dates
     for (let d = new Date(minDate); d <= maxDate; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0];
       dailyData[dateStr] = {
@@ -140,7 +173,7 @@ const Dashboard = () => {
       };
     }
 
-    // 填充实际数据
+    // Fill in actual data
     data.forEach((item) => {
       dailyData[item.Day].requests += item.RequestCount;
       dailyData[item.Day].quota += item.Quota / 1000000;
@@ -152,40 +185,40 @@ const Dashboard = () => {
     );
   };
 
-  // 处理数据以供堆叠柱状图使用
+  // Process data for the stacked bar chart
   const processModelData = () => {
     const timeData = {};
 
-    // 获取日期范围
+    // Get date range
     const dates = data.map((item) => item.Day);
-    const maxDate = new Date(); // 总是使用今天作为最后一天
+    const maxDate = new Date(); // always use today as the last day
     let minDate =
       dates.length > 0
         ? new Date(Math.min(...dates.map((d) => new Date(d))))
         : new Date();
 
-    // 确保至少显示7天的数据
+    // Ensure at least 7 days of data are shown
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6是因为包含今天
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6 because today is included
     if (minDate > sevenDaysAgo) {
       minDate = sevenDaysAgo;
     }
 
-    // 生成所有日期
+    // Generate all dates
     for (let d = new Date(minDate); d <= maxDate; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0];
       timeData[dateStr] = {
         date: dateStr,
       };
 
-      // 初始化所有模型的数据为0
+      // Initialize all model data to 0
       const models = [...new Set(data.map((item) => item.ModelName))];
       models.forEach((model) => {
         timeData[dateStr][model] = 0;
       });
     }
 
-    // 填充实际数据
+    // Fill in actual data
     data.forEach((item) => {
       timeData[item.Day][item.ModelName] =
         item.PromptTokens + item.CompletionTokens;
@@ -194,30 +227,54 @@ const Dashboard = () => {
     return Object.values(timeData).sort((a, b) => a.date.localeCompare(b.date));
   };
 
-  // 获取所有唯一的模型名称
+  // Get all unique model names
   const getUniqueModels = () => {
     return [...new Set(data.map((item) => item.ModelName))];
+  };
+
+  // Aggregate usage per model for the ranking table
+  const getModelSummary = () => {
+    const map = {};
+    data.forEach((item) => {
+      const name = item.ModelName || 'Unknown';
+      if (!map[name]) {
+        map[name] = {
+          model: name,
+          requests: 0,
+          inputTokens: 0,
+          outputTokens: 0,
+          totalTokens: 0,
+        };
+      }
+      map[name].requests += item.RequestCount || 0;
+      map[name].inputTokens += item.PromptTokens || 0;
+      map[name].outputTokens += item.CompletionTokens || 0;
+      map[name].totalTokens +=
+        (item.PromptTokens || 0) + (item.CompletionTokens || 0);
+    });
+    return Object.values(map).sort((a, b) => b.totalTokens - a.totalTokens);
   };
 
   const timeSeriesData = processTimeSeriesData();
   const modelData = processModelData();
   const models = getUniqueModels();
+  const modelSummary = getModelSummary();
 
-  // 生成随机颜色
+  // Generate random colors
   const getRandomColor = (index) => {
     return chartConfig.barColors[index % chartConfig.barColors.length];
   };
 
-  // 添加一个日期格式化函数
+  // Add a date formatting function
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('zh-CN', {
+    return date.toLocaleDateString('en-US', {
       month: 'numeric',
       day: 'numeric',
     });
   };
 
-  // 修改所有 XAxis 配置
+  // Modify all XAxis configs
   const xAxisConfig = {
     dataKey: 'date',
     axisLine: false,
@@ -225,32 +282,80 @@ const Dashboard = () => {
     tick: {
       fontSize: 12,
       fill: '#A3AED0',
-      textAnchor: 'middle', // 文本居中对齐
+      textAnchor: 'middle', // center-align the text
     },
     tickFormatter: formatDate,
     interval: 0,
     minTickGap: 5,
-    padding: { left: 30, right: 30 }, // 增加两侧的内边距，确保首尾标签完整显示
+    padding: { left: 30, right: 30 }, // increase padding on both sides to ensure the first/last labels are fully shown
   };
 
   return (
     <div className='dashboard-container'>
-      {/* 三个并排的折线图 */}
+      {/* today's stat cards */}
+      <div className='stat-cards'>
+        <div className='stat-card-modern stat-card-blue'>
+          <div className='stat-card-icon'>
+            <Icon name='paper plane' />
+          </div>
+          <div className='stat-card-info'>
+            <div className='stat-card-label'>
+              {t('dashboard.statistics.todayRequests')}
+            </div>
+            <div className='stat-card-value'>
+              {summaryData.todayRequests.toLocaleString()}
+            </div>
+          </div>
+        </div>
+        <div className='stat-card-modern stat-card-cyan'>
+          <div className='stat-card-icon'>
+            <Icon name='dollar sign' />
+          </div>
+          <div className='stat-card-info'>
+            <div className='stat-card-label'>
+              {t('dashboard.statistics.todayQuota')}
+            </div>
+            <div className='stat-card-value'>
+              ${summaryData.todayQuota.toFixed(2)}
+            </div>
+          </div>
+        </div>
+        <div className='stat-card-modern stat-card-purple'>
+          <div className='stat-card-icon'>
+            <Icon name='cube' />
+          </div>
+          <div className='stat-card-info'>
+            <div className='stat-card-label'>
+              {t('dashboard.statistics.todayTokens')}
+            </div>
+            <div className='stat-card-value'>
+              {summaryData.todayTokens.toLocaleString()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* three side-by-side area charts */}
       <Grid columns={3} stackable className='charts-grid'>
         <Grid.Column>
           <Card fluid className='chart-card'>
             <Card.Content>
               <Card.Header>
                 {t('dashboard.charts.requests.title')}
-                {/* <span className='stat-value'>{summaryData.todayRequests}</span> */}
               </Card.Header>
               <div className='chart-container'>
                 <ResponsiveContainer
                   width='100%'
                   height={120}
-                  margin={{ left: 10, right: 10 }} // 调整容器边距
+                  margin={{ left: 10, right: 10 }} // adjust container margins
                 >
-                  <LineChart data={timeSeriesData}>
+                  <AreaChart data={timeSeriesData}>
+                    <defs>
+                      <linearGradient id='gradRequests' x1='0' y1='0' x2='0' y2='1'>
+                        <stop offset='5%' stopColor={chartConfig.colors.requests} stopOpacity={0.35} />
+                        <stop offset='95%' stopColor={chartConfig.colors.requests} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid
                       strokeDasharray='3 3'
                       vertical={chartConfig.lineChart.grid.vertical}
@@ -260,31 +365,24 @@ const Dashboard = () => {
                     <XAxis {...xAxisConfig} />
                     <YAxis hide={true} />
                     <Tooltip
-                      contentStyle={{
-                        background: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      }}
-                      formatter={(value) => [
-                        value,
-                        t('dashboard.charts.requests.tooltip'),
-                      ]}
-                      labelFormatter={(label) =>
-                        `${t(
-                          'dashboard.statistics.tooltip.date'
-                        )}: ${formatDate(label)}`
+                      content={
+                        <ChartTooltip
+                          labelFormatter={fmtDateLabel}
+                          formatter={(v) => Number(v).toLocaleString()}
+                        />
                       }
                     />
-                    <Line
+                    <Area
                       type='monotone'
                       dataKey='requests'
+                      name={t('dashboard.charts.requests.tooltip')}
                       stroke={chartConfig.colors.requests}
                       strokeWidth={chartConfig.lineChart.line.strokeWidth}
+                      fill='url(#gradRequests)'
                       dot={chartConfig.lineChart.line.dot}
                       activeDot={chartConfig.lineChart.line.activeDot}
                     />
-                  </LineChart>
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card.Content>
@@ -296,17 +394,20 @@ const Dashboard = () => {
             <Card.Content>
               <Card.Header>
                 {t('dashboard.charts.quota.title')}
-                {/* <span className='stat-value'>
-                  ${summaryData.todayQuota.toFixed(3)}
-                </span> */}
               </Card.Header>
               <div className='chart-container'>
                 <ResponsiveContainer
                   width='100%'
                   height={120}
-                  margin={{ left: 10, right: 10 }} // 调整容器边距
+                  margin={{ left: 10, right: 10 }} // adjust container margins
                 >
-                  <LineChart data={timeSeriesData}>
+                  <AreaChart data={timeSeriesData}>
+                    <defs>
+                      <linearGradient id='gradQuota' x1='0' y1='0' x2='0' y2='1'>
+                        <stop offset='5%' stopColor={chartConfig.colors.quota} stopOpacity={0.35} />
+                        <stop offset='95%' stopColor={chartConfig.colors.quota} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid
                       strokeDasharray='3 3'
                       vertical={chartConfig.lineChart.grid.vertical}
@@ -316,31 +417,24 @@ const Dashboard = () => {
                     <XAxis {...xAxisConfig} />
                     <YAxis hide={true} />
                     <Tooltip
-                      contentStyle={{
-                        background: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      }}
-                      formatter={(value) => [
-                        value.toFixed(6),
-                        t('dashboard.charts.quota.tooltip'),
-                      ]}
-                      labelFormatter={(label) =>
-                        `${t(
-                          'dashboard.statistics.tooltip.date'
-                        )}: ${formatDate(label)}`
+                      content={
+                        <ChartTooltip
+                          labelFormatter={fmtDateLabel}
+                          formatter={(v) => `$${Number(v).toFixed(6)}`}
+                        />
                       }
                     />
-                    <Line
+                    <Area
                       type='monotone'
                       dataKey='quota'
+                      name={t('dashboard.charts.quota.tooltip')}
                       stroke={chartConfig.colors.quota}
                       strokeWidth={chartConfig.lineChart.line.strokeWidth}
+                      fill='url(#gradQuota)'
                       dot={chartConfig.lineChart.line.dot}
                       activeDot={chartConfig.lineChart.line.activeDot}
                     />
-                  </LineChart>
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card.Content>
@@ -352,15 +446,20 @@ const Dashboard = () => {
             <Card.Content>
               <Card.Header>
                 {t('dashboard.charts.tokens.title')}
-                {/* <span className='stat-value'>{summaryData.todayTokens}</span> */}
               </Card.Header>
               <div className='chart-container'>
                 <ResponsiveContainer
                   width='100%'
                   height={120}
-                  margin={{ left: 10, right: 10 }} // 调整容器边距
+                  margin={{ left: 10, right: 10 }} // adjust container margins
                 >
-                  <LineChart data={timeSeriesData}>
+                  <AreaChart data={timeSeriesData}>
+                    <defs>
+                      <linearGradient id='gradTokens' x1='0' y1='0' x2='0' y2='1'>
+                        <stop offset='5%' stopColor={chartConfig.colors.tokens} stopOpacity={0.35} />
+                        <stop offset='95%' stopColor={chartConfig.colors.tokens} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
                     <CartesianGrid
                       strokeDasharray='3 3'
                       vertical={chartConfig.lineChart.grid.vertical}
@@ -370,31 +469,24 @@ const Dashboard = () => {
                     <XAxis {...xAxisConfig} />
                     <YAxis hide={true} />
                     <Tooltip
-                      contentStyle={{
-                        background: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      }}
-                      formatter={(value) => [
-                        value,
-                        t('dashboard.charts.tokens.tooltip'),
-                      ]}
-                      labelFormatter={(label) =>
-                        `${t(
-                          'dashboard.statistics.tooltip.date'
-                        )}: ${formatDate(label)}`
+                      content={
+                        <ChartTooltip
+                          labelFormatter={fmtDateLabel}
+                          formatter={(v) => Number(v).toLocaleString()}
+                        />
                       }
                     />
-                    <Line
+                    <Area
                       type='monotone'
                       dataKey='tokens'
+                      name={t('dashboard.charts.tokens.tooltip')}
                       stroke={chartConfig.colors.tokens}
                       strokeWidth={chartConfig.lineChart.line.strokeWidth}
+                      fill='url(#gradTokens)'
                       dot={chartConfig.lineChart.line.dot}
                       activeDot={chartConfig.lineChart.line.activeDot}
                     />
-                  </LineChart>
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card.Content>
@@ -402,7 +494,7 @@ const Dashboard = () => {
         </Grid.Column>
       </Grid>
 
-      {/* 模型使用统计 */}
+      {/* model usage statistics */}
       <Card fluid className='chart-card'>
         <Card.Content>
           <Card.Header>{t('dashboard.statistics.title')}</Card.Header>
@@ -421,17 +513,7 @@ const Dashboard = () => {
                   tick={{ fontSize: 12, fill: '#A3AED0' }}
                 />
                 <Tooltip
-                  contentStyle={{
-                    background: '#fff',
-                    border: 'none',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  }}
-                  labelFormatter={(label) =>
-                    `${t('dashboard.statistics.tooltip.date')}: ${formatDate(
-                      label
-                    )}`
-                  }
+                  content={<ChartTooltip labelFormatter={fmtDateLabel} />}
                 />
                 <Legend
                   wrapperStyle={{
@@ -445,11 +527,85 @@ const Dashboard = () => {
                     stackId='a'
                     fill={getRandomColor(index)}
                     name={model}
-                    radius={[4, 4, 0, 0]}
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={40}
                   />
                 ))}
               </BarChart>
             </ResponsiveContainer>
+          </div>
+        </Card.Content>
+      </Card>
+
+      {/* model usage ranking */}
+      <Card fluid className='chart-card'>
+        <Card.Content>
+          <Card.Header>{t('dashboard.statistics.modelRanking')}</Card.Header>
+          <div className='chart-container model-ranking'>
+            {modelSummary.length === 0 ? (
+              <div className='model-ranking-empty'>
+                {t('dashboard.statistics.noData')}
+              </div>
+            ) : (
+              <Table basic='very' unstackable className='model-table'>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell width={1}>#</Table.HeaderCell>
+                    <Table.HeaderCell>
+                      {t('dashboard.statistics.columns.model')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>
+                      {t('dashboard.statistics.columns.requests')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>
+                      {t('dashboard.statistics.columns.inputTokens')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>
+                      {t('dashboard.statistics.columns.outputTokens')}
+                    </Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>
+                      {t('dashboard.statistics.columns.totalTokens')}
+                    </Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {modelSummary.map((m, i) => (
+                    <Table.Row key={m.model}>
+                      <Table.Cell width={1}>
+                        <span
+                          className='model-rank'
+                          style={{ background: getRandomColor(i) }}
+                        >
+                          {i + 1}
+                        </span>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <span className='model-name'>{m.model}</span>
+                        {i === 0 && (
+                          <span className='model-badge'>
+                            {t('dashboard.statistics.mostUsed')}
+                          </span>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell textAlign='right'>
+                        {m.requests.toLocaleString()}
+                      </Table.Cell>
+                      <Table.Cell textAlign='right'>
+                        {m.inputTokens.toLocaleString()}
+                      </Table.Cell>
+                      <Table.Cell textAlign='right'>
+                        {m.outputTokens.toLocaleString()}
+                      </Table.Cell>
+                      <Table.Cell textAlign='right'>
+                        <span className='model-total'>
+                          {m.totalTokens.toLocaleString()}
+                        </span>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
+            )}
           </div>
         </Card.Content>
       </Card>

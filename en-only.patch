@@ -1,0 +1,3420 @@
+diff --git a/web/default/public/index.html b/web/default/public/index.html
+index f22b8843..1c05d7e3 100644
+--- a/web/default/public/index.html
++++ b/web/default/public/index.html
+@@ -1,5 +1,5 @@
+ <!DOCTYPE html>
+-<html lang="zh-CN">
++<html lang="en">
+   <head>
+     <meta charset="utf-8" />
+     <link rel="icon" href="logo.png" />
+@@ -7,7 +7,7 @@
+     <meta name="theme-color" content="#ffffff" />
+     <meta
+       name="description"
+-      content="OpenAI 接口聚合管理，支持多种渠道包括 Azure，可用于二次分发管理 key，仅单可执行文件，已打包好 Docker 镜像，一键部署，开箱即用"
++      content="OpenAI API management aggregator supporting multiple channels including Azure, used for redistributing API keys. Single executable, packaged Docker image, one-click deployment, ready to use out of the box."
+     />
+     <title>One API</title>
+   </head>
+diff --git a/web/default/src/App.js b/web/default/src/App.js
+index e76ee7ea..359871fe 100644
+--- a/web/default/src/App.js
++++ b/web/default/src/App.js
+@@ -65,14 +65,14 @@ function App() {
+           process.env.REACT_APP_VERSION !== ''
+         ) {
+           showNotice(
+-            `新版本可用：${data.version}，请使用快捷键 Shift + F5 刷新页面`
++            `New version available: ${data.version}, press Shift + F5 to refresh the page`
+           );
+         }
+       } else {
+-        showError(message || '无法正常连接至服务器！');
++        showError(message || 'Failed to connect to the server!');
+       }
+     } catch (error) {
+-      showError(error.message || '无法正常连接至服务器！');
++      showError(error.message || 'Failed to connect to the server!');
+     }
+   };
+ 
+diff --git a/web/default/src/components/ChannelsTable.js b/web/default/src/components/ChannelsTable.js
+index ef2aec89..db1eb842 100644
+--- a/web/default/src/components/ChannelsTable.js
++++ b/web/default/src/components/ChannelsTable.js
+@@ -50,7 +50,7 @@ function renderBalance(type, balance, t) {
+       return <span>${balance.toFixed(2)}</span>;
+     case 4: // CloseAI
+       return <span>¥{balance.toFixed(2)}</span>;
+-    case 8: // 自定义
++    case 8: // Custom
+       return <span>${balance.toFixed(2)}</span>;
+     case 5: // OpenAI-SB
+       return <span>¥{(balance / 10000).toFixed(2)}</span>;
+diff --git a/web/default/src/components/GitHubOAuth.js b/web/default/src/components/GitHubOAuth.js
+index c43ed2a1..ce18c365 100644
+--- a/web/default/src/components/GitHubOAuth.js
++++ b/web/default/src/components/GitHubOAuth.js
+@@ -8,7 +8,7 @@ const GitHubOAuth = () => {
+   const [searchParams, setSearchParams] = useSearchParams();
+ 
+   const [userState, userDispatch] = useContext(UserContext);
+-  const [prompt, setPrompt] = useState('处理中...');
++  const [prompt, setPrompt] = useState('Processing...');
+   const [processing, setProcessing] = useState(true);
+ 
+   let navigate = useNavigate();
+@@ -18,23 +18,23 @@ const GitHubOAuth = () => {
+     const { success, message, data } = res.data;
+     if (success) {
+       if (message === 'bind') {
+-        showSuccess('绑定成功！');
++        showSuccess('Binding successful!');
+         navigate('/setting');
+       } else {
+         userDispatch({ type: 'login', payload: data });
+         localStorage.setItem('user', JSON.stringify(data));
+-        showSuccess('登录成功！');
++        showSuccess('Login successful!');
+         navigate('/');
+       }
+     } else {
+       showError(message);
+       if (count === 0) {
+-        setPrompt(`操作失败，重定向至登录界面中...`);
++        setPrompt(`Operation failed, redirecting to login page...`);
+         navigate('/setting'); // in case this is failed to bind GitHub
+         return;
+       }
+       count++;
+-      setPrompt(`出现错误，第 ${count} 次重试中...`);
++      setPrompt(`An error occurred, retrying (${count})...`);
+       await new Promise((resolve) => setTimeout(resolve, count * 2000));
+       await sendCode(code, state, count);
+     }
+diff --git a/web/default/src/components/Header.js b/web/default/src/components/Header.js
+index fc69298f..9a2e0f52 100644
+--- a/web/default/src/components/Header.js
++++ b/web/default/src/components/Header.js
+@@ -82,7 +82,7 @@ if (localStorage.getItem('chat_link')) {
+ }
+ 
+ const Header = () => {
+-  const { t, i18n } = useTranslation();
++  const { t } = useTranslation();
+   const [userState, userDispatch] = useContext(UserContext);
+   let navigate = useNavigate();
+ 
+@@ -93,7 +93,7 @@ const Header = () => {
+   async function logout() {
+     setShowSidebar(false);
+     await API.get('/api/user/logout');
+-    showSuccess('注销成功!');
++    showSuccess('Logged out successfully!');
+     userDispatch({ type: 'logout' });
+     localStorage.removeItem('user');
+     navigate('/login');
+@@ -138,16 +138,6 @@ const Header = () => {
+     });
+   };
+ 
+-  // Add language switcher dropdown
+-  const languageOptions = [
+-    { key: 'zh', text: '中文', value: 'zh' },
+-    { key: 'en', text: 'English', value: 'en' },
+-  ];
+-
+-  const changeLanguage = (language) => {
+-    i18n.changeLanguage(language);
+-  };
+-
+   if (isMobile()) {
+     return (
+       <>
+@@ -189,20 +179,6 @@ const Header = () => {
+           <Segment style={{ marginTop: 0, borderTop: '0' }}>
+             <Menu secondary vertical style={{ width: '100%', margin: 0 }}>
+               {renderButtons(true)}
+-              <Menu.Item>
+-                <Dropdown
+-                  selection
+-                  trigger={
+-                    <Icon
+-                      name='language'
+-                      style={{ margin: 0, fontSize: '18px' }}
+-                    />
+-                  }
+-                  options={languageOptions}
+-                  value={i18n.language}
+-                  onChange={(_, { value }) => changeLanguage(value)}
+-                />
+-              </Menu.Item>
+               <Menu.Item>
+                 {userState.user ? (
+                   <Button onClick={logout} style={{ color: '#666666' }}>
+@@ -269,21 +245,6 @@ const Header = () => {
+           </Menu.Item>
+           {renderButtons(false)}
+           <Menu.Menu position='right'>
+-            <Dropdown
+-              item
+-              trigger={
+-                <Icon name='language' style={{ margin: 0, fontSize: '18px' }} />
+-              }
+-              options={languageOptions}
+-              value={i18n.language}
+-              onChange={(_, { value }) => changeLanguage(value)}
+-              style={{
+-                fontSize: '16px',
+-                fontWeight: '400',
+-                color: '#666',
+-                padding: '0 10px',
+-              }}
+-            />
+             {userState.user ? (
+               <Dropdown
+                 text={userState.user.username}
+diff --git a/web/default/src/components/LarkOAuth.js b/web/default/src/components/LarkOAuth.js
+index bc2fb682..ce0741fa 100644
+--- a/web/default/src/components/LarkOAuth.js
++++ b/web/default/src/components/LarkOAuth.js
+@@ -8,7 +8,7 @@ const LarkOAuth = () => {
+   const [searchParams, setSearchParams] = useSearchParams();
+ 
+   const [userState, userDispatch] = useContext(UserContext);
+-  const [prompt, setPrompt] = useState('处理中...');
++  const [prompt, setPrompt] = useState('Processing...');
+   const [processing, setProcessing] = useState(true);
+ 
+   let navigate = useNavigate();
+@@ -18,23 +18,23 @@ const LarkOAuth = () => {
+     const { success, message, data } = res.data;
+     if (success) {
+       if (message === 'bind') {
+-        showSuccess('绑定成功！');
++        showSuccess('Binding successful!');
+         navigate('/setting');
+       } else {
+         userDispatch({ type: 'login', payload: data });
+         localStorage.setItem('user', JSON.stringify(data));
+-        showSuccess('登录成功！');
++        showSuccess('Login successful!');
+         navigate('/');
+       }
+     } else {
+       showError(message);
+       if (count === 0) {
+-        setPrompt(`操作失败，重定向至登录界面中...`);
++        setPrompt(`Operation failed, redirecting to login page...`);
+         navigate('/setting'); // in case this is failed to bind lark
+         return;
+       }
+       count++;
+-      setPrompt(`出现错误，第 ${count} 次重试中...`);
++      setPrompt(`An error occurred, retrying (${count})...`);
+       await new Promise((resolve) => setTimeout(resolve, count * 2000));
+       await sendCode(code, state, count);
+     }
+diff --git a/web/default/src/components/Loading.js b/web/default/src/components/Loading.js
+index 1210a56f..b2cb728d 100644
+--- a/web/default/src/components/Loading.js
++++ b/web/default/src/components/Loading.js
+@@ -5,7 +5,7 @@ const Loading = ({ prompt: name = 'page' }) => {
+   return (
+     <Segment style={{ height: 100 }}>
+       <Dimmer active inverted>
+-        <Loader indeterminate>加载{name}中...</Loader>
++        <Loader indeterminate>Loading {name}...</Loader>
+       </Dimmer>
+     </Segment>
+   );
+diff --git a/web/default/src/components/LoginForm.js b/web/default/src/components/LoginForm.js
+index 40167564..05683b5f 100644
+--- a/web/default/src/components/LoginForm.js
++++ b/web/default/src/components/LoginForm.js
+@@ -141,7 +141,7 @@ const LoginForm = () => {
+                 fluid
+                 size='large'
+                 style={{
+-                  background: '#2F73FF', // 使用更现代的蓝色
++                  background: '#2F73FF', // use a more modern blue
+                   color: 'white',
+                   marginBottom: '1.5em',
+                 }}
+diff --git a/web/default/src/components/LogsTable.js b/web/default/src/components/LogsTable.js
+index 8af285a1..28b3965e 100644
+--- a/web/default/src/components/LogsTable.js
++++ b/web/default/src/components/LogsTable.js
+@@ -30,9 +30,9 @@ function renderTimestamp(timestamp, request_id) {
+     <code
+       onClick={async () => {
+         if (await copy(request_id)) {
+-          showSuccess(`已复制请求 ID：${request_id}`);
++          showSuccess(`Request ID copied: ${request_id}`);
+         } else {
+-          showWarning(`请求 ID 复制失败：${request_id}`);
++          showWarning(`Failed to copy request ID: ${request_id}`);
+         }
+       }}
+       style={{ cursor: 'pointer' }}
+@@ -43,8 +43,8 @@ function renderTimestamp(timestamp, request_id) {
+ }
+ 
+ const MODE_OPTIONS = [
+-  { key: 'all', text: '全部用户', value: 'all' },
+-  { key: 'self', text: '当前用户', value: 'self' },
++  { key: 'all', text: 'All users', value: 'all' },
++  { key: 'self', text: 'Current user', value: 'self' },
+ ];
+ 
+ function renderType(type) {
+@@ -52,37 +52,37 @@ function renderType(type) {
+     case 1:
+       return (
+         <Label basic color='green'>
+-          充值
++          Top-up
+         </Label>
+       );
+     case 2:
+       return (
+         <Label basic color='olive'>
+-          消费
++          Consumption
+         </Label>
+       );
+     case 3:
+       return (
+         <Label basic color='orange'>
+-          管理
++          Administration
+         </Label>
+       );
+     case 4:
+       return (
+         <Label basic color='purple'>
+-          系统
++          System
+         </Label>
+       );
+     case 5:
+       return (
+         <Label basic color='violet'>
+-          测试
++          Test
+         </Label>
+       );
+     default:
+       return (
+         <Label basic color='black'>
+-          未知
++          Unknown
+         </Label>
+       );
+   }
+diff --git a/web/default/src/components/OperationSetting.js b/web/default/src/components/OperationSetting.js
+index fcefd383..16e19218 100644
+--- a/web/default/src/components/OperationSetting.js
++++ b/web/default/src/components/OperationSetting.js
+@@ -118,21 +118,21 @@ const OperationSetting = () => {
+       case 'ratio':
+         if (originInputs['ModelRatio'] !== inputs.ModelRatio) {
+           if (!verifyJSON(inputs.ModelRatio)) {
+-            showError('模型倍率不是合法的 JSON 字符串');
++            showError('Model ratio is not a valid JSON string');
+             return;
+           }
+           await updateOption('ModelRatio', inputs.ModelRatio);
+         }
+         if (originInputs['GroupRatio'] !== inputs.GroupRatio) {
+           if (!verifyJSON(inputs.GroupRatio)) {
+-            showError('分组倍率不是合法的 JSON 字符串');
++            showError('Group ratio is not a valid JSON string');
+             return;
+           }
+           await updateOption('GroupRatio', inputs.GroupRatio);
+         }
+         if (originInputs['CompletionRatio'] !== inputs.CompletionRatio) {
+           if (!verifyJSON(inputs.CompletionRatio)) {
+-            showError('补全倍率不是合法的 JSON 字符串');
++            showError('Completion ratio is not a valid JSON string');
+             return;
+           }
+           await updateOption('CompletionRatio', inputs.CompletionRatio);
+@@ -176,10 +176,10 @@ const OperationSetting = () => {
+     );
+     const { success, message, data } = res.data;
+     if (success) {
+-      showSuccess(`${data} 条日志已清理！`);
++      showSuccess(`${data} log entries cleaned!`);
+       return;
+     }
+-    showError('日志清理失败：' + message);
++    showError('Failed to clean up logs: ' + message);
+   };
+ 
+   return (
+diff --git a/web/default/src/components/OtherSetting.js b/web/default/src/components/OtherSetting.js
+index a45bdeb4..30f48641 100644
+--- a/web/default/src/components/OtherSetting.js
++++ b/web/default/src/components/OtherSetting.js
+@@ -104,7 +104,7 @@ const OtherSetting = () => {
+     );
+     const { tag_name, body } = res.data;
+     if (tag_name === process.env.REACT_APP_VERSION) {
+-      showSuccess(`已是最新版本：${tag_name}`);
++      showSuccess(`Already up to date: ${tag_name}`);
+     } else {
+       setUpdateData({
+         tag_name: tag_name,
+@@ -229,16 +229,16 @@ const OtherSetting = () => {
+         onOpen={() => setShowUpdateModal(true)}
+         open={showUpdateModal}
+       >
+-        <Modal.Header>新版本：{updateData.tag_name}</Modal.Header>
++        <Modal.Header>New version: {updateData.tag_name}</Modal.Header>
+         <Modal.Content>
+           <Modal.Description>
+             <div dangerouslySetInnerHTML={{ __html: updateData.content }}></div>
+           </Modal.Description>
+         </Modal.Content>
+         <Modal.Actions>
+-          <Button onClick={() => setShowUpdateModal(false)}>关闭</Button>
++          <Button onClick={() => setShowUpdateModal(false)}>Close</Button>
+           <Button
+-            content='详情'
++            content='Details'
+             onClick={() => {
+               setShowUpdateModal(false);
+               openGitHubRelease();
+diff --git a/web/default/src/components/PasswordResetForm.js b/web/default/src/components/PasswordResetForm.js
+index c8033f39..88cc8949 100644
+--- a/web/default/src/components/PasswordResetForm.js
++++ b/web/default/src/components/PasswordResetForm.js
+@@ -59,7 +59,7 @@ const PasswordResetForm = () => {
+     setDisableButton(true);
+     if (!email) return;
+     if (turnstileEnabled && turnstileToken === '') {
+-      showInfo('请稍后几秒重试，Turnstile 正在检查用户环境！');
++      showInfo('Please try again in a few seconds, Turnstile is verifying your environment!');
+       return;
+     }
+     setLoading(true);
+@@ -132,7 +132,7 @@ const PasswordResetForm = () => {
+                 loading={loading}
+                 disabled={disableButton}
+                 style={{
+-                  background: '#2F73FF', // 使用更现代的蓝色
++                  background: '#2F73FF', // use a more modern blue
+                   color: 'white',
+                   marginBottom: '1.5em',
+                 }}
+diff --git a/web/default/src/components/PersonalSetting.js b/web/default/src/components/PersonalSetting.js
+index ef790bb0..36ceb04b 100644
+--- a/web/default/src/components/PersonalSetting.js
++++ b/web/default/src/components/PersonalSetting.js
+@@ -82,7 +82,7 @@ const PersonalSetting = () => {
+       setSystemToken(data);
+       setAffLink('');
+       await copy(data);
+-      showSuccess(`令牌已重置并已复制到剪贴板`);
++      showSuccess(`Token has been reset and copied to the clipboard`);
+     } else {
+       showError(message);
+     }
+@@ -96,7 +96,7 @@ const PersonalSetting = () => {
+       setAffLink(link);
+       setSystemToken('');
+       await copy(link);
+-      showSuccess(`邀请链接已复制到剪切板`);
++      showSuccess(`Invite link copied to clipboard`);
+     } else {
+       showError(message);
+     }
+@@ -105,18 +105,18 @@ const PersonalSetting = () => {
+   const handleAffLinkClick = async (e) => {
+     e.target.select();
+     await copy(e.target.value);
+-    showSuccess(`邀请链接已复制到剪切板`);
++    showSuccess(`Invite link copied to clipboard`);
+   };
+ 
+   const handleSystemTokenClick = async (e) => {
+     e.target.select();
+     await copy(e.target.value);
+-    showSuccess(`系统令牌已复制到剪切板`);
++    showSuccess(`System token copied to clipboard`);
+   };
+ 
+   const deleteAccount = async () => {
+     if (inputs.self_account_deletion_confirmation !== userState.user.username) {
+-      showError('请输入你的账户名以确认删除！');
++      showError('Please enter your username to confirm deletion!');
+       return;
+     }
+ 
+@@ -124,7 +124,7 @@ const PersonalSetting = () => {
+     const { success, message } = res.data;
+ 
+     if (success) {
+-      showSuccess('账户已删除！');
++      showSuccess('Account deleted!');
+       await API.get('/api/user/logout');
+       userDispatch({ type: 'logout' });
+       localStorage.removeItem('user');
+@@ -141,7 +141,7 @@ const PersonalSetting = () => {
+     );
+     const { success, message } = res.data;
+     if (success) {
+-      showSuccess('微信账户绑定成功！');
++      showSuccess('WeChat account bound successfully!');
+       setShowWeChatBindModal(false);
+     } else {
+       showError(message);
+@@ -152,7 +152,7 @@ const PersonalSetting = () => {
+     setDisableButton(true);
+     if (inputs.email === '') return;
+     if (turnstileEnabled && turnstileToken === '') {
+-      showInfo('请稍后几秒重试，Turnstile 正在检查用户环境！');
++      showInfo('Please try again in a few seconds, Turnstile is verifying your environment!');
+       return;
+     }
+     setLoading(true);
+@@ -161,7 +161,7 @@ const PersonalSetting = () => {
+     );
+     const { success, message } = res.data;
+     if (success) {
+-      showSuccess('验证码发送成功，请检查邮箱！');
++      showSuccess('Verification code sent, please check your email!');
+     } else {
+       showError(message);
+     }
+@@ -176,7 +176,7 @@ const PersonalSetting = () => {
+     );
+     const { success, message } = res.data;
+     if (success) {
+-      showSuccess('邮箱账户绑定成功！');
++      showSuccess('Email account bound successfully!');
+       setShowEmailBindModal(false);
+     } else {
+       showError(message);
+diff --git a/web/default/src/components/RegisterForm.js b/web/default/src/components/RegisterForm.js
+index b5774794..56c0d6fc 100644
+--- a/web/default/src/components/RegisterForm.js
++++ b/web/default/src/components/RegisterForm.js
+@@ -229,7 +229,7 @@ const RegisterForm = () => {
+                 size='large'
+                 onClick={handleSubmit}
+                 style={{
+-                  background: '#2F73FF', // 使用更现代的蓝色
++                  background: '#2F73FF', // use a more modern blue
+                   color: 'white',
+                   marginBottom: '1.5em',
+                 }}
+diff --git a/web/default/src/components/UsersTable.js b/web/default/src/components/UsersTable.js
+index 202f5241..349d0993 100644
+--- a/web/default/src/components/UsersTable.js
++++ b/web/default/src/components/UsersTable.js
+@@ -254,7 +254,7 @@ const UsersTable = () => {
+                   <Table.Cell>{user.id}</Table.Cell>
+                   <Table.Cell>
+                     <Popup
+-                      content={user.email ? user.email : '未绑定邮箱地址'}
++                      content={user.email ? user.email : 'No email bound'}
+                       key={user.username}
+                       header={
+                         user.display_name ? user.display_name : user.username
+@@ -265,7 +265,7 @@ const UsersTable = () => {
+                   </Table.Cell>
+                   <Table.Cell>{renderGroup(user.group)}</Table.Cell>
+                   {/*<Table.Cell>*/}
+-                  {/*  {user.email ? <Popup hoverable content={user.email} trigger={<span>{renderText(user.email, 24)}</span>} /> : '无'}*/}
++                  {/*  {user.email ? <Popup hoverable content={user.email} trigger={<span>{renderText(user.email, 24)}</span>} /> : 'None'}*/}
+                   {/*</Table.Cell>*/}
+                   <Table.Cell>
+                     <Popup
+diff --git a/web/default/src/constants/channel.constants.js b/web/default/src/constants/channel.constants.js
+index e1dd3b53..904bed26 100644
+--- a/web/default/src/constants/channel.constants.js
++++ b/web/default/src/constants/channel.constants.js
+@@ -2,10 +2,10 @@ export const CHANNEL_OPTIONS = [
+   { key: 1, text: 'OpenAI', value: 1, color: 'green' },
+   {
+     key: 50,
+-    text: 'OpenAI 兼容',
++    text: 'OpenAI Compatible',
+     value: 50,
+     color: 'olive',
+-    description: 'OpenAI 兼容渠道，支持设置 Base URL',
++    description: 'OpenAI-compatible channel, supports setting a Base URL',
+   },
+   {key: 14, text: 'Anthropic', value: 14, color: 'black'},
+   { key: 33, text: 'AWS', value: 33, color: 'black' },
+@@ -17,63 +17,63 @@ export const CHANNEL_OPTIONS = [
+     text: 'Gemini (OpenAI)',
+     value: 51,
+     color: 'orange',
+-    description: 'Gemini OpenAI 兼容格式',
++    description: 'Gemini in OpenAI-compatible format',
+   },
+   { key: 28, text: 'Mistral AI', value: 28, color: 'orange' },
+   { key: 41, text: 'Novita', value: 41, color: 'purple' },
+   {
+     key: 40,
+-    text: '字节火山引擎',
++    text: 'Volcano Engine',
+     value: 40,
+     color: 'blue',
+-    description: '原字节跳动豆包',
++    description: 'formerly ByteDance Doubao',
+   },
+   {
+     key: 15,
+-    text: '百度文心千帆',
++    text: 'Baidu Qianfan',
+     value: 15,
+     color: 'blue',
+-    tip: '请前往<a href="https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application/v1" target="_blank">此处</a>获取 AK（API Key）以及 SK（Secret Key），注意，V2 版本接口请使用 <strong>百度文心千帆 V2 </strong>渠道类型',
++    tip: 'Get AK (API Key) and SK (Secret Key) from <a href="https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application/v1" target="_blank">here</a>. Note: for the V2 API, use the <strong>Baidu Qianfan V2</strong> channel type',
+   },
+   {
+     key: 47,
+-    text: '百度文心千帆 V2',
++    text: 'Baidu Qianfan V2',
+     value: 47,
+     color: 'blue',
+-    tip: '请前往<a href="https://console.bce.baidu.com/iam/#/iam/apikey/list" target="_blank">此处</a>获取 API Key，注意本渠道仅支持<a target="_blank" href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/em4tsqo3v">推理服务 V2</a>相关模型',
++    tip: 'Get the API Key from <a href="https://console.bce.baidu.com/iam/#/iam/apikey/list" target="_blank">here</a>. Note: this channel only supports models related to <a target="_blank" href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/em4tsqo3v">Inference Service V2</a>',
+   },
+   {
+     key: 17,
+-    text: '阿里通义千问',
++    text: 'Alibaba Qwen',
+     value: 17,
+     color: 'orange',
+-    tip: '如需使用阿里云百炼，请使用<strong>阿里云百炼</strong>渠道',
++    tip: 'If you want to use Alibaba Cloud Bailian, use the <strong>Alibaba Cloud Bailian</strong> channel',
+   },
+-  { key: 49, text: '阿里云百炼', value: 49, color: 'orange' },
++  { key: 49, text: 'Alibaba Cloud Bailian', value: 49, color: 'orange' },
+   {
+     key: 18,
+-    text: '讯飞星火认知',
++    text: 'iFlytek Spark',
+     value: 18,
+     color: 'blue',
+-    tip: '本渠道基于讯飞 WebSocket 版本 API，如需 HTTP 版本，请使用<strong>讯飞星火认知 V2</strong>渠道',
++    tip: 'This channel is based on the iFlytek WebSocket API. For the HTTP version, use the <strong>iFlytek Spark V2</strong> channel',
+   },
+   {
+     key: 48,
+-    text: '讯飞星火认知 V2',
++    text: 'iFlytek Spark V2',
+     value: 48,
+     color: 'blue',
+-    tip: 'HTTP 版本的讯飞接口，前往<a href="https://console.xfyun.cn/services/cbm" target="_blank">此处</a>获取 HTTP 服务接口认证密钥',
++    tip: 'HTTP version of the iFlytek API. Get the HTTP service authentication key from <a href="https://console.xfyun.cn/services/cbm" target="_blank">here</a>',
+   },
+-  { key: 16, text: '智谱 ChatGLM', value: 16, color: 'violet' },
+-  { key: 19, text: '360 智脑', value: 19, color: 'blue' },
++  { key: 16, text: 'Zhipu ChatGLM', value: 16, color: 'violet' },
++  { key: 19, text: '360 Zhibrain', value: 19, color: 'blue' },
+   { key: 25, text: 'Moonshot AI', value: 25, color: 'black' },
+-  { key: 23, text: '腾讯混元', value: 23, color: 'teal' },
+-  { key: 26, text: '百川大模型', value: 26, color: 'orange' },
++  { key: 23, text: 'Tencent Hunyuan', value: 23, color: 'teal' },
++  { key: 26, text: 'Baichuan', value: 26, color: 'orange' },
+   { key: 27, text: 'MiniMax', value: 27, color: 'red' },
+   { key: 29, text: 'Groq', value: 29, color: 'orange' },
+   { key: 30, text: 'Ollama', value: 30, color: 'black' },
+-  { key: 31, text: '零一万物', value: 31, color: 'green' },
+-  { key: 32, text: '阶跃星辰', value: 32, color: 'blue' },
++  { key: 31, text: '01.AI', value: 31, color: 'green' },
++  { key: 32, text: 'StepFun', value: 32, color: 'blue' },
+   { key: 34, text: 'Coze', value: 34, color: 'blue' },
+   { key: 35, text: 'Cohere', value: 35, color: 'blue' },
+   { key: 36, text: 'DeepSeek', value: 36, color: 'black' },
+@@ -87,22 +87,22 @@ export const CHANNEL_OPTIONS = [
+   { key: 46, text: 'Replicate', value: 46, color: 'blue' },
+   {
+     key: 8,
+-    text: '自定义渠道',
++    text: 'Custom Channel',
+     value: 8,
+     color: 'pink',
+-    tip: '不推荐使用，请使用 <strong>OpenAI 兼容</strong>渠道类型。注意，这里所需要填入的代理地址仅会在实际请求时替换域名部分，如果你想填入 OpenAI SDK 中所要求的 Base URL，请使用 OpenAI 兼容渠道类型',
+-    description: '不推荐使用，请使用 OpenAI 兼容渠道类型',
++    tip: 'Not recommended, use the <strong>OpenAI Compatible</strong> channel type instead. Note: the proxy address filled in here only replaces the domain part in actual requests. If you want to fill in the Base URL required by the OpenAI SDK, use the OpenAI Compatible channel type',
++    description: 'Not recommended, use the OpenAI Compatible channel type instead',
+   },
+-  { key: 22, text: '知识库：FastGPT', value: 22, color: 'blue' },
+-  { key: 21, text: '知识库：AI Proxy', value: 21, color: 'purple' },
++  { key: 22, text: 'Knowledge Base: FastGPT', value: 22, color: 'blue' },
++  { key: 21, text: 'Knowledge Base: AI Proxy', value: 21, color: 'purple' },
+   { key: 20, text: 'OpenRouter', value: 20, color: 'black' },
+-  { key: 2, text: '代理：API2D', value: 2, color: 'blue' },
+-  { key: 5, text: '代理：OpenAI-SB', value: 5, color: 'brown' },
+-  { key: 7, text: '代理：OhMyGPT', value: 7, color: 'purple' },
+-  { key: 10, text: '代理：AI Proxy', value: 10, color: 'purple' },
+-  { key: 4, text: '代理：CloseAI', value: 4, color: 'teal' },
+-  { key: 6, text: '代理：OpenAI Max', value: 6, color: 'violet' },
+-  { key: 9, text: '代理：AI.LS', value: 9, color: 'yellow' },
+-  { key: 12, text: '代理：API2GPT', value: 12, color: 'blue' },
+-  { key: 13, text: '代理：AIGC2D', value: 13, color: 'purple' },
++  { key: 2, text: 'Proxy: API2D', value: 2, color: 'blue' },
++  { key: 5, text: 'Proxy: OpenAI-SB', value: 5, color: 'brown' },
++  { key: 7, text: 'Proxy: OhMyGPT', value: 7, color: 'purple' },
++  { key: 10, text: 'Proxy: AI Proxy', value: 10, color: 'purple' },
++  { key: 4, text: 'Proxy: CloseAI', value: 4, color: 'teal' },
++  { key: 6, text: 'Proxy: OpenAI Max', value: 6, color: 'violet' },
++  { key: 9, text: 'Proxy: AI.LS', value: 9, color: 'yellow' },
++  { key: 12, text: 'Proxy: API2GPT', value: 12, color: 'blue' },
++  { key: 13, text: 'Proxy: AIGC2D', value: 13, color: 'purple' },
+ ];
+diff --git a/web/default/src/helpers/utils.js b/web/default/src/helpers/utils.js
+index a19229ca..f7a50304 100644
+--- a/web/default/src/helpers/utils.js
++++ b/web/default/src/helpers/utils.js
+@@ -80,26 +80,26 @@ export function showError(error) {
+     if (error.name === 'AxiosError') {
+       switch (error.response.status) {
+         case 401:
+-          // toast.error('错误：未登录或登录已过期，请重新登录！', showErrorOptions);
++          // toast.error('Error: not logged in or session expired, please log in again!', showErrorOptions);
+           window.location.href = '/login?expired=true';
+           break;
+         case 429:
+-          toast.error('错误：请求次数过多，请稍后再试！', showErrorOptions);
++          toast.error('Error: too many requests, please try again later!', showErrorOptions);
+           break;
+         case 500:
+-          toast.error('错误：服务器内部错误，请联系管理员！', showErrorOptions);
++          toast.error('Error: internal server error, please contact the administrator!', showErrorOptions);
+           break;
+         case 405:
+-          toast.info('本站仅作演示之用，无服务端！');
++          toast.info('This site is for demonstration purposes only, no server!');
+           break;
+         default:
+-          toast.error('错误：' + error.message, showErrorOptions);
++          toast.error('Error: ' + error.message, showErrorOptions);
+       }
+       return;
+     }
+-    toast.error('错误：' + error.message, showErrorOptions);
++    toast.error('Error: ' + error.message, showErrorOptions);
+   } else {
+-    toast.error('错误：' + error, showErrorOptions);
++    toast.error('Error: ' + error, showErrorOptions);
+   }
+ }
+ 
+diff --git a/web/default/src/i18n.js b/web/default/src/i18n.js
+index 25d1db37..ce16b976 100644
+--- a/web/default/src/i18n.js
++++ b/web/default/src/i18n.js
+@@ -1,14 +1,15 @@
+ import i18n from 'i18next';
+ import {initReactI18next} from 'react-i18next';
+ import LanguageDetector from 'i18next-browser-languagedetector';
+-import zhTranslation from './locales/zh/translation.json';
+ import enTranslation from './locales/en/translation.json';
+ 
+ i18n
+   .use(LanguageDetector)
+   .use(initReactI18next)
+   .init({
+-    fallbackLng: 'zh',
++    fallbackLng: 'en',
++    supportedLngs: ['en'],
++    lng: 'en',
+     debug: process.env.NODE_ENV === 'development',
+ 
+     interpolation: {
+@@ -16,9 +17,6 @@ i18n
+     },
+ 
+       resources: {
+-          zh: {
+-              translation: zhTranslation
+-          },
+           en: {
+               translation: enTranslation
+           }
+diff --git a/web/default/src/index.css b/web/default/src/index.css
+index 1e24dcb4..2ec187f8 100644
+--- a/web/default/src/index.css
++++ b/web/default/src/index.css
+@@ -2,12 +2,17 @@ body {
+     margin: 0;
+     padding-top: 55px;
+     overflow-y: scroll;
++    overflow-x: hidden;
+     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, "Microsoft YaHei", sans-serif;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+     scrollbar-width: none;
+ }
+ 
++html {
++    overflow-x: hidden;
++}
++
+ body::-webkit-scrollbar {
+     display: none;
+ }
+@@ -115,3 +120,15 @@ code {
+     font-size: 0.9em !important;
+   }
+ }
++
++/* 移动端覆盖，避免图表网格产生横向溢出 */
++@media screen and (max-width: 768px) {
++  .charts-grid {
++    margin: 0 !important;
++  }
++
++  .charts-grid .column {
++    padding: 0 !important;
++    margin-bottom: 0.75rem !important;
++  }
++}
+diff --git a/web/default/src/locales/en/translation.json b/web/default/src/locales/en/translation.json
+index 47f3400f..fcf86ef2 100644
+--- a/web/default/src/locales/en/translation.json
++++ b/web/default/src/locales/en/translation.json
+@@ -1,831 +1,844 @@
+ {
+-  "header": {
+-    "home": "Home",
+-    "channel": "Channel",
+-    "token": "Token",
+-    "redemption": "Redemption",
+-    "topup": "Top Up",
+-    "user": "User",
+-    "dashboard": "Dashboard",
+-    "log": "Log",
+-    "setting": "Settings",
+-    "about": "About",
+-    "chat": "Chat",
+-    "login": "Login",
+-    "logout": "Logout",
+-    "register": "Register"
+-  },
+-  "topup": {
+-    "title": "Top Up Center",
+-    "get_code": {
+-      "title": "Get Redemption Code",
+-      "current_quota": "Current Available Quota",
+-      "button": "Get Code Now"
++    "header": {
++        "home": "Home",
++        "channel": "Channel",
++        "token": "Token",
++        "redemption": "Redemption",
++        "topup": "Top Up",
++        "user": "User",
++        "dashboard": "Dashboard",
++        "log": "Log",
++        "setting": "Settings",
++        "about": "About",
++        "chat": "Chat",
++        "login": "Login",
++        "logout": "Logout",
++        "register": "Register"
+     },
+-    "redeem_code": {
+-      "title": "Redeem Code",
+-      "placeholder": "Please enter redemption code",
+-      "paste": "Paste",
+-      "paste_error": "Cannot access clipboard, please paste manually",
+-      "submit": "Redeem Now",
+-      "submitting": "Redeeming...",
+-      "empty_code": "Please enter the redemption code!",
+-      "success": "Top up successful!",
+-      "request_failed": "Request failed",
+-      "no_link": "Admin has not set up the top-up link!"
+-    }
+-  },
+-  "channel": {
+-    "title": "Channel Management",
+-    "search": "Search channels by ID, name and key...",
+-    "balance_notice": "OpenAI channels no longer support getting balance via key, so balance shows as 0. For supported channel types, click balance to refresh.",
+-    "test_notice": "Channel testing only supports chat models, preferring gpt-3.5-turbo. If unavailable, uses the first model in your configured list.",
+-    "detail_notice": "Click the detail button below to show balance and set additional test models.",
+-    "table": {
+-      "id": "ID",
+-      "name": "Name",
+-      "group": "Group",
+-      "type": "Type",
+-      "status": "Status",
+-      "response_time": "Response Time",
+-      "balance": "Balance",
+-      "priority": "Priority",
+-      "test_model": "Test Model",
+-      "actions": "Actions",
+-      "no_name": "None",
+-      "status_enabled": "Enabled",
+-      "status_disabled": "Disabled",
+-      "status_auto_disabled": "Disabled",
+-      "status_disabled_tip": "This channel is manually disabled",
+-      "status_auto_disabled_tip": "This channel is automatically disabled",
+-      "status_unknown": "Unknown Status",
+-      "not_tested": "Not Tested",
+-      "priority_tip": "Channel selection priority, higher is preferred",
+-      "select_test_model": "Please select test model",
+-      "click_to_update": "Click to update",
+-      "balance_not_supported": "-"
+-    },
+-    "buttons": {
+-      "test": "Test",
+-      "delete": "Delete",
+-      "confirm_delete": "Delete Channel",
+-      "enable": "Enable",
+-      "disable": "Disable",
+-      "edit": "Edit",
+-      "add": "Add New Channel",
+-      "test_all": "Test All Channels",
+-      "test_disabled": "Test Disabled Channels",
+-      "delete_disabled": "Delete Disabled Channels",
+-      "confirm_delete_disabled": "Confirm Delete",
+-      "refresh": "Refresh",
+-      "show_detail": "Details",
+-      "hide_detail": "Hide Details"
+-    },
+-    "messages": {
+-      "test_success": "Channel {{name}} test successful, model {{model}}, time {{time}}s, output: {{message}}",
+-      "test_all_started": "Channel testing started successfully, please refresh page to see results.",
+-      "delete_disabled_success": "Deleted all disabled channels, total: {{count}}",
+-      "balance_update_success": "Channel {{name}} balance updated successfully!",
+-      "all_balance_updated": "All enabled channel balances have been updated!",
+-      "operation_success": "Operation completed successfully!"
+-    },
+-    "edit": {
+-      "title_edit": "Update Channel Information",
+-      "title_create": "Create New Channel",
+-      "type": "Type",
+-      "name": "Name",
+-      "name_placeholder": "Please enter name",
+-      "group": "Group",
+-      "group_placeholder": "Please select groups that can use this channel",
+-      "group_addition": "Please edit group multipliers in system settings to add new group:",
+-      "models": "Models",
+-      "models_placeholder": "Please select models supported by this channel",
+-      "model_mapping": "Model Mapping",
+-      "model_mapping_placeholder": "Optional, used to modify model names in request body. A JSON string where keys are request model names and values are target model names",
+-      "system_prompt": "System Prompt",
+-      "system_prompt_placeholder": "Optional, used to force set system prompt. Use with custom model & model mapping. First create a unique custom model name above, then map it to a natively supported model",
+-      "proxy_url": "Proxy",
+-      "proxy_url_placeholder": "This is optional and used for API calls via a proxy. Please enter the proxy URL, formatted as: https://domain.com",
+-      "base_url": "Base URL",
+-      "base_url_placeholder": "The Base URL required by the OpenAPI SDK",
+-      "key": "Key",
+-      "key_placeholder": "Please enter key",
+-      "batch": "Batch Create",
+-      "batch_placeholder": "Please enter keys, one per line",
+-      "buttons": {
+-        "cancel": "Cancel",
+-        "submit": "Submit",
+-        "fill_models": "Fill Related Models",
+-        "fill_all": "Fill All Models",
+-        "clear": "Clear All Models",
+-        "add_custom": "Add",
+-        "custom_placeholder": "Enter custom model name"
+-      },
+-      "messages": {
+-        "name_required": "Please enter channel name and key!",
+-        "models_required": "Please select at least one model!",
+-        "model_mapping_invalid": "Model mapping must be valid JSON format!",
+-        "update_success": "Channel updated successfully!",
+-        "create_success": "Channel created successfully!"
+-      },
+-      "spark_version": "Model Version",
+-      "spark_version_placeholder": "Please enter Spark model version from API URL, e.g.: v2.1",
+-      "knowledge_id": "Knowledge Base ID",
+-      "knowledge_id_placeholder": "Please enter knowledge base ID, e.g.: 123456",
+-      "plugin_param": "Plugin Parameter",
+-      "plugin_param_placeholder": "Please enter plugin parameter (X-DashScope-Plugin header value)",
+-      "coze_notice": "For Coze, model name is the Bot ID. You can add prefix `bot-`, e.g.: `bot-123456`.",
+-      "douban_notice": "For Douban, you need to go to",
+-      "douban_notice_link": "Model Inference Page",
+-      "douban_notice_2": "to create an inference endpoint, and use the endpoint name as model name, e.g.: `ep-20240608051426-tkxvl`.",
+-      "aws_region_placeholder": "region, e.g.: us-west-2",
+-      "aws_ak_placeholder": "AWS IAM Access Key",
+-      "aws_sk_placeholder": "AWS IAM Secret Key",
+-      "vertex_region_placeholder": "Vertex AI Region, e.g.: us-east5",
+-      "vertex_project_id": "Vertex AI Project ID",
+-      "vertex_project_id_placeholder": "Vertex AI Project ID",
+-      "vertex_credentials": "Google Cloud Application Default Credentials JSON",
+-      "vertex_credentials_placeholder": "Google Cloud Application Default Credentials JSON",
+-      "user_id": "User ID",
+-      "user_id_placeholder": "User ID who generated this key",
+-      "key_prompts": {
+-        "default": "Please enter the authentication key for this channel",
+-        "zhipu": "Enter in format: APIKey|SecretKey",
+-        "spark": "Enter in format: APPID|APISecret|APIKey",
+-        "fastgpt": "Enter in format: APIKey-AppId, e.g.: fastgpt-0sp2gtvfdgyi4k30jwlgwf1i-64f335d84283f05518e9e041",
+-        "tencent": "Enter in format: AppId|SecretId|SecretKey"
+-      }
+-    }
+-  },
+-  "token": {
+-    "title": "Token Management",
+-    "search": "Search tokens by name ...",
+-    "table": {
+-      "name": "Name",
+-      "status": "Status",
+-      "used_quota": "Used Quota",
+-      "remain_quota": "Remaining Quota",
+-      "created_time": "Created Time",
+-      "expired_time": "Expiry Time",
+-      "actions": "Actions",
+-      "no_name": "None",
+-      "never_expire": "never",
+-      "unlimited": "Unlimited",
+-      "status_enabled": "Enabled",
+-      "status_disabled": "Disabled",
+-      "status_expired": "Expired",
+-      "status_depleted": "Depleted",
+-      "status_unknown": "Unknown Status"
+-    },
+-    "buttons": {
+-      "copy": "Copy",
+-      "chat": "Chat",
+-      "delete": "Delete",
+-      "confirm_delete": "Delete Token",
+-      "enable": "Enable",
+-      "disable": "Disable",
+-      "edit": "Edit",
+-      "add": "Add New Token",
+-      "refresh": "Refresh"
+-    },
+-    "edit": {
+-      "title_edit": "Update Token Information",
+-      "title_create": "Create New Token",
+-      "name": "Name",
+-      "name_placeholder": "Please enter name",
+-      "models": "Model Scope",
+-      "models_placeholder": "Please select allowed models, leave empty for no restrictions",
+-      "ip_limit": "IP Restriction",
+-      "ip_limit_placeholder": "Please enter allowed subnets, e.g.: 192.168.0.0/24, use commas to separate multiple subnets",
+-      "expire_time": "Expiry Time",
+-      "expire_time_placeholder": "Please enter expiry time in yyyy-MM-dd HH:mm:ss format, -1 for no limit",
+-      "quota_notice": "Note: Token quota only limits the maximum usage of the token itself, actual usage is subject to account remaining quota.",
+-      "quota": "Quota",
+-      "quota_placeholder": "Please enter quota",
+-      "buttons": {
+-        "never_expire": "Never Expire",
+-        "expire_1_month": "Expire in 1 Month",
+-        "expire_1_day": "Expire in 1 Day",
+-        "expire_1_hour": "Expire in 1 Hour",
+-        "expire_1_minute": "Expire in 1 Minute",
+-        "unlimited_quota": "Set Unlimited Quota",
+-        "cancel_unlimited": "Cancel Unlimited Quota",
+-        "submit": "Submit",
+-        "cancel": "Cancel"
+-      },
+-      "messages": {
+-        "update_success": "Token updated successfully!",
+-        "create_success": "Token created successfully, please copy it from the list page!",
+-        "expire_time_invalid": "Invalid expiry time format!"
+-      }
+-    },
+-    "copy_options": {
+-      "raw": "Copy Raw Token",
+-      "ama": "Copy AMA Link",
+-      "opencat": "Copy OpenCat Link",
+-      "next": "Copy NextChat Link",
+-      "lobe": "Copy LobeChat Link"
+-    },
+-    "messages": {
+-      "copy_success": "Copied to clipboard!",
+-      "copy_failed": "Unable to copy to clipboard, please copy manually. Token has been filled in the search box.",
+-      "operation_success": "Operation completed successfully!"
+-    },
+-    "sort": {
+-      "placeholder": "Sort By",
+-      "default": "Default Order",
+-      "by_remain": "Sort by Remaining Quota",
+-      "by_used": "Sort by Used Quota"
+-    }
+-  },
+-  "common": {
+-    "quota": {
+-      "display": "Equivalent: ${{amount}}",
+-      "display_short": "${{amount}}",
+-      "unit": "$"
+-    }
+-  },
+-  "redemption": {
+-    "title": "Redemption Management",
+-    "search": "Search redemption codes by ID and name ...",
+-    "table": {
+-      "id": "ID",
+-      "name": "Name",
+-      "status": "Status",
+-      "quota": "Quota",
+-      "created_time": "Created Time",
+-      "redeemed_time": "Redeemed Time",
+-      "actions": "Actions",
+-      "no_name": "None",
+-      "not_redeemed": "Not Redeemed"
+-    },
+-    "buttons": {
+-      "copy": "Copy",
+-      "delete": "Delete",
+-      "confirm_delete": "Confirm Delete",
+-      "enable": "Enable",
+-      "disable": "Disable",
+-      "edit": "Edit",
+-      "add": "Add New Code",
+-      "refresh": "Refresh"
+-    },
+-    "status": {
+-      "unused": "Unused",
+-      "disabled": "Disabled",
+-      "used": "Used",
+-      "unknown": "Unknown"
+-    },
+-    "edit": {
+-      "title_edit": "Update Redemption Code",
+-      "title_create": "Create New Redemption Code",
+-      "name": "Name",
+-      "name_placeholder": "Please enter name",
+-      "quota": "Quota",
+-      "quota_placeholder": "Please enter quota per redemption code",
+-      "count": "Generate Count",
+-      "count_placeholder": "Please enter number of codes to generate",
+-      "buttons": {
+-        "submit": "Submit",
+-        "cancel": "Cancel"
+-      }
+-    },
+-    "messages": {
+-      "update_success": "Redemption code updated successfully!",
+-      "create_success": "Redemption code created successfully!"
+-    }
+-  },
+-  "log": {
+-    "title": "Operation Log",
+-    "search": "Search logs...",
+-    "usage_details": "Usage Details",
+-    "total_quota": "Total Quota Used",
+-    "click_to_view": "Click to View",
+-    "type": {
+-      "select": "Select Log Type",
+-      "all": "All",
+-      "topup": "Top Up",
+-      "usage": "Usage",
+-      "admin": "Admin",
+-      "system": "System",
+-      "test": "Test"
+-    },
+-    "table": {
+-      "time": "Time",
+-      "channel": "Channel",
+-      "type": "Type",
+-      "model": "Model",
+-      "username": "Username",
+-      "token_name": "Token Name",
+-      "token_name_placeholder": "Optional",
+-      "model_name": "Model Name",
+-      "model_name_placeholder": "Optional",
+-      "start_time": "Start Time",
+-      "end_time": "End Time",
+-      "channel_id": "Channel ID",
+-      "channel_id_placeholder": "Optional",
+-      "username_placeholder": "Optional",
+-      "prompt_tokens": "Prompt Tokens",
+-      "completion_tokens": "Completion Tokens",
+-      "quota": "Quota",
+-      "detail": "Detail"
+-    },
+-    "buttons": {
+-      "query": "Action",
+-      "submit": "Query",
+-      "refresh": "Refresh"
+-    }
+-  },
+-  "user": {
+-    "title": "User Management",
+-    "edit": {
+-      "title": "Update User Information",
+-      "username": "Username",
+-      "username_placeholder": "Please enter new username",
+-      "password": "Password",
+-      "password_placeholder": "Please enter new password, minimum 8 characters",
+-      "display_name": "Display Name",
+-      "display_name_placeholder": "Please enter new display name",
+-      "group": "Group",
+-      "group_placeholder": "Please select group",
+-      "group_addition": "Please edit group multipliers in system settings to add new group:",
+-      "quota": "Remaining Quota",
+-      "quota_placeholder": "Please enter new remaining quota",
+-      "github_id": "Linked GitHub Account",
+-      "github_id_placeholder": "Read-only, user must link through personal settings page, cannot be modified directly",
+-      "wechat_id": "Linked WeChat Account",
+-      "wechat_id_placeholder": "Read-only, user must link through personal settings page, cannot be modified directly",
+-      "email": "Linked Email Account",
+-      "email_placeholder": "Read-only, user must link through personal settings page, cannot be modified directly",
+-      "buttons": {
+-        "submit": "Submit",
+-        "cancel": "Cancel"
+-      }
+-    },
+-    "add": {
+-      "title": "Create New User Account"
+-    },
+-    "messages": {
+-      "update_success": "User information updated successfully!",
+-      "create_success": "User account created successfully!",
+-      "operation_success": "Operation completed successfully!"
+-    },
+-    "search": "Search users...",
+-    "table": {
+-      "id": "ID",
+-      "username": "Username",
+-      "group": "Group",
+-      "quota": "Quota",
+-      "role_text": "Role",
+-      "status_text": "Status",
+-      "actions": "Actions",
+-      "remaining_quota": "Remaining Quota",
+-      "used_quota": "Used Quota",
+-      "request_count": "Request Count",
+-      "role_types": {
+-        "normal": "Normal User",
+-        "admin": "Admin",
+-        "super_admin": "Super Admin",
+-        "unknown": "Unknown Role"
+-      },
+-      "status_types": {
+-        "activated": "Activated",
+-        "banned": "Banned",
+-        "unknown": "Unknown Status"
+-      },
+-      "sort": {
+-        "default": "Default Order",
+-        "by_quota": "Sort by Remaining Quota",
+-        "by_used_quota": "Sort by Used Quota",
+-        "by_request_count": "Sort by Request Count"
+-      },
+-      "sort_by": "Sort By"
+-    },
+-    "buttons": {
+-      "add": "Add New User",
+-      "delete": "Delete",
+-      "delete_user": "Delete User",
+-      "enable": "Enable",
+-      "disable": "Disable",
+-      "edit": "Edit",
+-      "promote": "Promote",
+-      "demote": "Demote"
+-    }
+-  },
+-  "dashboard": {
+-    "charts": {
+-      "requests": {
+-        "title": "Model Request Trend",
+-        "tooltip": "Request Count"
+-      },
+-      "quota": {
+-        "title": "Quota Usage Trend",
+-        "tooltip": "Quota Used"
+-      },
+-      "tokens": {
+-        "title": "Token Usage Trend",
+-        "tooltip": "Token Count"
+-      }
+-    },
+-    "statistics": {
+-      "title": "Statistics",
+-      "tooltip": {
+-        "date": "Date",
+-        "value": "Value"
+-      }
+-    }
+-  },
+-  "setting": {
+-    "title": "System Settings",
+-    "tabs": {
+-      "personal": "Personal Settings",
+-      "operation": "Operation Settings",
+-      "system": "System Settings",
+-      "other": "Other Settings"
+-    },
+-    "personal": {
+-      "general": {
+-        "title": "General Settings",
+-        "system_token_notice": "Note: The token generated here is for system management, not for requesting OpenAI related services.",
+-        "buttons": {
+-          "update_profile": "Update Profile",
+-          "generate_token": "Generate System Token",
+-          "copy_invite": "Copy Invite Link",
+-          "delete_account": "Delete Account"
++    "topup": {
++        "title": "Top Up Center",
++        "get_code": {
++            "title": "Get Redemption Code",
++            "current_quota": "Current Available Quota",
++            "button": "Get Code Now"
++        },
++        "redeem_code": {
++            "title": "Redeem Code",
++            "placeholder": "Please enter redemption code",
++            "paste": "Paste",
++            "paste_error": "Cannot access clipboard, please paste manually",
++            "submit": "Redeem Now",
++            "submitting": "Redeeming...",
++            "empty_code": "Please enter the redemption code!",
++            "success": "Top up successful!",
++            "request_failed": "Request failed",
++            "no_link": "Admin has not set up the top-up link!"
+         }
+-      },
+-      "binding": {
+-        "title": "Account Binding",
++    },
++    "channel": {
++        "title": "Channel Management",
++        "search": "Search channels by ID, name and key...",
++        "balance_notice": "OpenAI channels no longer support getting balance via key, so balance shows as 0. For supported channel types, click balance to refresh.",
++        "test_notice": "Channel testing only supports chat models, preferring gpt-3.5-turbo. If unavailable, uses the first model in your configured list.",
++        "detail_notice": "Click the detail button below to show balance and set additional test models.",
++        "table": {
++            "id": "ID",
++            "name": "Name",
++            "group": "Group",
++            "type": "Type",
++            "status": "Status",
++            "response_time": "Response Time",
++            "balance": "Balance",
++            "priority": "Priority",
++            "test_model": "Test Model",
++            "actions": "Actions",
++            "no_name": "None",
++            "status_enabled": "Enabled",
++            "status_disabled": "Disabled",
++            "status_auto_disabled": "Disabled",
++            "status_disabled_tip": "This channel is manually disabled",
++            "status_auto_disabled_tip": "This channel is automatically disabled",
++            "status_unknown": "Unknown Status",
++            "not_tested": "Not Tested",
++            "priority_tip": "Channel selection priority, higher is preferred",
++            "select_test_model": "Please select test model",
++            "click_to_update": "Click to update",
++            "balance_not_supported": "-"
++        },
+         "buttons": {
+-          "bind_wechat": "Bind WeChat Account",
+-          "bind_github": "Bind GitHub Account",
+-          "bind_email": "Bind Email Address",
+-          "bind_lark": "Bind Lark Account"
++            "test": "Test",
++            "delete": "Delete",
++            "confirm_delete": "Delete Channel",
++            "enable": "Enable",
++            "disable": "Disable",
++            "edit": "Edit",
++            "add": "Add New Channel",
++            "test_all": "Test All Channels",
++            "test_disabled": "Test Disabled Channels",
++            "delete_disabled": "Delete Disabled Channels",
++            "confirm_delete_disabled": "Confirm Delete",
++            "refresh": "Refresh",
++            "show_detail": "Details",
++            "hide_detail": "Hide Details"
+         },
+-        "wechat": {
+-          "title": "WeChat Binding",
+-          "description": "Scan QR code to follow the official account, enter 'verification code' to get the code (valid for 3 minutes)",
+-          "verification_code": "Verification Code",
+-          "bind": "Bind"
++        "messages": {
++            "test_success": "Channel {{name}} test successful, model {{model}}, time {{time}}s, output: {{message}}",
++            "test_all_started": "Channel testing started successfully, please refresh page to see results.",
++            "delete_disabled_success": "Deleted all disabled channels, total: {{count}}",
++            "balance_update_success": "Channel {{name}} balance updated successfully!",
++            "all_balance_updated": "All enabled channel balances have been updated!",
++            "operation_success": "Operation completed successfully!"
+         },
+-        "email": {
+-          "title": "Bind Email Address",
+-          "email_placeholder": "Enter email address",
+-          "code_placeholder": "Verification code",
+-          "get_code": "Get Code",
+-          "get_code_retry": "Resend({{countdown}})",
+-          "bind": "Confirm Binding",
+-          "cancel": "Cancel"
+-        }
+-      },
+-      "delete_account": {
+-        "title": "Dangerous Operation",
+-        "warning": "You are deleting your account. All data will be cleared and cannot be recovered",
+-        "confirm_placeholder": "Enter your username {{username}} to confirm deletion",
+-        "buttons": {
+-          "confirm": "Confirm Delete",
+-          "cancel": "Cancel"
++        "edit": {
++            "title_edit": "Update Channel Information",
++            "title_create": "Create New Channel",
++            "type": "Type",
++            "name": "Name",
++            "name_placeholder": "Please enter name",
++            "group": "Group",
++            "group_placeholder": "Please select groups that can use this channel",
++            "group_addition": "Please edit group multipliers in system settings to add new group:",
++            "models": "Models",
++            "models_placeholder": "Please select models supported by this channel",
++            "model_mapping": "Model Mapping",
++            "model_mapping_placeholder": "Optional, used to modify model names in request body. A JSON string where keys are request model names and values are target model names",
++            "system_prompt": "System Prompt",
++            "system_prompt_placeholder": "Optional, used to force set system prompt. Use with custom model & model mapping. First create a unique custom model name above, then map it to a natively supported model",
++            "proxy_url": "Proxy",
++            "proxy_url_placeholder": "This is optional and used for API calls via a proxy. Please enter the proxy URL, formatted as: https://domain.com",
++            "base_url": "Base URL",
++            "base_url_placeholder": "The Base URL required by the OpenAPI SDK",
++            "key": "Key",
++            "key_placeholder": "Please enter key",
++            "batch": "Batch Create",
++            "batch_placeholder": "Please enter keys, one per line",
++            "buttons": {
++                "cancel": "Cancel",
++                "submit": "Submit",
++                "fill_models": "Fill Related Models",
++                "fill_all": "Fill All Models",
++                "clear": "Clear All Models",
++                "add_custom": "Add",
++                "custom_placeholder": "Enter custom model name"
++            },
++            "messages": {
++                "name_required": "Please enter channel name and key!",
++                "models_required": "Please select at least one model!",
++                "model_mapping_invalid": "Model mapping must be valid JSON format!",
++                "update_success": "Channel updated successfully!",
++                "create_success": "Channel created successfully!"
++            },
++            "spark_version": "Model Version",
++            "spark_version_placeholder": "Please enter Spark model version from API URL, e.g.: v2.1",
++            "knowledge_id": "Knowledge Base ID",
++            "knowledge_id_placeholder": "Please enter knowledge base ID, e.g.: 123456",
++            "plugin_param": "Plugin Parameter",
++            "plugin_param_placeholder": "Please enter plugin parameter (X-DashScope-Plugin header value)",
++            "coze_notice": "For Coze, model name is the Bot ID. You can add prefix `bot-`, e.g.: `bot-123456`.",
++            "douban_notice": "For Douban, you need to go to",
++            "douban_notice_link": "Model Inference Page",
++            "douban_notice_2": "to create an inference endpoint, and use the endpoint name as model name, e.g.: `ep-20240608051426-tkxvl`.",
++            "aws_region_placeholder": "region, e.g.: us-west-2",
++            "aws_ak_placeholder": "AWS IAM Access Key",
++            "aws_sk_placeholder": "AWS IAM Secret Key",
++            "vertex_region_placeholder": "Vertex AI Region, e.g.: us-east5",
++            "vertex_project_id": "Vertex AI Project ID",
++            "vertex_project_id_placeholder": "Vertex AI Project ID",
++            "vertex_credentials": "Google Cloud Application Default Credentials JSON",
++            "vertex_credentials_placeholder": "Google Cloud Application Default Credentials JSON",
++            "user_id": "User ID",
++            "user_id_placeholder": "User ID who generated this key",
++            "key_prompts": {
++                "default": "Please enter the authentication key for this channel",
++                "zhipu": "Enter in format: APIKey|SecretKey",
++                "spark": "Enter in format: APPID|APISecret|APIKey",
++                "fastgpt": "Enter in format: APIKey-AppId, e.g.: fastgpt-0sp2gtvfdgyi4k30jwlgwf1i-64f335d84283f05518e9e041",
++                "tencent": "Enter in format: AppId|SecretId|SecretKey"
++            }
+         }
+-      }
+     },
+-    "system": {
+-      "general": {
+-        "title": "General Settings",
+-        "server_address": "Server Address",
+-        "server_address_placeholder": "e.g.: https://yourdomain.com",
+-        "buttons": {
+-          "update": "Update Server Address"
+-        }
+-      },
+-      "login": {
+-        "title": "Login & Registration Settings",
+-        "password_login": "Allow Password Login",
+-        "password_register": "Allow Password Registration",
+-        "email_verification": "Require Email Verification for Password Registration",
+-        "github_oauth": "Allow GitHub OAuth Login & Registration",
+-        "wechat_login": "Allow WeChat Login & Registration",
+-        "registration": "Allow New User Registration (When disabled, new users cannot register by any means)",
+-        "turnstile": "Enable Turnstile User Verification"
+-      },
+-      "email_restriction": {
+-        "title": "Email Domain Whitelist",
+-        "subtitle": "Used to prevent malicious users from batch registering using temporary emails",
+-        "enable": "Enable Email Domain Whitelist",
+-        "allowed_domains": "Allowed Email Domains",
+-        "add_domain": "Add New Allowed Email Domain",
+-        "add_domain_placeholder": "Enter new allowed email domain",
+-        "buttons": {
+-          "fill": "Fill",
+-          "save": "Save Email Domain Whitelist Settings"
+-        }
+-      },
+-      "smtp": {
+-        "title": "SMTP Configuration",
+-        "subtitle": "Used to support system email sending",
+-        "server": "SMTP Server Address",
+-        "server_placeholder": "e.g.: smtp.gmail.com",
+-        "port": "SMTP Port",
+-        "port_placeholder": "Default: 587",
+-        "account": "SMTP Account",
+-        "account_placeholder": "Usually your email address",
+-        "from": "SMTP Sender Email",
+-        "from_placeholder": "Usually same as email address",
+-        "token": "SMTP Access Token",
+-        "token_placeholder": "Sensitive information will not be sent to frontend",
+-        "buttons": {
+-          "save": "Save SMTP Settings"
+-        }
+-      },
+-      "github": {
+-        "title": "GitHub OAuth App Configuration",
+-        "subtitle": "Used to support GitHub login and registration",
+-        "manage_link": "Click here",
+-        "manage_text": "to manage your GitHub OAuth Apps",
+-        "url_notice": "Set Homepage URL to {{server_url}}, and Authorization callback URL to {{callback_url}}",
+-        "client_id": "GitHub Client ID",
+-        "client_id_placeholder": "Enter your registered GitHub OAuth APP ID",
+-        "client_secret": "GitHub Client Secret",
+-        "client_secret_placeholder": "Sensitive information will not be sent to frontend",
+-        "buttons": {
+-          "save": "Save GitHub OAuth Settings"
+-        }
+-      },
+-      "lark": {
+-        "title": "Lark OAuth Configuration",
+-        "subtitle": "Used to support Lark login and registration",
+-        "manage_link": "Click here",
+-        "manage_text": "to manage your Lark applications",
+-        "url_notice": "Set Homepage URL to {{server_url}}, and Redirect URL to {{callback_url}}",
+-        "client_id": "App ID",
+-        "client_id_placeholder": "Enter App ID",
+-        "client_secret": "App Secret",
+-        "client_secret_placeholder": "Sensitive information will not be sent to frontend",
+-        "buttons": {
+-          "save": "Save Lark OAuth Settings"
+-        }
+-      },
+-      "wechat": {
+-        "title": "WeChat Server Configuration",
+-        "subtitle": "Used to support WeChat login and registration",
+-        "learn_more": "Learn about WeChat Server",
+-        "server_address": "WeChat Server Address",
+-        "server_address_placeholder": "e.g.: https://yourdomain.com",
+-        "token": "WeChat Server Access Token",
+-        "token_placeholder": "Sensitive information will not be sent to frontend",
+-        "qrcode": "WeChat Official Account QR Code Image URL",
+-        "qrcode_placeholder": "Enter an image URL",
+-        "buttons": {
+-          "save": "Save WeChat Server Settings"
++    "token": {
++        "title": "Token Management",
++        "search": "Search tokens by name ...",
++        "table": {
++            "name": "Name",
++            "status": "Status",
++            "used_quota": "Used Quota",
++            "remain_quota": "Remaining Quota",
++            "created_time": "Created Time",
++            "expired_time": "Expiry Time",
++            "actions": "Actions",
++            "no_name": "None",
++            "never_expire": "never",
++            "unlimited": "Unlimited",
++            "status_enabled": "Enabled",
++            "status_disabled": "Disabled",
++            "status_expired": "Expired",
++            "status_depleted": "Depleted",
++            "status_unknown": "Unknown Status"
+         },
+-        "scan_tip": "Scan QR code to follow WeChat Official Account, enter 'code' to get verification code (valid for 3 minutes)",
+-        "code_placeholder": "Verification code"
+-      },
+-      "turnstile": {
+-        "title": "Turnstile Configuration",
+-        "subtitle": "Used to support user verification",
+-        "manage_link": "Click here",
+-        "manage_text": "to manage your Turnstile Sites, Invisible Widget Type recommended",
+-        "site_key": "Turnstile Site Key",
+-        "site_key_placeholder": "Enter your registered Turnstile Site Key",
+-        "secret_key": "Turnstile Secret Key",
+-        "secret_key_placeholder": "Sensitive information will not be sent to frontend",
+         "buttons": {
+-          "save": "Save Turnstile Settings"
++            "copy": "Copy",
++            "chat": "Chat",
++            "delete": "Delete",
++            "confirm_delete": "Delete Token",
++            "enable": "Enable",
++            "disable": "Disable",
++            "edit": "Edit",
++            "add": "Add New Token",
++            "refresh": "Refresh"
++        },
++        "edit": {
++            "title_edit": "Update Token Information",
++            "title_create": "Create New Token",
++            "name": "Name",
++            "name_placeholder": "Please enter name",
++            "models": "Model Scope",
++            "models_placeholder": "Please select allowed models, leave empty for no restrictions",
++            "ip_limit": "IP Restriction",
++            "ip_limit_placeholder": "Please enter allowed subnets, e.g.: 192.168.0.0/24, use commas to separate multiple subnets",
++            "expire_time": "Expiry Time",
++            "expire_time_placeholder": "Please enter expiry time in yyyy-MM-dd HH:mm:ss format, -1 for no limit",
++            "quota_notice": "Note: Token quota only limits the maximum usage of the token itself, actual usage is subject to account remaining quota.",
++            "quota": "Quota",
++            "quota_placeholder": "Please enter quota",
++            "buttons": {
++                "never_expire": "Never Expire",
++                "expire_1_month": "Expire in 1 Month",
++                "expire_1_day": "Expire in 1 Day",
++                "expire_1_hour": "Expire in 1 Hour",
++                "expire_1_minute": "Expire in 1 Minute",
++                "unlimited_quota": "Set Unlimited Quota",
++                "cancel_unlimited": "Cancel Unlimited Quota",
++                "submit": "Submit",
++                "cancel": "Cancel"
++            },
++            "messages": {
++                "update_success": "Token updated successfully!",
++                "create_success": "Token created successfully, please copy it from the list page!",
++                "expire_time_invalid": "Invalid expiry time format!"
++            }
++        },
++        "copy_options": {
++            "raw": "Copy Raw Token",
++            "ama": "Copy AMA Link",
++            "opencat": "Copy OpenCat Link",
++            "next": "Copy NextChat Link",
++            "lobe": "Copy LobeChat Link"
++        },
++        "messages": {
++            "copy_success": "Copied to clipboard!",
++            "copy_failed": "Unable to copy to clipboard, please copy manually. Token has been filled in the search box.",
++            "operation_success": "Operation completed successfully!"
++        },
++        "sort": {
++            "placeholder": "Sort By",
++            "default": "Default Order",
++            "by_remain": "Sort by Remaining Quota",
++            "by_used": "Sort by Used Quota"
+         }
+-      },
+-      "password_login": {
+-        "warning": {
+-          "title": "Warning",
+-          "content": "Disabling password login will prevent all users (including administrators) who haven't bound other login methods from logging in via password. Confirm disable?",
+-          "buttons": {
+-            "confirm": "Confirm",
+-            "cancel": "Cancel"
+-          }
++    },
++    "common": {
++        "quota": {
++            "display": "Equivalent: ${{amount}}",
++            "display_short": "${{amount}}",
++            "unit": "$"
+         }
+-      }
+     },
+-    "operation": {
+-      "quota": {
+-        "title": "Quota Settings",
+-        "new_user": "Initial Quota for New Users",
+-        "new_user_placeholder": "e.g.: 100",
+-        "pre_consume": "Pre-consumed Quota per Request",
+-        "pre_consume_placeholder": "Refund or charge difference after request",
+-        "inviter_reward": "Reward Quota for Inviter",
+-        "inviter_reward_placeholder": "e.g.: 2000",
+-        "invitee_reward": "Reward Quota for Using Invite Code",
+-        "invitee_reward_placeholder": "e.g.: 1000",
++    "redemption": {
++        "title": "Redemption Management",
++        "search": "Search redemption codes by ID and name ...",
++        "table": {
++            "id": "ID",
++            "name": "Name",
++            "status": "Status",
++            "quota": "Quota",
++            "created_time": "Created Time",
++            "redeemed_time": "Redeemed Time",
++            "actions": "Actions",
++            "no_name": "None",
++            "not_redeemed": "Not Redeemed"
++        },
+         "buttons": {
+-          "save": "Save Quota Settings"
+-        }
+-      },
+-      "ratio": {
+-        "title": "Ratio Settings",
+-        "model": {
+-          "title": "Model Ratio",
+-          "placeholder": "A JSON text where keys are model names and values are ratios"
++            "copy": "Copy",
++            "delete": "Delete",
++            "confirm_delete": "Confirm Delete",
++            "enable": "Enable",
++            "disable": "Disable",
++            "edit": "Edit",
++            "add": "Add New Code",
++            "refresh": "Refresh"
+         },
+-        "completion": {
+-          "title": "Completion Ratio",
+-          "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override One API's internal ratios"
++        "status": {
++            "unused": "Unused",
++            "disabled": "Disabled",
++            "used": "Used",
++            "unknown": "Unknown"
+         },
+-        "group": {
+-          "title": "Group Ratio",
+-          "placeholder": "A JSON text where keys are group names and values are ratios"
++        "edit": {
++            "title_edit": "Update Redemption Code",
++            "title_create": "Create New Redemption Code",
++            "name": "Name",
++            "name_placeholder": "Please enter name",
++            "quota": "Quota",
++            "quota_placeholder": "Please enter quota per redemption code",
++            "count": "Generate Count",
++            "count_placeholder": "Please enter number of codes to generate",
++            "buttons": {
++                "submit": "Submit",
++                "cancel": "Cancel"
++            }
+         },
+-        "buttons": {
+-          "save": "Save Ratio Settings"
+-        }
+-      },
+-      "log": {
+-        "title": "Log Settings",
+-        "enable_consume": "Enable Quota Consumption Logging",
+-        "target_time": "Target Time",
+-        "buttons": {
+-          "clean": "Clean Historical Logs"
++        "messages": {
++            "update_success": "Redemption code updated successfully!",
++            "create_success": "Redemption code created successfully!"
+         }
+-      },
+-      "monitor": {
+-        "title": "Monitor Settings",
+-        "max_response_time": "Maximum Response Time",
+-        "max_response_time_placeholder": "In seconds, channels exceeding this time during testing will be automatically disabled",
+-        "quota_reminder": "Quota Reminder Threshold",
+-        "quota_reminder_placeholder": "Users will receive email reminders when quota falls below this value",
+-        "auto_disable": "Automatically Disable Channel on Failure",
+-        "auto_enable": "Automatically Enable Channel on Success",
++    },
++    "log": {
++        "title": "Operation Log",
++        "search": "Search logs...",
++        "usage_details": "Usage Details",
++        "total_quota": "Total Quota Used",
++        "click_to_view": "Click to View",
++        "type": {
++            "select": "Select Log Type",
++            "all": "All",
++            "topup": "Top Up",
++            "usage": "Usage",
++            "admin": "Admin",
++            "system": "System",
++            "test": "Test"
++        },
++        "table": {
++            "time": "Time",
++            "channel": "Channel",
++            "type": "Type",
++            "model": "Model",
++            "username": "Username",
++            "token_name": "Token Name",
++            "token_name_placeholder": "Optional",
++            "model_name": "Model Name",
++            "model_name_placeholder": "Optional",
++            "start_time": "Start Time",
++            "end_time": "End Time",
++            "channel_id": "Channel ID",
++            "channel_id_placeholder": "Optional",
++            "username_placeholder": "Optional",
++            "prompt_tokens": "Prompt Tokens",
++            "completion_tokens": "Completion Tokens",
++            "quota": "Quota",
++            "detail": "Detail"
++        },
+         "buttons": {
+-          "save": "Save Monitor Settings"
++            "query": "Action",
++            "submit": "Query",
++            "refresh": "Refresh"
+         }
+-      },
+-      "general": {
+-        "title": "General Settings",
+-        "topup_link": "Top-up Link",
+-        "topup_link_placeholder": "e.g.: Card selling website purchase link",
+-        "chat_link": "Chat Page Link",
+-        "chat_link_placeholder": "e.g.: ChatGPT Next Web deployment address",
+-        "quota_per_unit": "Quota per Dollar",
+-        "quota_per_unit_placeholder": "Quota exchangeable per unit of currency",
+-        "retry_times": "Retry Times on Failure",
+-        "retry_times_placeholder": "Number of retry attempts on failure",
+-        "display_in_currency": "Display Quota in Currency Format",
+-        "display_token_stat": "Show Token Quota Instead of User Quota in Billing APIs",
+-        "approximate_token": "Use Approximate Method to Estimate Token Count",
++    },
++    "user": {
++        "title": "User Management",
++        "edit": {
++            "title": "Update User Information",
++            "username": "Username",
++            "username_placeholder": "Please enter new username",
++            "password": "Password",
++            "password_placeholder": "Please enter new password, minimum 8 characters",
++            "display_name": "Display Name",
++            "display_name_placeholder": "Please enter new display name",
++            "group": "Group",
++            "group_placeholder": "Please select group",
++            "group_addition": "Please edit group multipliers in system settings to add new group:",
++            "quota": "Remaining Quota",
++            "quota_placeholder": "Please enter new remaining quota",
++            "github_id": "Linked GitHub Account",
++            "github_id_placeholder": "Read-only, user must link through personal settings page, cannot be modified directly",
++            "wechat_id": "Linked WeChat Account",
++            "wechat_id_placeholder": "Read-only, user must link through personal settings page, cannot be modified directly",
++            "email": "Linked Email Account",
++            "email_placeholder": "Read-only, user must link through personal settings page, cannot be modified directly",
++            "buttons": {
++                "submit": "Submit",
++                "cancel": "Cancel"
++            }
++        },
++        "add": {
++            "title": "Create New User Account"
++        },
++        "messages": {
++            "update_success": "User information updated successfully!",
++            "create_success": "User account created successfully!",
++            "operation_success": "Operation completed successfully!"
++        },
++        "search": "Search users...",
++        "table": {
++            "id": "ID",
++            "username": "Username",
++            "group": "Group",
++            "quota": "Quota",
++            "role_text": "Role",
++            "status_text": "Status",
++            "actions": "Actions",
++            "remaining_quota": "Remaining Quota",
++            "used_quota": "Used Quota",
++            "request_count": "Request Count",
++            "role_types": {
++                "normal": "Normal User",
++                "admin": "Admin",
++                "super_admin": "Super Admin",
++                "unknown": "Unknown Role"
++            },
++            "status_types": {
++                "activated": "Activated",
++                "banned": "Banned",
++                "unknown": "Unknown Status"
++            },
++            "sort": {
++                "default": "Default Order",
++                "by_quota": "Sort by Remaining Quota",
++                "by_used_quota": "Sort by Used Quota",
++                "by_request_count": "Sort by Request Count"
++            },
++            "sort_by": "Sort By"
++        },
+         "buttons": {
+-          "save": "Save General Settings"
++            "add": "Add New User",
++            "delete": "Delete",
++            "delete_user": "Delete User",
++            "enable": "Enable",
++            "disable": "Disable",
++            "edit": "Edit",
++            "promote": "Promote",
++            "demote": "Demote"
+         }
+-      }
+     },
+-    "other": {
+-      "notice": {
+-        "title": "Notice Settings",
+-        "content": "Notice Content",
+-        "content_placeholder": "Enter new notice content here, supports Markdown & HTML code",
+-        "buttons": {
+-          "save": "Save Notice"
++    "dashboard": {
++        "charts": {
++            "requests": {
++                "title": "Model Request Trend",
++                "tooltip": "Request Count"
++            },
++            "quota": {
++                "title": "Quota Usage Trend",
++                "tooltip": "Quota Used"
++            },
++            "tokens": {
++                "title": "Token Usage Trend",
++                "tooltip": "Token Count"
++            }
++        },
++        "statistics": {
++            "title": "Statistics",
++            "tooltip": {
++                "date": "Date",
++                "value": "Value"
++            },
++            "todayRequests": "Requests Today",
++            "todayQuota": "Quota Used Today",
++            "todayTokens": "Tokens Today",
++            "modelRanking": "Model Usage Ranking",
++            "noData": "No data available yet",
++            "mostUsed": "Most Used",
++            "columns": {
++                "model": "Model",
++                "requests": "Requests",
++                "inputTokens": "Input Tokens",
++                "outputTokens": "Output Tokens",
++                "totalTokens": "Total Tokens"
++            }
+         }
+-      },
+-      "system": {
++    },
++    "setting": {
+         "title": "System Settings",
+-        "name": "System Name",
+-        "name_placeholder": "Please enter system name",
+-        "logo": "Logo Image URL",
+-        "logo_placeholder": "Enter Logo image URL here",
+-        "theme": {
+-          "title": "Theme Name",
+-          "link": "Available Themes",
+-          "placeholder": "Please enter theme name"
++        "tabs": {
++            "personal": "Personal Settings",
++            "operation": "Operation Settings",
++            "system": "System Settings",
++            "other": "Other Settings"
+         },
+-        "buttons": {
+-          "save_name": "Set System Name",
+-          "save_logo": "Set Logo",
+-          "save_theme": "Set Theme (Restart Required)"
+-        }
+-      },
+-      "content": {
+-        "title": "Content Settings",
+-        "homepage": {
+-          "title": "Homepage Content",
+-          "placeholder": "Enter homepage content here, supports Markdown & HTML code. Status information will not be shown after setting. If a link is entered, it will be used as the src attribute of an iframe, allowing you to set any webpage as homepage."
++        "personal": {
++            "general": {
++                "title": "General Settings",
++                "system_token_notice": "Note: The token generated here is for system management, not for requesting OpenAI related services.",
++                "buttons": {
++                    "update_profile": "Update Profile",
++                    "generate_token": "Generate System Token",
++                    "copy_invite": "Copy Invite Link",
++                    "delete_account": "Delete Account"
++                }
++            },
++            "binding": {
++                "title": "Account Binding",
++                "buttons": {
++                    "bind_wechat": "Bind WeChat Account",
++                    "bind_github": "Bind GitHub Account",
++                    "bind_email": "Bind Email Address",
++                    "bind_lark": "Bind Lark Account"
++                },
++                "wechat": {
++                    "title": "WeChat Binding",
++                    "description": "Scan QR code to follow the official account, enter 'verification code' to get the code (valid for 3 minutes)",
++                    "verification_code": "Verification Code",
++                    "bind": "Bind"
++                },
++                "email": {
++                    "title": "Bind Email Address",
++                    "email_placeholder": "Enter email address",
++                    "code_placeholder": "Verification code",
++                    "get_code": "Get Code",
++                    "get_code_retry": "Resend({{countdown}})",
++                    "bind": "Confirm Binding",
++                    "cancel": "Cancel"
++                }
++            },
++            "delete_account": {
++                "title": "Dangerous Operation",
++                "warning": "You are deleting your account. All data will be cleared and cannot be recovered",
++                "confirm_placeholder": "Enter your username {{username}} to confirm deletion",
++                "buttons": {
++                    "confirm": "Confirm Delete",
++                    "cancel": "Cancel"
++                }
++            }
+         },
+-        "about": {
+-          "title": "About System",
+-          "description": "You can set about content in settings page, supports HTML & Markdown",
+-          "repository": "Project Repository:",
+-          "loading_failed": "Failed to load about content..."
++        "system": {
++            "general": {
++                "title": "General Settings",
++                "server_address": "Server Address",
++                "server_address_placeholder": "e.g.: https://yourdomain.com",
++                "buttons": {
++                    "update": "Update Server Address"
++                }
++            },
++            "login": {
++                "title": "Login & Registration Settings",
++                "password_login": "Allow Password Login",
++                "password_register": "Allow Password Registration",
++                "email_verification": "Require Email Verification for Password Registration",
++                "github_oauth": "Allow GitHub OAuth Login & Registration",
++                "wechat_login": "Allow WeChat Login & Registration",
++                "registration": "Allow New User Registration (When disabled, new users cannot register by any means)",
++                "turnstile": "Enable Turnstile User Verification"
++            },
++            "email_restriction": {
++                "title": "Email Domain Whitelist",
++                "subtitle": "Used to prevent malicious users from batch registering using temporary emails",
++                "enable": "Enable Email Domain Whitelist",
++                "allowed_domains": "Allowed Email Domains",
++                "add_domain": "Add New Allowed Email Domain",
++                "add_domain_placeholder": "Enter new allowed email domain",
++                "buttons": {
++                    "fill": "Fill",
++                    "save": "Save Email Domain Whitelist Settings"
++                }
++            },
++            "smtp": {
++                "title": "SMTP Configuration",
++                "subtitle": "Used to support system email sending",
++                "server": "SMTP Server Address",
++                "server_placeholder": "e.g.: smtp.gmail.com",
++                "port": "SMTP Port",
++                "port_placeholder": "Default: 587",
++                "account": "SMTP Account",
++                "account_placeholder": "Usually your email address",
++                "from": "SMTP Sender Email",
++                "from_placeholder": "Usually same as email address",
++                "token": "SMTP Access Token",
++                "token_placeholder": "Sensitive information will not be sent to frontend",
++                "buttons": {
++                    "save": "Save SMTP Settings"
++                }
++            },
++            "github": {
++                "title": "GitHub OAuth App Configuration",
++                "subtitle": "Used to support GitHub login and registration",
++                "manage_link": "Click here",
++                "manage_text": "to manage your GitHub OAuth Apps",
++                "url_notice": "Set Homepage URL to {{server_url}}, and Authorization callback URL to {{callback_url}}",
++                "client_id": "GitHub Client ID",
++                "client_id_placeholder": "Enter your registered GitHub OAuth APP ID",
++                "client_secret": "GitHub Client Secret",
++                "client_secret_placeholder": "Sensitive information will not be sent to frontend",
++                "buttons": {
++                    "save": "Save GitHub OAuth Settings"
++                }
++            },
++            "lark": {
++                "title": "Lark OAuth Configuration",
++                "subtitle": "Used to support Lark login and registration",
++                "manage_link": "Click here",
++                "manage_text": "to manage your Lark applications",
++                "url_notice": "Set Homepage URL to {{server_url}}, and Redirect URL to {{callback_url}}",
++                "client_id": "App ID",
++                "client_id_placeholder": "Enter App ID",
++                "client_secret": "App Secret",
++                "client_secret_placeholder": "Sensitive information will not be sent to frontend",
++                "buttons": {
++                    "save": "Save Lark OAuth Settings"
++                }
++            },
++            "wechat": {
++                "title": "WeChat Server Configuration",
++                "subtitle": "Used to support WeChat login and registration",
++                "learn_more": "Learn about WeChat Server",
++                "server_address": "WeChat Server Address",
++                "server_address_placeholder": "e.g.: https://yourdomain.com",
++                "token": "WeChat Server Access Token",
++                "token_placeholder": "Sensitive information will not be sent to frontend",
++                "qrcode": "WeChat Official Account QR Code Image URL",
++                "qrcode_placeholder": "Enter an image URL",
++                "buttons": {
++                    "save": "Save WeChat Server Settings"
++                },
++                "scan_tip": "Scan QR code to follow WeChat Official Account, enter 'code' to get verification code (valid for 3 minutes)",
++                "code_placeholder": "Verification code"
++            },
++            "turnstile": {
++                "title": "Turnstile Configuration",
++                "subtitle": "Used to support user verification",
++                "manage_link": "Click here",
++                "manage_text": "to manage your Turnstile Sites, Invisible Widget Type recommended",
++                "site_key": "Turnstile Site Key",
++                "site_key_placeholder": "Enter your registered Turnstile Site Key",
++                "secret_key": "Turnstile Secret Key",
++                "secret_key_placeholder": "Sensitive information will not be sent to frontend",
++                "buttons": {
++                    "save": "Save Turnstile Settings"
++                }
++            },
++            "password_login": {
++                "warning": {
++                    "title": "Warning",
++                    "content": "Disabling password login will prevent all users (including administrators) who haven't bound other login methods from logging in via password. Confirm disable?",
++                    "buttons": {
++                        "confirm": "Confirm",
++                        "cancel": "Cancel"
++                    }
++                }
++            }
+         },
+-        "footer": {
+-          "title": "Footer",
+-          "placeholder": "Enter new footer here, leave empty to use default footer, supports HTML code"
++        "operation": {
++            "quota": {
++                "title": "Quota Settings",
++                "new_user": "Initial Quota for New Users",
++                "new_user_placeholder": "e.g.: 100",
++                "pre_consume": "Pre-consumed Quota per Request",
++                "pre_consume_placeholder": "Refund or charge difference after request",
++                "inviter_reward": "Reward Quota for Inviter",
++                "inviter_reward_placeholder": "e.g.: 2000",
++                "invitee_reward": "Reward Quota for Using Invite Code",
++                "invitee_reward_placeholder": "e.g.: 1000",
++                "buttons": {
++                    "save": "Save Quota Settings"
++                }
++            },
++            "ratio": {
++                "title": "Ratio Settings",
++                "model": {
++                    "title": "Model Ratio",
++                    "placeholder": "A JSON text where keys are model names and values are ratios"
++                },
++                "completion": {
++                    "title": "Completion Ratio",
++                    "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override One API's internal ratios"
++                },
++                "group": {
++                    "title": "Group Ratio",
++                    "placeholder": "A JSON text where keys are group names and values are ratios"
++                },
++                "buttons": {
++                    "save": "Save Ratio Settings"
++                }
++            },
++            "log": {
++                "title": "Log Settings",
++                "enable_consume": "Enable Quota Consumption Logging",
++                "target_time": "Target Time",
++                "buttons": {
++                    "clean": "Clean Historical Logs"
++                }
++            },
++            "monitor": {
++                "title": "Monitor Settings",
++                "max_response_time": "Maximum Response Time",
++                "max_response_time_placeholder": "In seconds, channels exceeding this time during testing will be automatically disabled",
++                "quota_reminder": "Quota Reminder Threshold",
++                "quota_reminder_placeholder": "Users will receive email reminders when quota falls below this value",
++                "auto_disable": "Automatically Disable Channel on Failure",
++                "auto_enable": "Automatically Enable Channel on Success",
++                "buttons": {
++                    "save": "Save Monitor Settings"
++                }
++            },
++            "general": {
++                "title": "General Settings",
++                "topup_link": "Top-up Link",
++                "topup_link_placeholder": "e.g.: Card selling website purchase link",
++                "chat_link": "Chat Page Link",
++                "chat_link_placeholder": "e.g.: ChatGPT Next Web deployment address",
++                "quota_per_unit": "Quota per Dollar",
++                "quota_per_unit_placeholder": "Quota exchangeable per unit of currency",
++                "retry_times": "Retry Times on Failure",
++                "retry_times_placeholder": "Number of retry attempts on failure",
++                "display_in_currency": "Display Quota in Currency Format",
++                "display_token_stat": "Show Token Quota Instead of User Quota in Billing APIs",
++                "approximate_token": "Use Approximate Method to Estimate Token Count",
++                "buttons": {
++                    "save": "Save General Settings"
++                }
++            }
+         },
+-        "buttons": {
+-          "save_homepage": "Save Homepage Content",
+-          "save_about": "Save About",
+-          "save_footer": "Set Footer"
++        "other": {
++            "notice": {
++                "title": "Notice Settings",
++                "content": "Notice Content",
++                "content_placeholder": "Enter new notice content here, supports Markdown & HTML code",
++                "buttons": {
++                    "save": "Save Notice"
++                }
++            },
++            "system": {
++                "title": "System Settings",
++                "name": "System Name",
++                "name_placeholder": "Please enter system name",
++                "logo": "Logo Image URL",
++                "logo_placeholder": "Enter Logo image URL here",
++                "theme": {
++                    "title": "Theme Name",
++                    "link": "Available Themes",
++                    "placeholder": "Please enter theme name"
++                },
++                "buttons": {
++                    "save_name": "Set System Name",
++                    "save_logo": "Set Logo",
++                    "save_theme": "Set Theme (Restart Required)"
++                }
++            },
++            "content": {
++                "title": "Content Settings",
++                "homepage": {
++                    "title": "Homepage Content",
++                    "placeholder": "Enter homepage content here, supports Markdown & HTML code. Status information will not be shown after setting. If a link is entered, it will be used as the src attribute of an iframe, allowing you to set any webpage as homepage."
++                },
++                "about": {
++                    "title": "About System",
++                    "description": "You can set about content in settings page, supports HTML & Markdown",
++                    "repository": "Project Repository:",
++                    "loading_failed": "Failed to load about content..."
++                },
++                "footer": {
++                    "title": "Footer",
++                    "placeholder": "Enter new footer here, leave empty to use default footer, supports HTML code"
++                },
++                "buttons": {
++                    "save_homepage": "Save Homepage Content",
++                    "save_about": "Save About",
++                    "save_footer": "Set Footer"
++                }
++            },
++            "copyright": {
++                "notice": "Removing One API's copyright notice requires authorization. Project maintenance requires significant effort, if this project is meaningful to you, please actively support it."
++            }
+         }
+-      },
+-      "copyright": {
+-        "notice": "Removing One API's copyright notice requires authorization. Project maintenance requires significant effort, if this project is meaningful to you, please actively support it."
+-      }
+-    }
+-  },
+-  "footer": {
+-    "built_by": "built by",
+-    "built_by_name": "JustSong",
+-    "license": ", source code is licensed under the",
+-    "mit": "MIT License"
+-  },
+-  "home": {
+-    "welcome": {
+-      "title": "Welcome to One API",
+-      "description": "One API is a LLM API management and distribution system that helps you better manage and use LLM APIs from various providers.",
+-      "login_notice": "To use the service, please login or register first."
+-    },
+-    "system_status": {
+-      "title": "System Status",
+-      "info": {
+-        "title": "System Information",
+-        "name": "Name: ",
+-        "version": "Version: ",
+-        "source": "Source: ",
+-        "source_link": "GitHub Repository",
+-        "start_time": "Start Time: "
+-      },
+-      "config": {
+-        "title": "System Configuration",
+-        "email_verify": "Email Verification: ",
+-        "github_oauth": "GitHub OAuth: ",
+-        "wechat_login": "WeChat Login: ",
+-        "turnstile": "Turnstile Check: ",
+-        "enabled": "Enabled",
+-        "disabled": "Disabled"
+-      }
+     },
+-    "loading_failed": "Failed to load homepage content..."
+-  },
+-  "auth": {
+-    "login": {
+-      "title": "User Login",
+-      "username": "Username / Email",
+-      "password": "Password",
+-      "button": "Login",
+-      "forgot_password": "Forgot password?",
+-      "reset_password": "Reset",
+-      "no_account": "No account?",
+-      "register": "Register",
+-      "other_methods": "Other login methods",
+-      "wechat": {
+-        "scan_tip": "Scan QR code to follow WeChat Official Account, enter 'code' to get verification code (valid for 3 minutes)",
+-        "code_placeholder": "Verification code"
+-      }
++    "footer": {
++        "built_by": "built by",
++        "built_by_name": "JustSong",
++        "license": ", source code is licensed under the",
++        "mit": "MIT License"
+     },
+-    "register": {
+-      "title": "New User Registration",
+-      "username": "Username (max 12 characters)",
+-      "password": "Password (8-20 characters)",
+-      "confirm_password": "Confirm password",
+-      "email": "Email address",
+-      "verification_code": "Verification code",
+-      "get_code": "Get code",
+-      "get_code_retry": "Retry ({{countdown}})",
+-      "button": "Register",
+-      "has_account": "Have an account?",
+-      "login": "Login"
++    "home": {
++        "welcome": {
++            "title": "Welcome to One API",
++            "description": "One API is a LLM API management and distribution system that helps you better manage and use LLM APIs from various providers.",
++            "login_notice": "To use the service, please login or register first."
++        },
++        "system_status": {
++            "title": "System Status",
++            "info": {
++                "title": "System Information",
++                "name": "Name: ",
++                "version": "Version: ",
++                "source": "Source: ",
++                "source_link": "GitHub Repository",
++                "start_time": "Start Time: "
++            },
++            "config": {
++                "title": "System Configuration",
++                "email_verify": "Email Verification: ",
++                "github_oauth": "GitHub OAuth: ",
++                "wechat_login": "WeChat Login: ",
++                "turnstile": "Turnstile Check: ",
++                "enabled": "Enabled",
++                "disabled": "Disabled"
++            }
++        },
++        "loading_failed": "Failed to load homepage content..."
+     },
+-    "reset": {
+-      "title": "Password Reset",
+-      "email": "Email address",
+-      "button": "Submit",
+-      "notice": "The system will send an email containing a reset link to your mailbox. Please check your email.",
+-      "confirm": {
+-        "title": "Password Reset Confirmation",
+-        "new_password": "New password",
+-        "button": "Submit",
+-        "button_disabled": "Password reset completed",
+-        "notice": "New password has been generated, please click the password field or button above to copy. Please login and change your password as soon as possible!"
+-      }
+-    }
+-  },
+-  "about": {
+-    "title": "About",
+-    "description": "One API is an open-source API management and proxy platform.",
+-    "repository": "Repository: ",
+-    "loading_failed": "Loading failed"
+-  },
+-  "messages": {
+-    "success": {
+-      "login": "Login successful!",
+-      "register": "Registration successful!",
+-      "verification_code": "Verification code sent, please check your email!",
+-      "password_reset": "Reset email sent, please check your inbox!"
++    "auth": {
++        "login": {
++            "title": "User Login",
++            "username": "Username / Email",
++            "password": "Password",
++            "button": "Login",
++            "forgot_password": "Forgot password?",
++            "reset_password": "Reset",
++            "no_account": "No account?",
++            "register": "Register",
++            "other_methods": "Other login methods",
++            "wechat": {
++                "scan_tip": "Scan QR code to follow WeChat Official Account, enter 'code' to get verification code (valid for 3 minutes)",
++                "code_placeholder": "Verification code"
++            }
++        },
++        "register": {
++            "title": "New User Registration",
++            "username": "Username (max 12 characters)",
++            "password": "Password (8-20 characters)",
++            "confirm_password": "Confirm password",
++            "email": "Email address",
++            "verification_code": "Verification code",
++            "get_code": "Get code",
++            "get_code_retry": "Retry ({{countdown}})",
++            "button": "Register",
++            "has_account": "Have an account?",
++            "login": "Login"
++        },
++        "reset": {
++            "title": "Password Reset",
++            "email": "Email address",
++            "button": "Submit",
++            "notice": "The system will send an email containing a reset link to your mailbox. Please check your email.",
++            "confirm": {
++                "title": "Password Reset Confirmation",
++                "new_password": "New password",
++                "button": "Submit",
++                "button_disabled": "Password reset completed",
++                "notice": "New password has been generated, please click the password field or button above to copy. Please login and change your password as soon as possible!"
++            }
++        }
+     },
+-    "error": {
+-      "login_expired": "Not logged in or session expired, please login again!",
+-      "password_length": "Password must be at least 8 characters!",
+-      "password_mismatch": "Passwords do not match",
+-      "turnstile_wait": "Please wait a few seconds, Turnstile is checking the environment!",
+-      "root_password": "Please change the default password immediately!"
++    "about": {
++        "title": "About",
++        "description": "One API is an open-source API management and proxy platform.",
++        "repository": "Repository: ",
++        "loading_failed": "Loading failed"
+     },
+-    "notice": {
+-      "password_copied": "New password copied to clipboard: {{password}}"
++    "messages": {
++        "success": {
++            "login": "Login successful!",
++            "register": "Registration successful!",
++            "verification_code": "Verification code sent, please check your email!",
++            "password_reset": "Reset email sent, please check your inbox!"
++        },
++        "error": {
++            "login_expired": "Not logged in or session expired, please login again!",
++            "password_length": "Password must be at least 8 characters!",
++            "password_mismatch": "Passwords do not match",
++            "turnstile_wait": "Please wait a few seconds, Turnstile is checking the environment!",
++            "root_password": "Please change the default password immediately!"
++        },
++        "notice": {
++            "password_copied": "New password copied to clipboard: {{password}}"
++        }
+     }
+-  }
+ }
+diff --git a/web/default/src/pages/Channel/EditChannel.js b/web/default/src/pages/Channel/EditChannel.js
+index 243db3d3..e0e25ac4 100644
+--- a/web/default/src/pages/Channel/EditChannel.js
++++ b/web/default/src/pages/Channel/EditChannel.js
+@@ -301,22 +301,22 @@ const EditChannel = () => {
+             {inputs.type === 3 && (
+               <>
+                 <Message>
+-                  注意，<strong>模型部署名称必须和模型名称保持一致</strong>
+-                  ，因为 One API 会把请求体中的 model
+-                  参数替换为你的部署名称（模型名称中的点会被剔除），
++                  Note, <strong>the model deployment name must match the model name</strong>
++                  , because One API replaces the model
++                  parameter in the request body with your deployment name (dots in the model name are removed). See the{' '}
+                   <a
+                     target='_blank'
+                     href='https://github.com/songquanpeng/one-api/issues/133?notification_referrer_id=NT_kwDOAmJSYrM2NjIwMzI3NDgyOjM5OTk4MDUw#issuecomment-1571602271'
+                   >
+-                    图片演示
++                    image demo
+                   </a>
+-                  。
++                  .
+                 </Message>
+                 <Form.Field>
+                   <Form.Input
+                     label='AZURE_OPENAI_ENDPOINT'
+                     name='base_url'
+-                    placeholder='请输入 AZURE_OPENAI_ENDPOINT，例如：https://docs-test-001.openai.azure.com'
++                    placeholder='Enter AZURE_OPENAI_ENDPOINT, e.g., https://docs-test-001.openai.azure.com'
+                     onChange={handleInputChange}
+                     value={inputs.base_url}
+                     autoComplete='new-password'
+@@ -324,9 +324,9 @@ const EditChannel = () => {
+                 </Form.Field>
+                 <Form.Field>
+                   <Form.Input
+-                    label='默认 API 版本'
++                    label='Default API Version'
+                     name='other'
+-                    placeholder='请输入默认 API 版本，例如：2024-03-01-preview，该配置可以被实际的请求查询参数所覆盖'
++                    placeholder='Enter the default API version, e.g., 2024-03-01-preview; this can be overridden by request query parameters'
+                     onChange={handleInputChange}
+                     value={inputs.other}
+                     autoComplete='new-password'
+@@ -632,7 +632,7 @@ const EditChannel = () => {
+                   name='user_id'
+                   required
+                   placeholder={
+-                    '请输入 Account ID，例如：d8d7c61dbc334c32d3ced580e4bf42b4'
++                    'Enter Account ID, e.g., d8d7c61dbc334c32d3ced580e4bf42b4'
+                   }
+                   onChange={handleConfigChange}
+                   value={config.user_id}
+@@ -667,10 +667,10 @@ const EditChannel = () => {
+             {inputs.type === 22 && (
+               <Form.Field>
+                 <Form.Input
+-                  label='私有部署地址'
++                  label='Private deployment URL'
+                   name='base_url'
+                   placeholder={
+-                    '请输入私有部署地址，格式为：https://fastgpt.run/api/openapi'
++                    'Enter the private deployment URL in the format: https://fastgpt.run/api/openapi'
+                   }
+                   onChange={handleInputChange}
+                   value={inputs.base_url}
+diff --git a/web/default/src/pages/Dashboard/Dashboard.css b/web/default/src/pages/Dashboard/Dashboard.css
+index ed01b96e..b62d0e15 100644
+--- a/web/default/src/pages/Dashboard/Dashboard.css
++++ b/web/default/src/pages/Dashboard/Dashboard.css
+@@ -19,6 +19,238 @@
+     transform: translateY(-5px);
+ }
+ 
++.stat-cards {
++    display: grid;
++    grid-template-columns: repeat(3, 1fr);
++    gap: 1rem;
++    margin-bottom: 1.25rem;
++}
++
++.stat-card-modern {
++    display: flex;
++    align-items: center;
++    gap: 16px;
++    padding: 20px 22px;
++    border-radius: 16px;
++    color: #fff !important;
++    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
++    transition: transform 0.2s ease, box-shadow 0.2s ease;
++    position: relative;
++    overflow: hidden;
++}
++
++.stat-card-modern:hover {
++    transform: translateY(-4px);
++    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
++}
++
++.stat-card-blue {
++    background: linear-gradient(135deg, #4318FF 0%, #6C63FF 100%);
++}
++
++.stat-card-cyan {
++    background: linear-gradient(135deg, #00B5D8 0%, #49BEFF 100%);
++}
++
++.stat-card-purple {
++    background: linear-gradient(135deg, #6C63FF 0%, #4318FF 100%);
++}
++
++.stat-card-icon {
++    width: 52px;
++    height: 52px;
++    border-radius: 14px;
++    background: rgba(255, 255, 255, 0.18);
++    display: flex;
++    align-items: center;
++    justify-content: center;
++    font-size: 24px;
++    flex-shrink: 0;
++}
++
++.stat-card-info {
++    display: flex;
++    flex-direction: column;
++    min-width: 0;
++}
++
++.stat-card-label {
++    font-size: 13px;
++    font-weight: 500;
++    opacity: 0.85;
++    letter-spacing: 0.3px;
++    margin-bottom: 4px;
++}
++
++.stat-card-value {
++    font-size: 26px;
++    font-weight: 700;
++    line-height: 1.2;
++    font-variant-numeric: tabular-nums;
++    white-space: nowrap;
++    overflow: hidden;
++    text-overflow: ellipsis;
++}
++
++@media (max-width: 768px) {
++    .stat-cards {
++        grid-template-columns: 1fr;
++        gap: 0.75rem;
++        margin-bottom: 1rem;
++    }
++
++    .stat-card-modern {
++        padding: 14px 16px;
++        gap: 12px;
++        border-radius: 14px;
++    }
++
++    .stat-card-icon {
++        width: 42px;
++        height: 42px;
++        border-radius: 12px;
++        font-size: 19px;
++    }
++
++    .stat-card-label {
++        font-size: 12px;
++        margin-bottom: 3px;
++    }
++
++    .stat-card-value {
++        font-size: 20px;
++    }
++}
++
++.chart-tooltip {
++    background: rgba(255, 255, 255, 0.98);
++    border: 1px solid rgba(67, 24, 255, 0.12);
++    border-radius: 12px;
++    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
++    padding: 10px 14px;
++    font-size: 13px;
++    color: #2B3674;
++}
++
++.chart-tooltip-label {
++    font-weight: 600;
++    margin-bottom: 6px;
++    font-size: 12px;
++    opacity: 0.8;
++}
++
++.chart-tooltip-row {
++    display: flex;
++    align-items: center;
++    gap: 8px;
++    margin-top: 4px;
++}
++
++.chart-tooltip-dot {
++    width: 10px;
++    height: 10px;
++    border-radius: 50%;
++    flex-shrink: 0;
++}
++
++.chart-tooltip-name {
++    flex: 1;
++    min-width: 0;
++    overflow: hidden;
++    text-overflow: ellipsis;
++    white-space: nowrap;
++}
++
++.chart-tooltip-value {
++    font-weight: 700;
++}
++
++.model-ranking {
++    overflow-x: auto;
++    padding: 8px 8px 4px;
++}
++
++.model-table {
++    width: 100%;
++}
++
++.model-table.ui.table thead th {
++    font-size: 12px;
++    text-transform: uppercase;
++    letter-spacing: 0.4px;
++    color: #A3AED0;
++    font-weight: 600;
++    border-bottom: 1px solid #f0f2f8;
++}
++
++.model-table.ui.table tbody tr {
++    transition: background 0.15s ease;
++}
++
++.model-table.ui.table tbody tr:hover {
++    background: rgba(67, 24, 255, 0.04);
++}
++
++.model-table.ui.table tbody td {
++    border-top: 1px solid #f5f6fa;
++    padding: 12px 0.78571429em;
++}
++
++.model-rank {
++    display: inline-flex;
++    align-items: center;
++    justify-content: center;
++    width: 26px;
++    height: 26px;
++    border-radius: 8px;
++    color: #fff;
++    font-size: 12px;
++    font-weight: 700;
++}
++
++.model-name {
++    font-weight: 600;
++    color: #2B3674;
++}
++
++.model-badge {
++    margin-left: 8px;
++    font-size: 11px;
++    font-weight: 600;
++    color: #4318FF;
++    background: rgba(67, 24, 255, 0.1);
++    padding: 2px 8px;
++    border-radius: 20px;
++    white-space: nowrap;
++}
++
++.model-total {
++    font-weight: 700;
++    color: #4318FF;
++}
++
++.model-ranking-empty {
++    padding: 24px;
++    text-align: center;
++    color: #A3AED0;
++    font-size: 14px;
++}
++
++@media (max-width: 768px) {
++    .model-ranking {
++        padding: 4px 0;
++        -webkit-overflow-scrolling: touch;
++    }
++
++    .model-table {
++        min-width: 560px;
++    }
++
++    .model-table.ui.table tbody td {
++        padding: 10px 10px;
++    }
++}
++
+ .stat-card .statistic {
+     color: white !important;
+ }
+@@ -44,6 +276,7 @@
+     padding: 16px;
+     background-color: white;
+     border-radius: 12px;
++    border: 1px solid rgba(67, 24, 255, 0.06);
+ }
+ 
+ .ui.card > .content > .header {
+@@ -71,16 +304,34 @@
+ /* 优化图表响应式布局 */
+ @media (max-width: 768px) {
+     .dashboard-container {
+-        padding: 10px 16px;   /* 移动端也相应减小内边距 */
+-        max-width: 100%;      /* 移动端占满全宽 */
++        padding: 12px 14px 32px;   /* 移动端也相应减小内边距 */
++        max-width: 100%;           /* 移动端占满全宽 */
++        margin-top: 0;
+     }
+-    
+-    .chart-container {
+-        padding: 12px;
++
++    .charts-grid {
++        margin: 0 !important;
+     }
+-    
++
+     .charts-grid .column {
+-        padding: 0.25rem !important;
++        padding: 0 !important;
++        margin-bottom: 0.75rem !important;
++    }
++
++    .chart-card {
++        border-radius: 12px !important;
++        padding: 4px !important;
++    }
++
++    .chart-card .header {
++        font-size: 1.05em;
++        margin-bottom: 10px;
++        padding: 8px 8px 0;
++    }
++
++    .chart-container {
++        padding: 10px;
++        border-radius: 10px;
+     }
+ }
+ 
+diff --git a/web/default/src/pages/Dashboard/index.js b/web/default/src/pages/Dashboard/index.js
+index 37ba424b..120e9aa4 100644
+--- a/web/default/src/pages/Dashboard/index.js
++++ b/web/default/src/pages/Dashboard/index.js
+@@ -1,13 +1,13 @@
+ import React, {useEffect, useState} from 'react';
+ import {useTranslation} from 'react-i18next';
+-import {Card, Grid} from 'semantic-ui-react';
++import {Card, Grid, Icon, Table} from 'semantic-ui-react';
+ import {
++  Area,
++  AreaChart,
+   Bar,
+   BarChart,
+   CartesianGrid,
+   Legend,
+-  Line,
+-  LineChart,
+   ResponsiveContainer,
+   Tooltip,
+   XAxis,
+@@ -16,7 +16,40 @@ import {
+ import axios from 'axios';
+ import './Dashboard.css';
+ 
+-// 在 Dashboard 组件内添加自定义配置
++const ChartTooltip = ({ active, payload, label, formatter, labelFormatter }) => {
++  if (!active || !payload || payload.length === 0) return null;
++  return (
++    <div className='chart-tooltip'>
++      <div className='chart-tooltip-label'>
++        {labelFormatter ? labelFormatter(label) : label}
++      </div>
++      {payload.map((entry) => (
++        <div key={entry.dataKey} className='chart-tooltip-row'>
++          <span
++            className='chart-tooltip-dot'
++            style={{ background: entry.stroke || entry.fill }}
++          />
++          <span className='chart-tooltip-name'>{entry.name}</span>
++          <span className='chart-tooltip-value'>
++            {formatter
++              ? formatter(entry.value)
++              : Number(entry.value).toLocaleString()}
++          </span>
++        </div>
++      ))}
++    </div>
++  );
++};
++
++const fmtDateLabel = (dateStr) => {
++  const d = new Date(dateStr);
++  return d.toLocaleDateString('en-US', {
++    month: 'numeric',
++    day: 'numeric',
++  });
++};
++
++// Add custom config within the Dashboard component
+ const chartConfig = {
+   lineChart: {
+     style: {
+@@ -40,16 +73,16 @@ const chartConfig = {
+     tokens: '#6C63FF',
+   },
+   barColors: [
+-    '#4318FF', // 深紫色
+-    '#00B5D8', // 青色
+-    '#6C63FF', // 紫色
+-    '#05CD99', // 绿色
+-    '#FFB547', // 橙色
+-    '#FF5E7D', // 粉色
+-    '#41B883', // 翠绿
+-    '#7983FF', // 淡紫
+-    '#FF8F6B', // 珊瑚色
+-    '#49BEFF', // 天蓝
++    '#4318FF', // deep purple
++    '#00B5D8', // cyan
++    '#6C63FF', // purple
++    '#05CD99', // green
++    '#FFB547', // orange
++    '#FF5E7D', // pink
++    '#41B883', // emerald
++    '#7983FF', // light purple
++    '#FF8F6B', // coral
++    '#49BEFF', // sky blue
+   ],
+ };
+ 
+@@ -110,26 +143,26 @@ const Dashboard = () => {
+     setSummaryData(summary);
+   };
+ 
+-  // 处理数据以供折线图使用，补充缺失的日期
++  // Process data for the line chart, filling in missing dates
+   const processTimeSeriesData = () => {
+     const dailyData = {};
+ 
+-    // 获取日期范围
++    // Get date range
+     const dates = data.map((item) => item.Day);
+-    const maxDate = new Date(); // 总是使用今天作为最后一天
++    const maxDate = new Date(); // always use today as the last day
+     let minDate =
+       dates.length > 0
+         ? new Date(Math.min(...dates.map((d) => new Date(d))))
+         : new Date();
+ 
+-    // 确保至少显示7天的数据
++    // Ensure at least 7 days of data are shown
+     const sevenDaysAgo = new Date();
+-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6是因为包含今天
++    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6 because today is included
+     if (minDate > sevenDaysAgo) {
+       minDate = sevenDaysAgo;
+     }
+ 
+-    // 生成所有日期
++    // Generate all dates
+     for (let d = new Date(minDate); d <= maxDate; d.setDate(d.getDate() + 1)) {
+       const dateStr = d.toISOString().split('T')[0];
+       dailyData[dateStr] = {
+@@ -140,7 +173,7 @@ const Dashboard = () => {
+       };
+     }
+ 
+-    // 填充实际数据
++    // Fill in actual data
+     data.forEach((item) => {
+       dailyData[item.Day].requests += item.RequestCount;
+       dailyData[item.Day].quota += item.Quota / 1000000;
+@@ -152,40 +185,40 @@ const Dashboard = () => {
+     );
+   };
+ 
+-  // 处理数据以供堆叠柱状图使用
++  // Process data for the stacked bar chart
+   const processModelData = () => {
+     const timeData = {};
+ 
+-    // 获取日期范围
++    // Get date range
+     const dates = data.map((item) => item.Day);
+-    const maxDate = new Date(); // 总是使用今天作为最后一天
++    const maxDate = new Date(); // always use today as the last day
+     let minDate =
+       dates.length > 0
+         ? new Date(Math.min(...dates.map((d) => new Date(d))))
+         : new Date();
+ 
+-    // 确保至少显示7天的数据
++    // Ensure at least 7 days of data are shown
+     const sevenDaysAgo = new Date();
+-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6是因为包含今天
++    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // -6 because today is included
+     if (minDate > sevenDaysAgo) {
+       minDate = sevenDaysAgo;
+     }
+ 
+-    // 生成所有日期
++    // Generate all dates
+     for (let d = new Date(minDate); d <= maxDate; d.setDate(d.getDate() + 1)) {
+       const dateStr = d.toISOString().split('T')[0];
+       timeData[dateStr] = {
+         date: dateStr,
+       };
+ 
+-      // 初始化所有模型的数据为0
++      // Initialize all model data to 0
+       const models = [...new Set(data.map((item) => item.ModelName))];
+       models.forEach((model) => {
+         timeData[dateStr][model] = 0;
+       });
+     }
+ 
+-    // 填充实际数据
++    // Fill in actual data
+     data.forEach((item) => {
+       timeData[item.Day][item.ModelName] =
+         item.PromptTokens + item.CompletionTokens;
+@@ -194,30 +227,54 @@ const Dashboard = () => {
+     return Object.values(timeData).sort((a, b) => a.date.localeCompare(b.date));
+   };
+ 
+-  // 获取所有唯一的模型名称
++  // Get all unique model names
+   const getUniqueModels = () => {
+     return [...new Set(data.map((item) => item.ModelName))];
+   };
+ 
++  // Aggregate usage per model for the ranking table
++  const getModelSummary = () => {
++    const map = {};
++    data.forEach((item) => {
++      const name = item.ModelName || 'Unknown';
++      if (!map[name]) {
++        map[name] = {
++          model: name,
++          requests: 0,
++          inputTokens: 0,
++          outputTokens: 0,
++          totalTokens: 0,
++        };
++      }
++      map[name].requests += item.RequestCount || 0;
++      map[name].inputTokens += item.PromptTokens || 0;
++      map[name].outputTokens += item.CompletionTokens || 0;
++      map[name].totalTokens +=
++        (item.PromptTokens || 0) + (item.CompletionTokens || 0);
++    });
++    return Object.values(map).sort((a, b) => b.totalTokens - a.totalTokens);
++  };
++
+   const timeSeriesData = processTimeSeriesData();
+   const modelData = processModelData();
+   const models = getUniqueModels();
++  const modelSummary = getModelSummary();
+ 
+-  // 生成随机颜色
++  // Generate random colors
+   const getRandomColor = (index) => {
+     return chartConfig.barColors[index % chartConfig.barColors.length];
+   };
+ 
+-  // 添加一个日期格式化函数
++  // Add a date formatting function
+   const formatDate = (dateStr) => {
+     const date = new Date(dateStr);
+-    return date.toLocaleDateString('zh-CN', {
++    return date.toLocaleDateString('en-US', {
+       month: 'numeric',
+       day: 'numeric',
+     });
+   };
+ 
+-  // 修改所有 XAxis 配置
++  // Modify all XAxis configs
+   const xAxisConfig = {
+     dataKey: 'date',
+     axisLine: false,
+@@ -225,32 +282,80 @@ const Dashboard = () => {
+     tick: {
+       fontSize: 12,
+       fill: '#A3AED0',
+-      textAnchor: 'middle', // 文本居中对齐
++      textAnchor: 'middle', // center-align the text
+     },
+     tickFormatter: formatDate,
+     interval: 0,
+     minTickGap: 5,
+-    padding: { left: 30, right: 30 }, // 增加两侧的内边距，确保首尾标签完整显示
++    padding: { left: 30, right: 30 }, // increase padding on both sides to ensure the first/last labels are fully shown
+   };
+ 
+   return (
+     <div className='dashboard-container'>
+-      {/* 三个并排的折线图 */}
++      {/* today's stat cards */}
++      <div className='stat-cards'>
++        <div className='stat-card-modern stat-card-blue'>
++          <div className='stat-card-icon'>
++            <Icon name='paper plane' />
++          </div>
++          <div className='stat-card-info'>
++            <div className='stat-card-label'>
++              {t('dashboard.statistics.todayRequests')}
++            </div>
++            <div className='stat-card-value'>
++              {summaryData.todayRequests.toLocaleString()}
++            </div>
++          </div>
++        </div>
++        <div className='stat-card-modern stat-card-cyan'>
++          <div className='stat-card-icon'>
++            <Icon name='dollar sign' />
++          </div>
++          <div className='stat-card-info'>
++            <div className='stat-card-label'>
++              {t('dashboard.statistics.todayQuota')}
++            </div>
++            <div className='stat-card-value'>
++              ${summaryData.todayQuota.toFixed(2)}
++            </div>
++          </div>
++        </div>
++        <div className='stat-card-modern stat-card-purple'>
++          <div className='stat-card-icon'>
++            <Icon name='cube' />
++          </div>
++          <div className='stat-card-info'>
++            <div className='stat-card-label'>
++              {t('dashboard.statistics.todayTokens')}
++            </div>
++            <div className='stat-card-value'>
++              {summaryData.todayTokens.toLocaleString()}
++            </div>
++          </div>
++        </div>
++      </div>
++
++      {/* three side-by-side area charts */}
+       <Grid columns={3} stackable className='charts-grid'>
+         <Grid.Column>
+           <Card fluid className='chart-card'>
+             <Card.Content>
+               <Card.Header>
+                 {t('dashboard.charts.requests.title')}
+-                {/* <span className='stat-value'>{summaryData.todayRequests}</span> */}
+               </Card.Header>
+               <div className='chart-container'>
+                 <ResponsiveContainer
+                   width='100%'
+                   height={120}
+-                  margin={{ left: 10, right: 10 }} // 调整容器边距
++                  margin={{ left: 10, right: 10 }} // adjust container margins
+                 >
+-                  <LineChart data={timeSeriesData}>
++                  <AreaChart data={timeSeriesData}>
++                    <defs>
++                      <linearGradient id='gradRequests' x1='0' y1='0' x2='0' y2='1'>
++                        <stop offset='5%' stopColor={chartConfig.colors.requests} stopOpacity={0.35} />
++                        <stop offset='95%' stopColor={chartConfig.colors.requests} stopOpacity={0} />
++                      </linearGradient>
++                    </defs>
+                     <CartesianGrid
+                       strokeDasharray='3 3'
+                       vertical={chartConfig.lineChart.grid.vertical}
+@@ -260,31 +365,24 @@ const Dashboard = () => {
+                     <XAxis {...xAxisConfig} />
+                     <YAxis hide={true} />
+                     <Tooltip
+-                      contentStyle={{
+-                        background: '#fff',
+-                        border: 'none',
+-                        borderRadius: '4px',
+-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+-                      }}
+-                      formatter={(value) => [
+-                        value,
+-                        t('dashboard.charts.requests.tooltip'),
+-                      ]}
+-                      labelFormatter={(label) =>
+-                        `${t(
+-                          'dashboard.statistics.tooltip.date'
+-                        )}: ${formatDate(label)}`
++                      content={
++                        <ChartTooltip
++                          labelFormatter={fmtDateLabel}
++                          formatter={(v) => Number(v).toLocaleString()}
++                        />
+                       }
+                     />
+-                    <Line
++                    <Area
+                       type='monotone'
+                       dataKey='requests'
++                      name={t('dashboard.charts.requests.tooltip')}
+                       stroke={chartConfig.colors.requests}
+                       strokeWidth={chartConfig.lineChart.line.strokeWidth}
++                      fill='url(#gradRequests)'
+                       dot={chartConfig.lineChart.line.dot}
+                       activeDot={chartConfig.lineChart.line.activeDot}
+                     />
+-                  </LineChart>
++                  </AreaChart>
+                 </ResponsiveContainer>
+               </div>
+             </Card.Content>
+@@ -296,17 +394,20 @@ const Dashboard = () => {
+             <Card.Content>
+               <Card.Header>
+                 {t('dashboard.charts.quota.title')}
+-                {/* <span className='stat-value'>
+-                  ${summaryData.todayQuota.toFixed(3)}
+-                </span> */}
+               </Card.Header>
+               <div className='chart-container'>
+                 <ResponsiveContainer
+                   width='100%'
+                   height={120}
+-                  margin={{ left: 10, right: 10 }} // 调整容器边距
++                  margin={{ left: 10, right: 10 }} // adjust container margins
+                 >
+-                  <LineChart data={timeSeriesData}>
++                  <AreaChart data={timeSeriesData}>
++                    <defs>
++                      <linearGradient id='gradQuota' x1='0' y1='0' x2='0' y2='1'>
++                        <stop offset='5%' stopColor={chartConfig.colors.quota} stopOpacity={0.35} />
++                        <stop offset='95%' stopColor={chartConfig.colors.quota} stopOpacity={0} />
++                      </linearGradient>
++                    </defs>
+                     <CartesianGrid
+                       strokeDasharray='3 3'
+                       vertical={chartConfig.lineChart.grid.vertical}
+@@ -316,31 +417,24 @@ const Dashboard = () => {
+                     <XAxis {...xAxisConfig} />
+                     <YAxis hide={true} />
+                     <Tooltip
+-                      contentStyle={{
+-                        background: '#fff',
+-                        border: 'none',
+-                        borderRadius: '4px',
+-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+-                      }}
+-                      formatter={(value) => [
+-                        value.toFixed(6),
+-                        t('dashboard.charts.quota.tooltip'),
+-                      ]}
+-                      labelFormatter={(label) =>
+-                        `${t(
+-                          'dashboard.statistics.tooltip.date'
+-                        )}: ${formatDate(label)}`
++                      content={
++                        <ChartTooltip
++                          labelFormatter={fmtDateLabel}
++                          formatter={(v) => `$${Number(v).toFixed(6)}`}
++                        />
+                       }
+                     />
+-                    <Line
++                    <Area
+                       type='monotone'
+                       dataKey='quota'
++                      name={t('dashboard.charts.quota.tooltip')}
+                       stroke={chartConfig.colors.quota}
+                       strokeWidth={chartConfig.lineChart.line.strokeWidth}
++                      fill='url(#gradQuota)'
+                       dot={chartConfig.lineChart.line.dot}
+                       activeDot={chartConfig.lineChart.line.activeDot}
+                     />
+-                  </LineChart>
++                  </AreaChart>
+                 </ResponsiveContainer>
+               </div>
+             </Card.Content>
+@@ -352,15 +446,20 @@ const Dashboard = () => {
+             <Card.Content>
+               <Card.Header>
+                 {t('dashboard.charts.tokens.title')}
+-                {/* <span className='stat-value'>{summaryData.todayTokens}</span> */}
+               </Card.Header>
+               <div className='chart-container'>
+                 <ResponsiveContainer
+                   width='100%'
+                   height={120}
+-                  margin={{ left: 10, right: 10 }} // 调整容器边距
++                  margin={{ left: 10, right: 10 }} // adjust container margins
+                 >
+-                  <LineChart data={timeSeriesData}>
++                  <AreaChart data={timeSeriesData}>
++                    <defs>
++                      <linearGradient id='gradTokens' x1='0' y1='0' x2='0' y2='1'>
++                        <stop offset='5%' stopColor={chartConfig.colors.tokens} stopOpacity={0.35} />
++                        <stop offset='95%' stopColor={chartConfig.colors.tokens} stopOpacity={0} />
++                      </linearGradient>
++                    </defs>
+                     <CartesianGrid
+                       strokeDasharray='3 3'
+                       vertical={chartConfig.lineChart.grid.vertical}
+@@ -370,31 +469,24 @@ const Dashboard = () => {
+                     <XAxis {...xAxisConfig} />
+                     <YAxis hide={true} />
+                     <Tooltip
+-                      contentStyle={{
+-                        background: '#fff',
+-                        border: 'none',
+-                        borderRadius: '4px',
+-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+-                      }}
+-                      formatter={(value) => [
+-                        value,
+-                        t('dashboard.charts.tokens.tooltip'),
+-                      ]}
+-                      labelFormatter={(label) =>
+-                        `${t(
+-                          'dashboard.statistics.tooltip.date'
+-                        )}: ${formatDate(label)}`
++                      content={
++                        <ChartTooltip
++                          labelFormatter={fmtDateLabel}
++                          formatter={(v) => Number(v).toLocaleString()}
++                        />
+                       }
+                     />
+-                    <Line
++                    <Area
+                       type='monotone'
+                       dataKey='tokens'
++                      name={t('dashboard.charts.tokens.tooltip')}
+                       stroke={chartConfig.colors.tokens}
+                       strokeWidth={chartConfig.lineChart.line.strokeWidth}
++                      fill='url(#gradTokens)'
+                       dot={chartConfig.lineChart.line.dot}
+                       activeDot={chartConfig.lineChart.line.activeDot}
+                     />
+-                  </LineChart>
++                  </AreaChart>
+                 </ResponsiveContainer>
+               </div>
+             </Card.Content>
+@@ -402,7 +494,7 @@ const Dashboard = () => {
+         </Grid.Column>
+       </Grid>
+ 
+-      {/* 模型使用统计 */}
++      {/* model usage statistics */}
+       <Card fluid className='chart-card'>
+         <Card.Content>
+           <Card.Header>{t('dashboard.statistics.title')}</Card.Header>
+@@ -421,17 +513,7 @@ const Dashboard = () => {
+                   tick={{ fontSize: 12, fill: '#A3AED0' }}
+                 />
+                 <Tooltip
+-                  contentStyle={{
+-                    background: '#fff',
+-                    border: 'none',
+-                    borderRadius: '4px',
+-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+-                  }}
+-                  labelFormatter={(label) =>
+-                    `${t('dashboard.statistics.tooltip.date')}: ${formatDate(
+-                      label
+-                    )}`
+-                  }
++                  content={<ChartTooltip labelFormatter={fmtDateLabel} />}
+                 />
+                 <Legend
+                   wrapperStyle={{
+@@ -445,7 +527,8 @@ const Dashboard = () => {
+                     stackId='a'
+                     fill={getRandomColor(index)}
+                     name={model}
+-                    radius={[4, 4, 0, 0]}
++                    radius={[6, 6, 0, 0]}
++                    maxBarSize={40}
+                   />
+                 ))}
+               </BarChart>
+@@ -453,6 +536,79 @@ const Dashboard = () => {
+           </div>
+         </Card.Content>
+       </Card>
++
++      {/* model usage ranking */}
++      <Card fluid className='chart-card'>
++        <Card.Content>
++          <Card.Header>{t('dashboard.statistics.modelRanking')}</Card.Header>
++          <div className='chart-container model-ranking'>
++            {modelSummary.length === 0 ? (
++              <div className='model-ranking-empty'>
++                {t('dashboard.statistics.noData')}
++              </div>
++            ) : (
++              <Table basic='very' unstackable className='model-table'>
++                <Table.Header>
++                  <Table.Row>
++                    <Table.HeaderCell width={1}>#</Table.HeaderCell>
++                    <Table.HeaderCell>
++                      {t('dashboard.statistics.columns.model')}
++                    </Table.HeaderCell>
++                    <Table.HeaderCell textAlign='right'>
++                      {t('dashboard.statistics.columns.requests')}
++                    </Table.HeaderCell>
++                    <Table.HeaderCell textAlign='right'>
++                      {t('dashboard.statistics.columns.inputTokens')}
++                    </Table.HeaderCell>
++                    <Table.HeaderCell textAlign='right'>
++                      {t('dashboard.statistics.columns.outputTokens')}
++                    </Table.HeaderCell>
++                    <Table.HeaderCell textAlign='right'>
++                      {t('dashboard.statistics.columns.totalTokens')}
++                    </Table.HeaderCell>
++                  </Table.Row>
++                </Table.Header>
++                <Table.Body>
++                  {modelSummary.map((m, i) => (
++                    <Table.Row key={m.model}>
++                      <Table.Cell width={1}>
++                        <span
++                          className='model-rank'
++                          style={{ background: getRandomColor(i) }}
++                        >
++                          {i + 1}
++                        </span>
++                      </Table.Cell>
++                      <Table.Cell>
++                        <span className='model-name'>{m.model}</span>
++                        {i === 0 && (
++                          <span className='model-badge'>
++                            {t('dashboard.statistics.mostUsed')}
++                          </span>
++                        )}
++                      </Table.Cell>
++                      <Table.Cell textAlign='right'>
++                        {m.requests.toLocaleString()}
++                      </Table.Cell>
++                      <Table.Cell textAlign='right'>
++                        {m.inputTokens.toLocaleString()}
++                      </Table.Cell>
++                      <Table.Cell textAlign='right'>
++                        {m.outputTokens.toLocaleString()}
++                      </Table.Cell>
++                      <Table.Cell textAlign='right'>
++                        <span className='model-total'>
++                          {m.totalTokens.toLocaleString()}
++                        </span>
++                      </Table.Cell>
++                    </Table.Row>
++                  ))}
++                </Table.Body>
++              </Table>
++            )}
++          </div>
++        </Card.Content>
++      </Card>
+     </div>
+   );
+ };
+diff --git a/web/default/src/pages/NotFound/index.js b/web/default/src/pages/NotFound/index.js
+index f92dbc90..61f436de 100644
+--- a/web/default/src/pages/NotFound/index.js
++++ b/web/default/src/pages/NotFound/index.js
+@@ -4,8 +4,8 @@ import { Message } from 'semantic-ui-react';
+ const NotFound = () => (
+   <>
+     <Message negative>
+-      <Message.Header>页面不存在</Message.Header>
+-      <p>请检查你的浏览器地址是否正确</p>
++      <Message.Header>Page Not Found</Message.Header>
++      <p>Please check that the URL in your browser is correct</p>
+     </Message>
+   </>
+ );

@@ -2,10 +2,15 @@ body {
     margin: 0;
     padding-top: 55px;
     overflow-y: scroll;
+    overflow-x: hidden;
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, "Microsoft YaHei", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scrollbar-width: none;
+}
+
+html {
+    overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {
@@ -113,5 +118,17 @@ code {
 
   .stat-value {
     font-size: 0.9em !important;
+  }
+}
+
+/* 移动端覆盖，避免图表网格产生横向溢出 */
+@media screen and (max-width: 768px) {
+  .charts-grid {
+    margin: 0 !important;
+  }
+
+  .charts-grid .column {
+    padding: 0 !important;
+    margin-bottom: 0.75rem !important;
   }
 }
