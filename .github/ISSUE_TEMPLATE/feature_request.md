@@ -1,21 +1,21 @@
 ---
-name: 功能请求
-about: 使用简练详细的语言描述希望加入的新功能
+name: Feature Request
+about: Describe the new feature you would like added in concise and detailed language
 title: ''
 labels: enhancement
 assignees: ''
 
 ---
 
-**例行检查**
+**Routine Checks**
 
-[//]: # (方框内删除已有的空格，填 x 号)
-+ [ ] 我已确认目前没有类似 issue
-+ [ ] 我已确认我已升级到最新版本
-+ [ ] 我已完整查看过项目 README，已确定现有版本无法满足需求
-+ [ ] 我理解并愿意跟进此 issue，协助测试和提供反馈
-+ [ ] 我理解并认可上述内容，并理解项目维护者精力有限，**不遵循规则的 issue 可能会被无视或直接关闭**
+[//]: # (Remove the existing space in the box and fill in an x)
++ [ ] I have confirmed that there is no similar issue at present
++ [ ] I have confirmed that I have upgraded to the latest version
++ [ ] I have fully reviewed the project README and confirmed that the current version cannot meet my needs
++ [ ] I understand and am willing to follow up on this issue, assist with testing and provide feedback
++ [ ] I understand and agree with the above, and understand that the project maintainers have limited time, **issues that do not follow the rules may be ignored or closed directly**
 
-**功能描述**
+**Feature Description**
 
-**应用场景**
+**Use Case**

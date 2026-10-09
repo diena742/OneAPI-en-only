@@ -105,12 +105,12 @@ code {
 }
 
 
-/* 隐藏浏览器默认的滚动条 */
+/* hide the browser default scrollbar */
 body {
     overflow: hidden;
 }
 
-/* 自定义滚动条样式 */
+/* custom scrollbar styles */
 body::-webkit-scrollbar {
-    width: 0;  /* 隐藏滚动条的宽度 */
+    width: 0;  /* hide the scrollbar width */
 }

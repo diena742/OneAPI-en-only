@@ -1,10 +1,10 @@
-[//]: # (请按照以下格式关联 issue)
-[//]: # (请在提交 PR 前确认所提交的功能可用，需要附上截图，谢谢)
-[//]: # (项目维护者一般仅在周末处理 PR，因此如若未能及时回复希望能理解)
-[//]: # (开发者交流群：910657413)
-[//]: # (请在提交 PR 之前删除上面的注释)
+[//]: # (Please link the issue in the following format)
+[//]: # (Please confirm that the submitted feature works before submitting the PR, and attach screenshots. Thank you)
+[//]: # (Project maintainers generally only process PRs on weekends, so we hope you understand if there is no timely reply)
+[//]: # (Developer communication group: 910657413)
+[//]: # (Please delete the above comments before submitting the PR)
 
 close #issue_number
 
-我已确认该 PR 已自测通过，相关截图如下：
-（此处放上测试通过的截图，如果不涉及前端改动或从 UI 上无法看出，请放终端启动成功的截图）
+I have confirmed that this PR has passed self-testing, and the related screenshots are as follows:
+(Place the screenshots that passed testing here. If it does not involve frontend changes or the result cannot be seen from the UI, please attach a screenshot of the terminal starting successfully)

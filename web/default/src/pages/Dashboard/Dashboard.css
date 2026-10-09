@@ -1,9 +1,9 @@
 .dashboard-container {
     padding: 20px 24px 40px;
     background-color: #ffffff;
-    margin-top: -15px; /* 减小与导航栏的间距 */
-    max-width: 1600px;        /* 设置最大宽度 */
-    margin-left: auto;        /* 水平居中 */
+    margin-top: -15px; /* reduce the gap with the navigation bar */
+    max-width: 1600px;        /* set the maximum width */
+    margin-left: auto;        /* center horizontally */
     margin-right: auto;
 }
 
@@ -287,7 +287,7 @@
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
-    gap: 12px; /* 增加标题和数值之间的间距 */
+    gap: 12px; /* increase the spacing between the title and the value */
 }
 
 .stat-value {
@@ -297,15 +297,15 @@
     background: rgba(67, 24, 255, 0.1);
     padding: 4px 12px;
     border-radius: 8px;
-    white-space: nowrap; /* 防止数值换行 */
+    white-space: nowrap; /* prevent the value from wrapping */
     margin-left: 16px;
 }
 
-/* 优化图表响应式布局 */
+/* optimize the responsive chart layout */
 @media (max-width: 768px) {
     .dashboard-container {
-        padding: 12px 14px 32px;   /* 移动端也相应减小内边距 */
-        max-width: 100%;           /* 移动端占满全宽 */
+        padding: 12px 14px 32px;   /* reduce the padding on mobile */
+        max-width: 100%;           /* fill the full width on mobile */
         margin-top: 0;
     }
 
@@ -335,7 +335,7 @@
     }
 }
 
-/* 设置页面的 Tab 样式 */
+/* Tab styles for the settings page */
 .settings-tab {
     margin-top: 1rem !important;
     border-bottom: none !important;
