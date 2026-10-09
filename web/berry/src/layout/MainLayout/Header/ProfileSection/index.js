@@ -150,14 +150,14 @@ const ProfileSection = () => {
                       <ListItemIcon>
                         <IconUserScan stroke={1.5} size="1.3rem" />
                       </ListItemIcon>
-                      <ListItemText primary={<Typography variant="body2">设置</Typography>} />
+                      <ListItemText primary={<Typography variant="body2">Settings</Typography>} />
                     </ListItemButton>
 
                     <ListItemButton sx={{ borderRadius: `${customization.borderRadius}px` }} onClick={handleLogout}>
                       <ListItemIcon>
                         <IconLogout stroke={1.5} size="1.3rem" />
                       </ListItemIcon>
-                      <ListItemText primary={<Typography variant="body2">登出</Typography>} />
+                      <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
                     </ListItemButton>
                   </List>
                 </MainCard>

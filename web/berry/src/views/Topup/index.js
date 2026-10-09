@@ -8,7 +8,7 @@ const Topup = () => {
     <Grid container spacing={2}>
       <Grid xs={12}>
         <Alert severity="warning">
-          充值记录以及邀请记录请在日志中查询。充值记录请在日志中选择类型【充值】查询；邀请记录请在日志中选择【系统】查询{' '}
+          Please check top-up records and invite records in the logs. For top-up records, select type [Top-up] in the logs; for invite records, select [System] in the logs{' '}
         </Alert>
       </Grid>
       <Grid xs={12} md={6} lg={8}>

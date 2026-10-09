@@ -38,21 +38,21 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const filter = createFilterOptions();
 const validationSchema = Yup.object().shape({
   is_edit: Yup.boolean(),
-  name: Yup.string().required('名称 不能为空'),
-  type: Yup.number().required('渠道 不能为空'),
+  name: Yup.string().required('Name cannot be empty'),
+  type: Yup.number().required('Channel cannot be empty'),
   key: Yup.string().when(['is_edit', 'type'], {
     is: (is_edit, type) => !is_edit && type !== 33,
-    then: Yup.string().required('密钥 不能为空')
+    then: Yup.string().required('Key cannot be empty')
   }),
   other: Yup.string(),
-  models: Yup.array().min(1, '模型 不能为空'),
-  groups: Yup.array().min(1, '用户组 不能为空'),
+  models: Yup.array().min(1, 'Model cannot be empty'),
+  groups: Yup.array().min(1, 'User group cannot be empty'),
   base_url: Yup.string().when('type', {
     is: (value) => [3, 8].includes(value),
-    then: Yup.string().required('渠道API地址 不能为空'), // base_url 是必需的
-    otherwise: Yup.string() // 在其他情况下，base_url 可以是任意字符串
+    then: Yup.string().required('Channel API URL cannot be empty'), // base_url is required
+    otherwise: Yup.string() // In other cases, base_url can be any string
   }),
-  model_mapping: Yup.string().test('is-json', '必须是有效的JSON字符串', function (value) {
+  model_mapping: Yup.string().test('is-json', 'Must be a valid JSON string', function (value) {
     try {
       if (value === '' || value === null || value === undefined) {
         return true;
@@ -126,10 +126,10 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
       const { data } = res.data;
       data.forEach((item) => {
         if (!item.owned_by) {
-          item.owned_by = '未知';
+          item.owned_by = 'Unknown';
         }
       });
-      // 先对data排序
+      // Sort the data first
       data.sort((a, b) => {
         const ownedByComparison = a.owned_by.localeCompare(b.owned_by);
         if (ownedByComparison === 0) {
@@ -187,9 +187,9 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
     const { success, message } = res.data;
     if (success) {
       if (channelId) {
-        showSuccess('渠道更新成功！');
+        showSuccess('Channel updated successfully!');
       } else {
-        showSuccess('渠道创建成功！');
+        showSuccess('Channel created successfully!');
       }
       setSubmitting(false);
       setStatus({ success: true });
@@ -206,7 +206,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
       return [];
     }
 
-    // 如果 channelModel 是一个字符串
+    // If channelModel is a string
     if (typeof channelModel === 'string') {
       channelModel = channelModel.split(',');
     }
@@ -215,7 +215,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
       if (modelOption) {
         return modelOption;
       }
-      return { id: model, group: '自定义：点击或回车输入' };
+      return { id: model, group: 'Custom: click or press Enter to input' };
     });
     return modelList;
   }
@@ -277,7 +277,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
           fontSize: '1.125rem'
         }}
       >
-        {channelId ? '编辑渠道' : '新建渠道'}
+        {channelId ? 'Edit Channel' : 'New Channel'}
       </DialogTitle>
       <Divider />
       <DialogContent>
@@ -433,7 +433,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
                     const event = {
                       target: {
                         name: 'models',
-                        value: value.map((item) => (typeof item === 'string' ? { id: item, group: '自定义：点击或回车输入' } : item))
+                        value: value.map((item) => (typeof item === 'string' ? { id: item, group: 'Custom: click or press Enter to input' } : item))
                       }
                     };
                     handleChange(event);
@@ -459,7 +459,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
                     if (inputValue !== '' && !isExisting) {
                       filtered.push({
                         id: inputValue,
-                        group: '自定义：点击或回车输入'
+                        group: 'Custom: click or press Enter to input'
                       });
                     }
                     return filtered;
@@ -490,14 +490,14 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
                       setFieldValue('models', initialModel(basicModels));
                     }}
                   >
-                    填入相关模型
+                    Fill with related models
                   </Button>
                   <Button
                     onClick={() => {
                       setFieldValue('models', modelOptions);
                     }}
                   >
-                    填入所有模型
+                    Fill with all models
                   </Button>
                 </ButtonGroup>
               </Container>
@@ -530,7 +530,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
                         onChange={handleChange}
                         aria-describedby="helper-text-channel-key-label"
                         minRows={5}
-                        placeholder={inputPrompt.key + '，一行一个密钥'}
+                        placeholder={inputPrompt.key + ', one key per line'}
                       />
                     )}
 
@@ -549,7 +549,7 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
                       }}
                     >
                       <Switch checked={batchAdd} onChange={(e) => setBatchAdd(e.target.checked)} />
-                      批量添加
+                      Batch Add
                     </Container>
                   )}
                 </>
@@ -618,9 +618,9 @@ const EditModal = ({ open, channelId, onCancel, onOk }) => {
                 )}
               </FormControl>
               <DialogActions>
-                <Button onClick={onCancel}>取消</Button>
+                <Button onClick={onCancel}>Cancel</Button>
                 <Button disableElevation disabled={isSubmitting} type="submit" variant="contained" color="primary">
-                  提交
+                  Submit
                 </Button>
               </DialogActions>
             </form>

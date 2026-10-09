@@ -20,7 +20,7 @@ export function SnackbarHTMLContent({htmlContent}) {
 export function getSnackbarOptions(variant) {
     let options = snackbarConstants.Common[variant];
     if (isMobile()) {
-        // 合并 options 和 snackbarConstants.Mobile
+        // Merge options and snackbarConstants.Mobile
         options = {...options, ...snackbarConstants.Mobile};
     }
     return options;
@@ -31,21 +31,21 @@ export function showError(error) {
         if (error.name === 'AxiosError') {
             switch (error.response.status) {
                 case 429:
-                    enqueueSnackbar('错误：请求次数过多，请稍后再试！', getSnackbarOptions('ERROR'));
+                    enqueueSnackbar('Error: Too many requests, please try again later!', getSnackbarOptions('ERROR'));
                     break;
                 case 500:
-                    enqueueSnackbar('错误：服务器内部错误，请联系管理员！', getSnackbarOptions('ERROR'));
+                    enqueueSnackbar('Error: Internal server error, please contact the administrator!', getSnackbarOptions('ERROR'));
                     break;
                 case 405:
-                    enqueueSnackbar('本站仅作演示之用，无服务端！', getSnackbarOptions('INFO'));
+                    enqueueSnackbar('This site is for demonstration purposes only, no backend available!', getSnackbarOptions('INFO'));
                     break;
                 default:
-                    enqueueSnackbar('错误：' + error.message, getSnackbarOptions('ERROR'));
+                    enqueueSnackbar('Error: ' + error.message, getSnackbarOptions('ERROR'));
             }
             return;
         }
     } else {
-        enqueueSnackbar('错误：' + error, getSnackbarOptions('ERROR'));
+        enqueueSnackbar('Error: ' + error, getSnackbarOptions('ERROR'));
     }
 }
 
@@ -186,7 +186,7 @@ export function renderQuotaWithPrompt(quota, digits) {
     let displayInCurrency = localStorage.getItem('display_in_currency');
     displayInCurrency = displayInCurrency === 'true';
     if (displayInCurrency) {
-        return `（等价金额：${renderQuota(quota, digits)}）`;
+        return `(Equivalent amount: ${renderQuota(quota, digits)})`;
     }
     return '';
 }
@@ -238,9 +238,9 @@ export function getChannelModels(type) {
 export function copy(text, name = '') {
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-            showNotice(`复制${name}成功！`, true);
+            showNotice(`Copied ${name} successfully!`, true);
         }, () => {
-            text = `复制${name}失败，请手动复制：<br /><br />${text}`;
+            text = `Failed to copy ${name}, please copy manually: <br /><br />${text}`;
             enqueueSnackbar(<SnackbarHTMLContent htmlContent={text}/>, getSnackbarOptions('COPY'));
         });
     } else {
@@ -250,9 +250,9 @@ export function copy(text, name = '') {
         textArea.select();
         try {
             document.execCommand('copy');
-            showNotice(`复制${name}成功！`, true);
+            showNotice(`Copied ${name} successfully!`, true);
         } catch (err) {
-            text = `复制${name}失败，请手动复制：<br /><br />${text}`;
+            text = `Failed to copy ${name}, please copy manually: <br /><br />${text}`;
             enqueueSnackbar(<SnackbarHTMLContent htmlContent={text}/>, getSnackbarOptions('COPY'));
         }
         document.body.removeChild(textArea);

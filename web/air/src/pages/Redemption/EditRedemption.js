@@ -69,11 +69,11 @@ const EditRedemption = (props) => {
     const { success, message, data } = res.data;
     if (success) {
       if (isEdit) {
-        showSuccess('兑换码更新成功！');
+        showSuccess('Redemption code updated successfully!');
         props.refresh();
         props.handleClose();
       } else {
-        showSuccess('兑换码创建成功！');
+        showSuccess('Redemption code created successfully!');
         setInputs(originInputs);
         props.refresh();
         props.handleClose();
@@ -88,11 +88,11 @@ const EditRedemption = (props) => {
       }
       // downloadTextAsFile(text, `${inputs.name}.txt`);
       Modal.confirm({
-        title: '兑换码创建成功',
+        title: 'Redemption Code Created Successfully',
         content: (
           <div>
-            <p>兑换码创建成功，是否下载兑换码？</p>
-            <p>兑换码将以文本文件的形式下载，文件名为兑换码的名称。</p>
+            <p>The redemption code was created successfully. Would you like to download it?</p>
+            <p>The redemption code will be downloaded as a text file, named after the redemption code.</p>
           </div>
         ),
         onOk: () => {
@@ -107,15 +107,15 @@ const EditRedemption = (props) => {
     <>
       <SideSheet
         placement={isEdit ? 'right' : 'left'}
-        title={<Title level={3}>{isEdit ? '更新兑换码信息' : '创建新的兑换码'}</Title>}
+        title={<Title level={3}>{isEdit ? 'Update Redemption Code' : 'Create New Redemption Code'}</Title>}
         headerStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
         bodyStyle={{ borderBottom: '1px solid var(--semi-color-border)' }}
         visible={props.visiable}
         footer={
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Space>
-              <Button theme="solid" size={'large'} onClick={submit}>提交</Button>
-              <Button theme="solid" size={'large'} type={'tertiary'} onClick={handleCancel}>取消</Button>
+              <Button theme="solid" size={'large'} onClick={submit}>Submit</Button>
+              <Button theme="solid" size={'large'} type={'tertiary'} onClick={handleCancel}>Cancel</Button>
             </Space>
           </div>
         }
@@ -126,9 +126,9 @@ const EditRedemption = (props) => {
         <Spin spinning={loading}>
           <Input
             style={{ marginTop: 20 }}
-            label="名称"
+            label="Name"
             name="name"
-            placeholder={'请输入名称'}
+            placeholder={'Please enter a name'}
             onChange={value => handleInputChange('name', value)}
             value={name}
             autoComplete="new-password"
@@ -136,12 +136,12 @@ const EditRedemption = (props) => {
           />
           <Divider />
           <div style={{ marginTop: 20 }}>
-            <Typography.Text>{`额度${renderQuotaWithPrompt(quota)}`}</Typography.Text>
+            <Typography.Text>{`Quota ${renderQuotaWithPrompt(quota)}`}</Typography.Text>
           </div>
           <AutoComplete
             style={{ marginTop: 8 }}
             name="quota"
-            placeholder={'请输入额度'}
+            placeholder={'Please enter the quota'}
             onChange={(value) => handleInputChange('quota', value)}
             value={quota}
             autoComplete="new-password"
@@ -159,12 +159,12 @@ const EditRedemption = (props) => {
           {
             !isEdit && <>
               <Divider />
-              <Typography.Text>生成数量</Typography.Text>
+              <Typography.Text>Generation Count</Typography.Text>
               <Input
                 style={{ marginTop: 8 }}
-                label="生成数量"
+                label="Generation Count"
                 name="count"
-                placeholder={'请输入生成数量'}
+                placeholder={'Please enter the generation count'}
                 onChange={value => handleInputChange('count', value)}
                 value={count}
                 autoComplete="new-password"

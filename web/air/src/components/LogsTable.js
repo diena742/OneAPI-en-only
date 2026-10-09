@@ -14,32 +14,32 @@ function renderTimestamp(timestamp) {
   </>);
 }
 
-const MODE_OPTIONS = [{ key: 'all', text: '全部用户', value: 'all' }, { key: 'self', text: '当前用户', value: 'self' }];
+const MODE_OPTIONS = [{ key: 'all', text: 'All Users', value: 'all' }, { key: 'self', text: 'Current User', value: 'self' }];
 
 const colors = ['amber', 'blue', 'cyan', 'green', 'grey', 'indigo', 'light-blue', 'lime', 'orange', 'pink', 'purple', 'red', 'teal', 'violet', 'yellow'];
 
 function renderType(type) {
   switch (type) {
     case 1:
-      return <Tag color="cyan" size="large"> 充值 </Tag>;
+      return <Tag color="cyan" size="large"> Top-up </Tag>;
     case 2:
-      return <Tag color="lime" size="large"> 消费 </Tag>;
+      return <Tag color="lime" size="large"> Consumption </Tag>;
     case 3:
-      return <Tag color="orange" size="large"> 管理 </Tag>;
+      return <Tag color="orange" size="large"> Administration </Tag>;
     case 4:
-      return <Tag color="purple" size="large"> 系统 </Tag>;
+      return <Tag color="purple" size="large"> System </Tag>;
     case 5:
-      return <Tag color="violet" size="large"> 测试 </Tag>;
+      return <Tag color="violet" size="large"> Test </Tag>;
     default:
-      return <Tag color="black" size="large"> 未知 </Tag>;
+      return <Tag color="black" size="large"> Unknown </Tag>;
   }
 }
 
 function renderIsStream(bool) {
   if (bool) {
-    return <Tag color="blue" size="large">流</Tag>;
+    return <Tag color="blue" size="large">Stream</Tag>;
   } else {
-    return <Tag color="purple" size="large">非流</Tag>;
+    return <Tag color="purple" size="large">Non-stream</Tag>;
   }
 }
 
@@ -56,9 +56,9 @@ function renderUseTime(type) {
 
 const LogsTable = () => {
   const columns = [{
-    title: '时间', dataIndex: 'timestamp2string'
+    title: 'Time', dataIndex: 'timestamp2string'
   }, {
-    title: '渠道',
+    title: 'Channel',
     dataIndex: 'channel',
     className: isAdmin() ? 'tableShow' : 'tableHiddle',
     render: (text, record, index) => {
@@ -67,7 +67,7 @@ const LogsTable = () => {
       </div> : <></> : <></>);
     }
   }, {
-    title: '用户',
+    title: 'User',
     dataIndex: 'username',
     className: isAdmin() ? 'tableShow' : 'tableHiddle',
     render: (text, record, index) => {
@@ -80,7 +80,7 @@ const LogsTable = () => {
       </div> : <></>);
     }
   }, {
-    title: '令牌', dataIndex: 'token_name', render: (text, record, index) => {
+    title: 'Token', dataIndex: 'token_name', render: (text, record, index) => {
       return (record.type === 0 || record.type === 2 ? <div>
         <Tag color="grey" size="large" onClick={() => {
           copyText(text);
@@ -88,13 +88,13 @@ const LogsTable = () => {
       </div> : <></>);
     }
   }, {
-    title: '类型', dataIndex: 'type', render: (text, record, index) => {
+    title: 'Type', dataIndex: 'type', render: (text, record, index) => {
       return (<div>
         {renderType(text)}
       </div>);
     }
   }, {
-    title: '模型', dataIndex: 'model_name', render: (text, record, index) => {
+    title: 'Model', dataIndex: 'model_name', render: (text, record, index) => {
       return (record.type === 0 || record.type === 2 ? <div>
         <Tag color={stringToColor(text)} size="large" onClick={() => {
           copyText(text);
@@ -103,7 +103,7 @@ const LogsTable = () => {
     }
   },
   // {
-  //   title: '用时', dataIndex: 'use_time', render: (text, record, index) => {
+  //   title: 'Duration', dataIndex: 'use_time', render: (text, record, index) => {
   //     return (<div>
   //       <Space>
   //         {renderUseTime(text)}
@@ -113,25 +113,25 @@ const LogsTable = () => {
   //   }
   // },
   {
-    title: '提示', dataIndex: 'prompt_tokens', render: (text, record, index) => {
+    title: 'Prompt', dataIndex: 'prompt_tokens', render: (text, record, index) => {
       return (record.type === 0 || record.type === 2 ? <div>
         {<span> {text} </span>}
       </div> : <></>);
     }
   }, {
-    title: '补全', dataIndex: 'completion_tokens', render: (text, record, index) => {
+    title: 'Completion', dataIndex: 'completion_tokens', render: (text, record, index) => {
       return (parseInt(text) > 0 && (record.type === 0 || record.type === 2) ? <div>
         {<span> {text} </span>}
       </div> : <></>);
     }
   }, {
-    title: '花费', dataIndex: 'quota', render: (text, record, index) => {
+    title: 'Cost', dataIndex: 'quota', render: (text, record, index) => {
       return (record.type === 0 || record.type === 2 ? <div>
         {renderQuota(text, 6)}
       </div> : <></>);
     }
   }, {
-    title: '详情', dataIndex: 'content', render: (text, record, index) => {
+    title: 'Details', dataIndex: 'content', render: (text, record, index) => {
       return <Paragraph ellipsis={{ rows: 2, showTooltip: { type: 'popover', opts: { style: { width: 240 } } } }}
         style={{ maxWidth: 240 }}>
         {text}
@@ -151,7 +151,7 @@ const LogsTable = () => {
   const [logType, setLogType] = useState(0);
   const isAdminUser = isAdmin();
   let now = new Date();
-  // 初始化start_timestamp为前一天
+  // Initialize start_timestamp to the previous day
   const [inputs, setInputs] = useState({
     username: '',
     token_name: '',
@@ -213,11 +213,11 @@ const LogsTable = () => {
     const { success, message, data } = res.data;
     if (success) {
       Modal.info({
-        title: '用户信息', content: <div style={{ padding: 12 }}>
-          <p>用户名: {data.username}</p>
-          <p>余额: {renderQuota(data.quota)}</p>
-          <p>已用额度：{renderQuota(data.used_quota)}</p>
-          <p>请求次数：{renderNumber(data.request_count)}</p>
+        title: 'User Info', content: <div style={{ padding: 12 }}>
+          <p>Username: {data.username}</p>
+          <p>Balance: {renderQuota(data.quota)}</p>
+          <p>Used quota: {renderQuota(data.used_quota)}</p>
+          <p>Request count: {renderNumber(data.request_count)}</p>
         </div>, centered: true
       });
     } else {
@@ -293,10 +293,10 @@ const LogsTable = () => {
 
   const copyText = async (text) => {
     if (await copy(text)) {
-      showSuccess('已复制：' + text);
+      showSuccess('Copied: ' + text);
     } else {
       // setSearchKeyword(text);
-      Modal.error({ title: '无法复制到剪贴板，请手动复制', content: text });
+      Modal.error({ title: 'Unable to copy to clipboard, please copy manually', content: text });
     }
   };
 
@@ -334,44 +334,44 @@ const LogsTable = () => {
     <Layout>
       <Header>
         <Spin spinning={loadingStat}>
-          <h3>使用明细（总消耗额度：
+          <h3>Usage Details (Total consumption:
             <span onClick={handleEyeClick} style={{
               cursor: 'pointer', color: 'gray'
-            }}>{showStat ? renderQuota(stat.quota) : '点击查看'}</span>
-            ）
+            }}>{showStat ? renderQuota(stat.quota) : 'Click to view'}</span>
+            )
           </h3>
         </Spin>
       </Header>
       <Form layout="horizontal" style={{ marginTop: 10 }}>
         <>
-          <Form.Input field="token_name" label="令牌名称" style={{ width: 176 }} value={token_name}
-            placeholder={'可选值'} name="token_name"
+          <Form.Input field="token_name" label="Token Name" style={{ width: 176 }} value={token_name}
+            placeholder={'Optional'} name="token_name"
             onChange={value => handleInputChange(value, 'token_name')} />
-          <Form.Input field="model_name" label="模型名称" style={{ width: 176 }} value={model_name}
-            placeholder="可选值"
+          <Form.Input field="model_name" label="Model Name" style={{ width: 176 }} value={model_name}
+            placeholder="Optional"
             name="model_name"
             onChange={value => handleInputChange(value, 'model_name')} />
-          <Form.DatePicker field="start_timestamp" label="起始时间" style={{ width: 272 }}
+          <Form.DatePicker field="start_timestamp" label="Start Time" style={{ width: 272 }}
             initValue={start_timestamp}
             value={start_timestamp} type="dateTime"
             name="start_timestamp"
             onChange={value => handleInputChange(value, 'start_timestamp')} />
-          <Form.DatePicker field="end_timestamp" fluid label="结束时间" style={{ width: 272 }}
+          <Form.DatePicker field="end_timestamp" fluid label="End Time" style={{ width: 272 }}
             initValue={end_timestamp}
             value={end_timestamp} type="dateTime"
             name="end_timestamp"
             onChange={value => handleInputChange(value, 'end_timestamp')} />
           {isAdminUser && <>
-            <Form.Input field="channel" label="渠道 ID" style={{ width: 176 }} value={channel}
-              placeholder="可选值" name="channel"
+            <Form.Input field="channel" label="Channel ID" style={{ width: 176 }} value={channel}
+              placeholder="Optional" name="channel"
               onChange={value => handleInputChange(value, 'channel')} />
-            <Form.Input field="username" label="用户名称" style={{ width: 176 }} value={username}
-              placeholder={'可选值'} name="username"
+            <Form.Input field="username" label="User Name" style={{ width: 176 }} value={username}
+              placeholder={'Optional'} name="username"
               onChange={value => handleInputChange(value, 'username')} />
           </>}
           <Form.Section>
-            <Button label="查询" type="primary" htmlType="submit" className="btn-margin-right"
-              onClick={refresh} loading={loading}>查询</Button>
+            <Button label="Search" type="primary" htmlType="submit" className="btn-margin-right"
+              onClick={refresh} loading={loading}>Search</Button>
           </Form.Section>
         </>
       </Form>
@@ -390,11 +390,11 @@ const LogsTable = () => {
         setLogType(parseInt(value));
         refresh(parseInt(value)).then();
       }}>
-        <Select.Option value="0">全部</Select.Option>
-        <Select.Option value="1">充值</Select.Option>
-        <Select.Option value="2">消费</Select.Option>
-        <Select.Option value="3">管理</Select.Option>
-        <Select.Option value="4">系统</Select.Option>
+        <Select.Option value="0">All</Select.Option>
+        <Select.Option value="1">Top-up</Select.Option>
+        <Select.Option value="2">Consumption</Select.Option>
+        <Select.Option value="3">Administration</Select.Option>
+        <Select.Option value="4">System</Select.Option>
       </Select>
     </Layout>
   </>);

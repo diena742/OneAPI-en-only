@@ -16,7 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
-require("dayjs/locale/zh-cn");
+require("dayjs/locale/en");
 
 const OperationSetting = () => {
   let now = new Date();
@@ -95,7 +95,7 @@ const OperationSetting = () => {
 
     if (name.endsWith("Enabled")) {
       await updateOption(name, value);
-      showSuccess("设置成功！");
+      showSuccess("Settings saved successfully!");
     } else {
       setInputs((inputs) => ({ ...inputs, [name]: value }));
     }
@@ -125,21 +125,21 @@ const OperationSetting = () => {
       case "ratio":
         if (originInputs["ModelRatio"] !== inputs.ModelRatio) {
           if (!verifyJSON(inputs.ModelRatio)) {
-            showError("模型倍率不是合法的 JSON 字符串");
+            showError("Model ratio is not a valid JSON string");
             return;
           }
           await updateOption("ModelRatio", inputs.ModelRatio);
         }
         if (originInputs["GroupRatio"] !== inputs.GroupRatio) {
           if (!verifyJSON(inputs.GroupRatio)) {
-            showError("分组倍率不是合法的 JSON 字符串");
+            showError("Group ratio is not a valid JSON string");
             return;
           }
           await updateOption("GroupRatio", inputs.GroupRatio);
         }
         if (originInputs['CompletionRatio'] !== inputs.CompletionRatio) {
           if (!verifyJSON(inputs.CompletionRatio)) {
-            showError('补全倍率不是合法的 JSON 字符串');
+            showError('Completion ratio is not a valid JSON string');
             return;
           }
           await updateOption('CompletionRatio', inputs.CompletionRatio);
@@ -175,7 +175,7 @@ const OperationSetting = () => {
         break;
     }
 
-    showSuccess("保存成功！");
+    showSuccess("Saved successfully!");
   };
 
   const deleteHistoryLogs = async () => {
@@ -184,65 +184,65 @@ const OperationSetting = () => {
     );
     const { success, message, data } = res.data;
     if (success) {
-      showSuccess(`${data} 条日志已清理！`);
+      showSuccess(`${data} logs cleaned up!`);
       return;
     }
-    showError("日志清理失败：" + message);
+    showError("Log cleanup failed: " + message);
   };
 
   return (
     <Stack spacing={2}>
-      <SubCard title="通用设置">
+      <SubCard title="General Settings">
         <Stack justifyContent="flex-start" alignItems="flex-start" spacing={2}>
           <Stack
             direction={{ sm: "column", md: "row" }}
             spacing={{ xs: 3, sm: 2, md: 4 }}
           >
             <FormControl fullWidth>
-              <InputLabel htmlFor="TopUpLink">充值链接</InputLabel>
+              <InputLabel htmlFor="TopUpLink">Top-Up Link</InputLabel>
               <OutlinedInput
                 id="TopUpLink"
                 name="TopUpLink"
                 value={inputs.TopUpLink}
                 onChange={handleInputChange}
-                label="充值链接"
-                placeholder="例如发卡网站的购买链接"
+                label="Top-Up Link"
+                placeholder="e.g. the purchase link of the card-selling website"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor="ChatLink">聊天链接</InputLabel>
+              <InputLabel htmlFor="ChatLink">Chat Link</InputLabel>
               <OutlinedInput
                 id="ChatLink"
                 name="ChatLink"
                 value={inputs.ChatLink}
                 onChange={handleInputChange}
-                label="聊天链接"
-                placeholder="例如 ChatGPT Next Web 的部署地址"
+                label="Chat Link"
+                placeholder="e.g. the deployment address of ChatGPT Next Web"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor="QuotaPerUnit">单位额度</InputLabel>
+              <InputLabel htmlFor="QuotaPerUnit">Quota Per Unit</InputLabel>
               <OutlinedInput
                 id="QuotaPerUnit"
                 name="QuotaPerUnit"
                 value={inputs.QuotaPerUnit}
                 onChange={handleInputChange}
-                label="单位额度"
-                placeholder="一单位货币能兑换的额度"
+                label="Quota Per Unit"
+                placeholder="The quota one unit of currency can redeem"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor="RetryTimes">重试次数</InputLabel>
+              <InputLabel htmlFor="RetryTimes">Retry Times</InputLabel>
               <OutlinedInput
                 id="RetryTimes"
                 name="RetryTimes"
                 value={inputs.RetryTimes}
                 onChange={handleInputChange}
-                label="重试次数"
-                placeholder="重试次数"
+                label="Retry Times"
+                placeholder="Retry times"
                 disabled={loading}
               />
             </FormControl>
@@ -255,7 +255,7 @@ const OperationSetting = () => {
           >
             <FormControlLabel
               sx={{ marginLeft: "0px" }}
-              label="以货币形式显示额度"
+              label="Display quota in currency"
               control={
                 <Checkbox
                   checked={inputs.DisplayInCurrencyEnabled === "true"}
@@ -266,7 +266,7 @@ const OperationSetting = () => {
             />
 
             <FormControlLabel
-              label="Billing 相关 API 显示令牌额度而非用户额度"
+              label="Billing-related APIs show token quota instead of user quota"
               control={
                 <Checkbox
                   checked={inputs.DisplayTokenStatEnabled === "true"}
@@ -277,7 +277,7 @@ const OperationSetting = () => {
             />
 
             <FormControlLabel
-              label="使用近似的方式估算 token 数以减少计算量"
+              label="Use an approximate method to estimate token count to reduce computation"
               control={
                 <Checkbox
                   checked={inputs.ApproximateTokenEnabled === "true"}
@@ -293,11 +293,11 @@ const OperationSetting = () => {
               submitConfig("general").then();
             }}
           >
-            保存通用设置
+            Save General Settings
           </Button>
         </Stack>
       </SubCard>
-      <SubCard title="日志设置">
+      <SubCard title="Log Settings">
         <Stack
           direction="column"
           justifyContent="flex-start"
@@ -305,7 +305,7 @@ const OperationSetting = () => {
           spacing={2}
         >
           <FormControlLabel
-            label="启用日志消费"
+            label="Enable log consumption"
             control={
               <Checkbox
                 checked={inputs.LogConsumeEnabled === "true"}
@@ -318,11 +318,11 @@ const OperationSetting = () => {
           <FormControl>
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
-              adapterLocale={"zh-cn"}
+              adapterLocale={'en'}
             >
               <DateTimePicker
-                label="日志清理时间"
-                placeholder="日志清理时间"
+                label="Log cleanup time"
+                placeholder="Log cleanup time"
                 ampm={false}
                 name="historyTimestamp"
                 value={
@@ -350,11 +350,11 @@ const OperationSetting = () => {
               deleteHistoryLogs().then();
             }}
           >
-            清理历史日志
+            Clean Up History Logs
           </Button>
         </Stack>
       </SubCard>
-      <SubCard title="监控设置">
+      <SubCard title="Monitoring Settings">
         <Stack justifyContent="flex-start" alignItems="flex-start" spacing={2}>
           <Stack
             direction={{ sm: "column", md: "row" }}
@@ -362,7 +362,7 @@ const OperationSetting = () => {
           >
             <FormControl fullWidth>
               <InputLabel htmlFor="ChannelDisableThreshold">
-                最长响应时间
+                Max Response Time
               </InputLabel>
               <OutlinedInput
                 id="ChannelDisableThreshold"
@@ -370,14 +370,14 @@ const OperationSetting = () => {
                 type="number"
                 value={inputs.ChannelDisableThreshold}
                 onChange={handleInputChange}
-                label="最长响应时间"
-                placeholder="单位秒，当运行渠道全部测试时，超过此时间将自动禁用渠道"
+                label="Max Response Time"
+                placeholder="In seconds. When running all channel tests, channels exceeding this time will be automatically disabled"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
               <InputLabel htmlFor="QuotaRemindThreshold">
-                额度提醒阈值
+                Quota Reminder Threshold
               </InputLabel>
               <OutlinedInput
                 id="QuotaRemindThreshold"
@@ -385,14 +385,14 @@ const OperationSetting = () => {
                 type="number"
                 value={inputs.QuotaRemindThreshold}
                 onChange={handleInputChange}
-                label="额度提醒阈值"
-                placeholder="低于此额度时将发送邮件提醒用户"
+                label="Quota Reminder Threshold"
+                placeholder="An email reminder will be sent to the user when quota falls below this threshold"
                 disabled={loading}
               />
             </FormControl>
           </Stack>
           <FormControlLabel
-            label="失败时自动禁用渠道"
+            label="Automatically disable channels on failure"
             control={
               <Checkbox
                 checked={inputs.AutomaticDisableChannelEnabled === "true"}
@@ -402,7 +402,7 @@ const OperationSetting = () => {
             }
           />
           <FormControlLabel
-            label="成功时自动启用渠道"
+            label="Automatically enable channels on success"
             control={
               <Checkbox
                 checked={inputs.AutomaticEnableChannelEnabled === "true"}
@@ -417,70 +417,70 @@ const OperationSetting = () => {
               submitConfig("monitor").then();
             }}
           >
-            保存监控设置
+            Save Monitoring Settings
           </Button>
         </Stack>
       </SubCard>
-      <SubCard title="额度设置">
+      <SubCard title="Quota Settings">
         <Stack justifyContent="flex-start" alignItems="flex-start" spacing={2}>
           <Stack
             direction={{ sm: "column", md: "row" }}
             spacing={{ xs: 3, sm: 2, md: 4 }}
           >
             <FormControl fullWidth>
-              <InputLabel htmlFor="QuotaForNewUser">新用户初始额度</InputLabel>
+              <InputLabel htmlFor="QuotaForNewUser">Initial Quota for New Users</InputLabel>
               <OutlinedInput
                 id="QuotaForNewUser"
                 name="QuotaForNewUser"
                 type="number"
                 value={inputs.QuotaForNewUser}
                 onChange={handleInputChange}
-                label="新用户初始额度"
-                placeholder="例如：100"
+                label="Initial Quota for New Users"
+                placeholder="e.g. 100"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel htmlFor="PreConsumedQuota">请求预扣费额度</InputLabel>
+              <InputLabel htmlFor="PreConsumedQuota">Pre-consumed Quota per Request</InputLabel>
               <OutlinedInput
                 id="PreConsumedQuota"
                 name="PreConsumedQuota"
                 type="number"
                 value={inputs.PreConsumedQuota}
                 onChange={handleInputChange}
-                label="请求预扣费额度"
-                placeholder="请求结束后多退少补"
+                label="Pre-consumed Quota per Request"
+                placeholder="Refunded or charged extra after the request completes"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
               <InputLabel htmlFor="QuotaForInviter">
-                邀请新用户奖励额度
+                Quota Reward for Inviting New Users
               </InputLabel>
               <OutlinedInput
                 id="QuotaForInviter"
                 name="QuotaForInviter"
                 type="number"
-                label="邀请新用户奖励额度"
+                label="Quota Reward for Inviting New Users"
                 value={inputs.QuotaForInviter}
                 onChange={handleInputChange}
-                placeholder="例如：2000"
+                placeholder="e.g. 2000"
                 disabled={loading}
               />
             </FormControl>
             <FormControl fullWidth>
               <InputLabel htmlFor="QuotaForInvitee">
-                新用户使用邀请码奖励额度
+                Quota Reward for New Users Using an Invite Code
               </InputLabel>
               <OutlinedInput
                 id="QuotaForInvitee"
                 name="QuotaForInvitee"
                 type="number"
-                label="新用户使用邀请码奖励额度"
+                label="Quota Reward for New Users Using an Invite Code"
                 value={inputs.QuotaForInvitee}
                 onChange={handleInputChange}
                 autoComplete="new-password"
-                placeholder="例如：1000"
+                placeholder="e.g. 1000"
                 disabled={loading}
               />
             </FormControl>
@@ -491,24 +491,24 @@ const OperationSetting = () => {
               submitConfig("quota").then();
             }}
           >
-            保存额度设置
+            Save Quota Settings
           </Button>
         </Stack>
       </SubCard>
-      <SubCard title="倍率设置">
+      <SubCard title="Ratio Settings">
         <Stack justifyContent="flex-start" alignItems="flex-start" spacing={2}>
           <FormControl fullWidth>
             <TextField
               multiline
               maxRows={15}
               id="channel-ModelRatio-label"
-              label="模型倍率"
+              label="Model Ratio"
               value={inputs.ModelRatio}
               name="ModelRatio"
               onChange={handleInputChange}
               aria-describedby="helper-text-channel-ModelRatio-label"
               minRows={5}
-              placeholder="为一个 JSON 文本，键为模型名称，值为倍率"
+              placeholder="A JSON text with model names as keys and ratios as values"
             />
           </FormControl>
           <FormControl fullWidth>
@@ -516,13 +516,13 @@ const OperationSetting = () => {
               multiline
               maxRows={15}
               id="channel-CompletionRatio-label"
-              label="补全倍率"
+              label="Completion Ratio"
               value={inputs.CompletionRatio}
               name="CompletionRatio"
               onChange={handleInputChange}
               aria-describedby="helper-text-channel-CompletionRatio-label"
               minRows={5}
-              placeholder="为一个 JSON 文本，键为模型名称，值为倍率，此处的倍率设置是模型补全倍率相较于提示倍率的比例，使用该设置可强制覆盖 One API 的内部比例"
+              placeholder="A JSON text with model names as keys and ratios as values. The ratio here is the completion ratio relative to the prompt ratio; this setting can forcefully override One API's internal ratio"
             />
           </FormControl>
           <FormControl fullWidth>
@@ -530,13 +530,13 @@ const OperationSetting = () => {
               multiline
               maxRows={15}
               id="channel-GroupRatio-label"
-              label="分组倍率"
+              label="Group Ratio"
               value={inputs.GroupRatio}
               name="GroupRatio"
               onChange={handleInputChange}
               aria-describedby="helper-text-channel-GroupRatio-label"
               minRows={5}
-              placeholder="为一个 JSON 文本，键为分组名称，值为倍率"
+              placeholder="A JSON text with group names as keys and ratios as values"
             />
           </FormControl>
           <Button
@@ -545,7 +545,7 @@ const OperationSetting = () => {
               submitConfig("ratio").then();
             }}
           >
-            保存倍率设置
+            Save Ratio Settings
           </Button>
         </Stack>
       </SubCard>

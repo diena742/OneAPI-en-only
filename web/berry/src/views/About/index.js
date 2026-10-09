@@ -22,7 +22,7 @@ const About = () => {
       localStorage.setItem('about', aboutContent);
     } else {
       showError(message);
-      setAbout('加载关于内容失败...');
+      setAbout('Failed to load about content...');
     }
     setAboutLoaded(true);
   };
@@ -37,10 +37,10 @@ const About = () => {
         <>
           <Box>
             <Container sx={{ paddingTop: '40px' }}>
-              <MainCard title="关于">
+              <MainCard title="About">
                 <Typography variant="body2">
-                  可在设置页面设置关于内容，支持 HTML & Markdown <br />
-                  项目仓库地址：
+                  You can set the about content on the settings page; HTML & Markdown are supported <br />
+                  Project repository:
                   <a href="https://github.com/songquanpeng/one-api">https://github.com/songquanpeng/one-api</a>
                 </Typography>
               </MainCard>

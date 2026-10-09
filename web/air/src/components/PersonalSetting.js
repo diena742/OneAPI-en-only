@@ -100,7 +100,7 @@ const PersonalSetting = () => {
     if (success) {
       setSystemToken(data);
       await copy(data);
-      showSuccess(`令牌已重置并已复制到剪贴板`);
+      showSuccess(`Token reset and copied to clipboard`);
     } else {
       showError(message);
     }
@@ -141,18 +141,18 @@ const PersonalSetting = () => {
   const handleAffLinkClick = async (e) => {
     e.target.select();
     await copy(e.target.value);
-    showSuccess(`邀请链接已复制到剪切板`);
+    showSuccess(`Invite link copied to clipboard`);
   };
 
   const handleSystemTokenClick = async (e) => {
     e.target.select();
     await copy(e.target.value);
-    showSuccess(`系统令牌已复制到剪切板`);
+    showSuccess(`System token copied to clipboard`);
   };
 
   const deleteAccount = async () => {
     if (inputs.self_account_deletion_confirmation !== userState.user.username) {
-      showError('请输入你的账户名以确认删除！');
+      showError('Please enter your account name to confirm deletion!');
       return;
     }
 
@@ -160,7 +160,7 @@ const PersonalSetting = () => {
     const { success, message } = res.data;
 
     if (success) {
-      showSuccess('账户已删除！');
+      showSuccess('Account deleted!');
       await API.get('/api/user/logout');
       userDispatch({ type: 'logout' });
       localStorage.removeItem('user');
@@ -177,7 +177,7 @@ const PersonalSetting = () => {
     );
     const { success, message } = res.data;
     if (success) {
-      showSuccess('微信账户绑定成功！');
+      showSuccess('WeChat account bound successfully!');
       setShowWeChatBindModal(false);
     } else {
       showError(message);
@@ -186,7 +186,7 @@ const PersonalSetting = () => {
 
   const changePassword = async () => {
     if (inputs.set_new_password !== inputs.set_new_password_confirmation) {
-      showError('两次输入的密码不一致！');
+      showError('The two passwords do not match!');
       return;
     }
     const res = await API.put(
@@ -197,7 +197,7 @@ const PersonalSetting = () => {
     );
     const { success, message } = res.data;
     if (success) {
-      showSuccess('密码修改成功！');
+      showSuccess('Password changed successfully!');
       setShowWeChatBindModal(false);
     } else {
       showError(message);
@@ -207,7 +207,7 @@ const PersonalSetting = () => {
 
   const transfer = async () => {
     if (transferAmount < getQuotaPerUnit()) {
-      showError('划转金额最低为' + renderQuota(getQuotaPerUnit()));
+      showError('Minimum transfer amount is ' + renderQuota(getQuotaPerUnit()));
       return;
     }
     const res = await API.post(
@@ -228,12 +228,12 @@ const PersonalSetting = () => {
 
   const sendVerificationCode = async () => {
     if (inputs.email === '') {
-      showError('请输入邮箱！');
+      showError('Please enter your email!');
       return;
     }
     setDisableButton(true);
     if (turnstileEnabled && turnstileToken === '') {
-      showInfo('请稍后几秒重试，Turnstile 正在检查用户环境！');
+      showInfo('Please retry in a few seconds, Turnstile is checking the user environment!');
       return;
     }
     setLoading(true);
@@ -242,7 +242,7 @@ const PersonalSetting = () => {
     );
     const { success, message } = res.data;
     if (success) {
-      showSuccess('验证码发送成功，请检查邮箱！');
+      showSuccess('Verification code sent successfully, please check your email!');
     } else {
       showError(message);
     }
@@ -251,7 +251,7 @@ const PersonalSetting = () => {
 
   const bindEmail = async () => {
     if (inputs.email_verification_code === '') {
-      showError('请输入邮箱验证码！');
+      showError('Please enter the email verification code!');
       return;
     }
     setLoading(true);
@@ -260,7 +260,7 @@ const PersonalSetting = () => {
     );
     const { success, message } = res.data;
     if (success) {
-      showSuccess('邮箱账户绑定成功！');
+      showSuccess('Email account bound successfully!');
       setShowEmailBindModal(false);
       userState.user.email = inputs.email;
     } else {
@@ -283,10 +283,10 @@ const PersonalSetting = () => {
 
   const copyText = async (text) => {
     if (await copy(text)) {
-      showSuccess('已复制：' + text);
+      showSuccess('Copied: ' + text);
     } else {
       // setSearchKeyword(text);
-      Modal.error({ title: '无法复制到剪贴板，请手动复制', content: text });
+      Modal.error({ title: 'Unable to copy to clipboard, please copy manually', content: text });
     }
   };
 
@@ -295,7 +295,7 @@ const PersonalSetting = () => {
       <Layout>
         <Layout.Content>
           <Modal
-            title="请输入要划转的数量"
+            title="Enter the amount to transfer"
             visible={openTransfer}
             onOk={transfer}
             onCancel={handleCancel}
@@ -304,11 +304,11 @@ const PersonalSetting = () => {
             centered={true}
           >
             <div style={{ marginTop: 20 }}>
-              <Typography.Text>{`可用额度${renderQuotaWithPrompt(userState?.user?.aff_quota)}`}</Typography.Text>
+              <Typography.Text>{`Available quota${renderQuotaWithPrompt(userState?.user?.aff_quota)}`}</Typography.Text>
               <Input style={{ marginTop: 5 }} value={userState?.user?.aff_quota} disabled={true}></Input>
             </div>
             <div style={{ marginTop: 20 }}>
-              <Typography.Text>{`划转额度${renderQuotaWithPrompt(transferAmount)} 最低` + renderQuota(getQuotaPerUnit())}</Typography.Text>
+              <Typography.Text>{`Transfer quota${renderQuotaWithPrompt(transferAmount)} Minimum` + renderQuota(getQuotaPerUnit())}</Typography.Text>
               <div>
                 <InputNumber min={0} style={{ marginTop: 5 }} value={transferAmount}
                   onChange={(value) => setTransferAmount(value)} disabled={false}></InputNumber>
@@ -324,7 +324,7 @@ const PersonalSetting = () => {
                     {typeof getUsername() === 'string' && getUsername().slice(0, 1)}
                   </Avatar>}
                   title={<Typography.Text>{getUsername()}</Typography.Text>}
-                  description={isRoot() ? <Tag color="red">管理员</Tag> : <Tag color="blue">普通用户</Tag>}
+                  description={isRoot() ? <Tag color="red">Admin</Tag> : <Tag color="blue">Regular user</Tag>}
                 ></Card.Meta>
               }
               headerExtraContent={
@@ -337,14 +337,14 @@ const PersonalSetting = () => {
               }
               footer={
                 <Descriptions row>
-                  <Descriptions.Item itemKey="当前余额">{renderQuota(userState?.user?.quota)}</Descriptions.Item>
-                  <Descriptions.Item itemKey="历史消耗">{renderQuota(userState?.user?.used_quota)}</Descriptions.Item>
-                  <Descriptions.Item itemKey="请求次数">{userState.user?.request_count}</Descriptions.Item>
+                  <Descriptions.Item itemKey="Current balance">{renderQuota(userState?.user?.quota)}</Descriptions.Item>
+                  <Descriptions.Item itemKey="Historical consumption">{renderQuota(userState?.user?.used_quota)}</Descriptions.Item>
+                  <Descriptions.Item itemKey="Request count">{userState.user?.request_count}</Descriptions.Item>
                 </Descriptions>
               }
             >
-              <Typography.Title heading={6}>调用信息</Typography.Title>
-              <p>可用模型（可点击复制）</p>
+              <Typography.Title heading={6}>API Usage</Typography.Title>
+              <p>Available models (click to copy)</p>
               <div style={{ marginTop: 10 }}>
                 <Space wrap>
                   {models.map((model) => (
@@ -360,7 +360,7 @@ const PersonalSetting = () => {
             {/* <Card
               footer={
                 <div>
-                  <Typography.Text>邀请链接</Typography.Text>
+                  <Typography.Text>Invite link</Typography.Text>
                   <Input
                     style={{ marginTop: 10 }}
                     value={affLink}
@@ -370,26 +370,26 @@ const PersonalSetting = () => {
                 </div>
               }
             >
-              <Typography.Title heading={6}>邀请信息</Typography.Title>
+              <Typography.Title heading={6}>Invite information</Typography.Title>
               <div style={{ marginTop: 10 }}>
                 <Descriptions row>
-                  <Descriptions.Item itemKey="待使用收益">
+                  <Descriptions.Item itemKey="Pending earnings">
                     <span style={{ color: 'rgba(var(--semi-red-5), 1)' }}>
                       {
                         renderQuota(userState?.user?.aff_quota)
                       }
                     </span>
                     <Button type={'secondary'} onClick={() => setOpenTransfer(true)} size={'small'}
-                      style={{ marginLeft: 10 }}>划转</Button>
+                      style={{ marginLeft: 10 }}>Transfer</Button>
                   </Descriptions.Item>
                   <Descriptions.Item
-                    itemKey="总收益">{renderQuota(userState?.user?.aff_history_quota)}</Descriptions.Item>
-                  <Descriptions.Item itemKey="邀请人数">{userState?.user?.aff_count}</Descriptions.Item>
+                    itemKey="Total earnings">{renderQuota(userState?.user?.aff_history_quota)}</Descriptions.Item>
+                  <Descriptions.Item itemKey="Invitees">{userState?.user?.aff_count}</Descriptions.Item>
                 </Descriptions>
               </div>
             </Card> */}
             <Card>
-              <Typography.Title heading={6}>邀请链接</Typography.Title>
+              <Typography.Title heading={6}>Invite Link</Typography.Title>
               <Input
                 style={{ marginTop: 10 }}
                 value={affLink}
@@ -398,13 +398,13 @@ const PersonalSetting = () => {
               />
             </Card>
             <Card>
-              <Typography.Title heading={6}>个人信息</Typography.Title>
+              <Typography.Title heading={6}>Personal Information</Typography.Title>
               <div style={{ marginTop: 20 }}>
-                <Typography.Text strong>邮箱</Typography.Text>
+                <Typography.Text strong>Email</Typography.Text>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <Input
-                      value={userState.user && userState.user.email !== '' ? userState.user.email : '未绑定'}
+                      value={userState.user && userState.user.email !== '' ? userState.user.email : 'Not bound'}
                       readonly={true}
                     ></Input>
                   </div>
@@ -412,24 +412,24 @@ const PersonalSetting = () => {
                     <Button onClick={() => {
                       setShowEmailBindModal(true);
                     }}>{
-                        userState.user && userState.user.email !== '' ? '修改绑定' : '绑定邮箱'
+                        userState.user && userState.user.email !== '' ? 'Modify binding' : 'Bind email'
                       }</Button>
                   </div>
                 </div>
               </div>
               <div style={{ marginTop: 10 }}>
-                <Typography.Text strong>微信</Typography.Text>
+                <Typography.Text strong>WeChat</Typography.Text>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <Input
-                      value={userState.user && userState.user.wechat_id !== '' ? '已绑定' : '未绑定'}
+                      value={userState.user && userState.user.wechat_id !== '' ? 'Bound' : 'Not bound'}
                       readonly={true}
                     ></Input>
                   </div>
                   <div>
                     <Button disabled={(userState.user && userState.user.wechat_id !== '') || !status.wechat_login}>
                       {
-                        status.wechat_login ? '绑定' : '未启用'
+                        status.wechat_login ? 'Bind' : 'Not enabled'
                       }
                     </Button>
                   </div>
@@ -440,7 +440,7 @@ const PersonalSetting = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <Input
-                      value={userState.user && userState.user.github_id !== '' ? userState.user.github_id : '未绑定'}
+                      value={userState.user && userState.user.github_id !== '' ? userState.user.github_id : 'Not bound'}
                       readonly={true}
                     ></Input>
                   </div>
@@ -452,7 +452,7 @@ const PersonalSetting = () => {
                       disabled={(userState.user && userState.user.github_id !== '') || !status.github_oauth}
                     >
                       {
-                        status.github_oauth ? '绑定' : '未启用'
+                        status.github_oauth ? 'Bind' : 'Not enabled'
                       }
                     </Button>
                   </div>
@@ -464,16 +464,16 @@ const PersonalSetting = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <Input
-                      value={userState.user && userState.user.telegram_id !== '' ? userState.user.telegram_id : '未绑定'}
+                      value={userState.user && userState.user.telegram_id !== '' ? userState.user.telegram_id : 'Not bound'}
                       readonly={true}
                     ></Input>
                   </div>
                   <div>
                     {status.telegram_oauth ?
-                      userState.user.telegram_id !== '' ? <Button disabled={true}>已绑定</Button>
+                      userState.user.telegram_id !== '' ? <Button disabled={true}>Bound</Button>
                         : <TelegramLoginButton dataAuthUrl="/api/oauth/telegram/bind"
                           botName={status.telegram_bot_name} />
-                      : <Button disabled={true}>未启用</Button>
+                      : <Button disabled={true}>Not enabled</Button>
                     }
                   </div>
                 </div>
@@ -481,13 +481,13 @@ const PersonalSetting = () => {
 
               <div style={{ marginTop: 10 }}>
                 <Space>
-                  <Button onClick={generateAccessToken}>生成系统访问令牌</Button>
+                  <Button onClick={generateAccessToken}>Generate system access token</Button>
                   <Button onClick={() => {
                     setShowChangePasswordModal(true);
-                  }}>修改密码</Button>
+                  }}>Change password</Button>
                   <Button type={'danger'} onClick={() => {
                     setShowAccountDeleteModal(true);
-                  }}>删除个人账户</Button>
+                  }}>Delete personal account</Button>
                 </Space>
 
                 {systemToken && (
@@ -505,7 +505,7 @@ const PersonalSetting = () => {
                         setShowWeChatBindModal(true);
                       }}
                     >
-                      绑定微信账号
+                      Bind WeChat account
                     </Button>
                   )
                 }
@@ -518,17 +518,17 @@ const PersonalSetting = () => {
                   <Image src={status.wechat_qrcode} />
                   <div style={{ textAlign: 'center' }}>
                     <p>
-                      微信扫码关注公众号，输入「验证码」获取验证码（三分钟内有效）
+                      Scan the QR code with WeChat to follow the official account, enter the "verification code" to get a code (valid for three minutes)
                     </p>
                   </div>
                   <Input
-                    placeholder="验证码"
+                    placeholder="Verification code"
                     name="wechat_verification_code"
                     value={inputs.wechat_verification_code}
                     onChange={(v) => handleInputChange('wechat_verification_code', v)}
                   />
                   <Button color="" fluid size="large" onClick={bindWeChat}>
-                    绑定
+                     Bind
                   </Button>
                 </Modal>
               </div>
@@ -542,24 +542,24 @@ const PersonalSetting = () => {
               centered={true}
               maskClosable={false}
             >
-              <Typography.Title heading={6}>绑定邮箱地址</Typography.Title>
+              <Typography.Title heading={6}>Bind email address</Typography.Title>
               <div style={{ marginTop: 20, display: 'flex', justifyContent: 'space-between' }}>
                 <Input
                   fluid
-                  placeholder="输入邮箱地址"
+                  placeholder="Enter email address"
                   onChange={(value) => handleInputChange('email', value)}
                   name="email"
                   type="email"
                 />
                 <Button onClick={sendVerificationCode}
                   disabled={disableButton || loading}>
-                  {disableButton ? `重新发送(${countdown})` : '获取验证码'}
+                  {disableButton ? `Resend (${countdown})` : 'Get verification code'}
                 </Button>
               </div>
               <div style={{ marginTop: 10 }}>
                 <Input
                   fluid
-                  placeholder="验证码"
+                  placeholder="Verification code"
                   name="email_verification_code"
                   value={inputs.email_verification_code}
                   onChange={(value) => handleInputChange('email_verification_code', value)}
@@ -586,13 +586,13 @@ const PersonalSetting = () => {
               <div style={{ marginTop: 20 }}>
                 <Banner
                   type="danger"
-                  description="您正在删除自己的帐户，将清空所有数据且不可恢复"
+                  description="You are deleting your own account. All data will be erased and cannot be recovered."
                   closeIcon={null}
                 />
               </div>
               <div style={{ marginTop: 20 }}>
                 <Input
-                  placeholder={`输入你的账户名 ${userState?.user?.username} 以确认删除`}
+                  placeholder={`Enter your account name ${userState?.user?.username} to confirm deletion`}
                   name="self_account_deletion_confirmation"
                   value={inputs.self_account_deletion_confirmation}
                   onChange={(value) => handleInputChange('self_account_deletion_confirmation', value)}
@@ -619,14 +619,14 @@ const PersonalSetting = () => {
               <div style={{ marginTop: 20 }}>
                 <Input
                   name="set_new_password"
-                  placeholder="新密码"
+                  placeholder="New password"
                   value={inputs.set_new_password}
                   onChange={(value) => handleInputChange('set_new_password', value)}
                 />
                 <Input
                   style={{ marginTop: 20 }}
                   name="set_new_password_confirmation"
-                  placeholder="确认新密码"
+                  placeholder="Confirm new password"
                   value={inputs.set_new_password_confirmation}
                   onChange={(value) => handleInputChange('set_new_password_confirmation', value)}
                 />

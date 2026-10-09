@@ -78,7 +78,7 @@ export default function ChannelTableRow({
     }
 
     if (currentValue < 0) {
-      showError("优先级不能小于 0");
+      showError("Priority cannot be less than 0");
       return;
     }
 
@@ -93,7 +93,7 @@ export default function ChannelTableRow({
         test_time: Date.now() / 1000,
         response_time: time * 1000,
       });
-      showInfo(`渠道 ${item.name} 测试成功，耗时 ${time.toFixed(2)} 秒。`);
+      showInfo(`Channel ${item.name} test succeeded, took ${time.toFixed(2)} s.`);
     }
   };
 
@@ -103,7 +103,7 @@ export default function ChannelTableRow({
     if (success) {
       setItemBalance(balance);
 
-      showInfo(`余额更新成功！`);
+      showInfo(`Balance updated successfully!`);
     } else {
       showError(message);
     }
@@ -130,7 +130,7 @@ export default function ChannelTableRow({
         <TableCell>
           {!CHANNEL_OPTIONS[item.type] ? (
             <Label color="error" variant="outlined">
-              未知
+              Unknown
             </Label>
           ) : (
             <Label color={CHANNEL_OPTIONS[item.type].color} variant="outlined">
@@ -144,13 +144,13 @@ export default function ChannelTableRow({
             title={(() => {
               switch (statusSwitch) {
                 case 1:
-                  return "已启用";
+                  return "Enabled";
                 case 2:
-                  return "本渠道被手动禁用";
+                  return "This channel is manually disabled";
                 case 3:
-                  return "本渠道被程序自动禁用";
+                  return "This channel is automatically disabled by the program";
                 default:
-                  return "未知";
+                  return "Unknown";
               }
             })()}
             placement="top"
@@ -173,7 +173,7 @@ export default function ChannelTableRow({
         <TableCell>{renderNumber(item.used_quota)}</TableCell>
         <TableCell>
           <Tooltip
-            title={"点击更新余额"}
+            title={"Click to update balance"}
             placement="top"
             onClick={updateChannelBalance}
           >
@@ -185,7 +185,7 @@ export default function ChannelTableRow({
             id={`priority-${item.id}`}
             onBlur={handlePriority}
             type="number"
-            label="优先级"
+            label="Priority"
             variant="standard"
             defaultValue={item.priority}
             inputProps={{ min: "0" }}
@@ -221,23 +221,23 @@ export default function ChannelTableRow({
           }}
         >
           <IconEdit style={{ marginRight: "16px" }} />
-          编辑
+          Edit
         </MenuItem>
         <MenuItem onClick={handleDeleteOpen} sx={{ color: "error.main" }}>
           <IconTrash style={{ marginRight: "16px" }} />
-          删除
+          Delete
         </MenuItem>
       </Popover>
 
       <Dialog open={openDelete} onClose={handleDeleteClose}>
-        <DialogTitle>删除渠道</DialogTitle>
+        <DialogTitle>Delete Channel</DialogTitle>
         <DialogContent>
-          <DialogContentText>是否删除渠道 {item.name}？</DialogContentText>
+          <DialogContentText>Delete channel {item.name}?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteClose}>关闭</Button>
+          <Button onClick={handleDeleteClose}>Close</Button>
           <Button onClick={handleDelete} sx={{ color: "error.main" }} autoFocus>
-            删除
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
@@ -258,7 +258,7 @@ function renderBalance(type, balance) {
       return <span>${balance.toFixed(2)}</span>;
     case 4: // CloseAI
       return <span>¥{balance.toFixed(2)}</span>;
-    case 8: // 自定义
+    case 8: // Custom
       return <span>${balance.toFixed(2)}</span>;
     case 5: // OpenAI-SB
       return <span>¥{(balance / 10000).toFixed(2)}</span>;
@@ -273,6 +273,6 @@ function renderBalance(type, balance) {
     case 44: // SiliconFlow
       return <span>¥{balance.toFixed(2)}</span>;
     default:
-      return <span>不支持</span>;
+      return <span>Not supported</span>;
   }
 }

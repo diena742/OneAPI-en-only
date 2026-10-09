@@ -37,7 +37,7 @@ const Home = () => {
       localStorage.setItem('home_page_content', content);
     } else {
       showError(message);
-      setHomePageContent('加载首页内容失败...');
+      setHomePageContent('Failed to load homepage content...');
     }
     setHomePageContentLoaded(true);
   };
@@ -59,19 +59,19 @@ const Home = () => {
             <Card
               bordered={false}
               headerLine={false}
-              title='系统状况'
+              title='System Status'
               bodyStyle={{ padding: '10px 20px' }}
             >
               <Row gutter={16}>
                 <Col span={12}>
                   <Card
-                    title='系统信息'
+                    title='System Information'
                     headerExtraContent={<span
-                      style={{ fontSize: '12px', color: 'var(--semi-color-text-1)' }}>系统信息总览</span>}>
-                    <p>名称：{statusState?.status?.system_name}</p>
-                    <p>版本：{statusState?.status?.version ? statusState?.status?.version : 'unknown'}</p>
+                      style={{ fontSize: '12px', color: 'var(--semi-color-text-1)' }}>System Information Overview</span>}>
+                    <p>Name: {statusState?.status?.system_name}</p>
+                    <p>Version: {statusState?.status?.version ? statusState?.status?.version : 'unknown'}</p>
                     <p>
-                      源码：
+                      Source Code:
                       <a
                         href='https://github.com/songquanpeng/one-api'
                         target='_blank' rel='noreferrer'
@@ -79,34 +79,34 @@ const Home = () => {
                         https://github.com/songquanpeng/one-api
                       </a>
                     </p>
-                    <p>启动时间：{getStartTimeString()}</p>
+                    <p>Start Time: {getStartTimeString()}</p>
                   </Card>
                 </Col>
                 <Col span={12}>
                   <Card
-                    title='系统配置'
+                    title='System Configuration'
                     headerExtraContent={<span
-                      style={{ fontSize: '12px', color: 'var(--semi-color-text-1)' }}>系统配置总览</span>}>
+                      style={{ fontSize: '12px', color: 'var(--semi-color-text-1)' }}>System Configuration Overview</span>}>
                     <p>
-                      邮箱验证：
-                      {statusState?.status?.email_verification === true ? '已启用' : '未启用'}
+                      Email Verification:
+                      {statusState?.status?.email_verification === true ? 'Enabled' : 'Disabled'}
                     </p>
                     <p>
-                      GitHub 身份验证：
-                      {statusState?.status?.github_oauth === true ? '已启用' : '未启用'}
+                      GitHub Authentication:
+                      {statusState?.status?.github_oauth === true ? 'Enabled' : 'Disabled'}
                     </p>
                     <p>
-                      微信身份验证：
-                      {statusState?.status?.wechat_login === true ? '已启用' : '未启用'}
+                      WeChat Authentication:
+                      {statusState?.status?.wechat_login === true ? 'Enabled' : 'Disabled'}
                     </p>
                     <p>
-                      Turnstile 用户校验：
-                      {statusState?.status?.turnstile_check === true ? '已启用' : '未启用'}
+                      Turnstile User Verification:
+                      {statusState?.status?.turnstile_check === true ? 'Enabled' : 'Disabled'}
                     </p>
                     {/*<p>*/}
-                    {/*  Telegram 身份验证：*/}
+                    {/*  Telegram Authentication: */}
                     {/*  {statusState?.status?.telegram_oauth === true*/}
-                    {/*    ? '已启用' : '未启用'}*/}
+                    {/*    ? 'Enabled' : 'Disabled'}*/}
                     {/*</p>*/}
                   </Card>
                 </Col>

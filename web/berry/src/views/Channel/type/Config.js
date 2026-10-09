@@ -11,28 +11,29 @@ const defaultConfig = {
     config: {}
   },
   inputLabel: {
-    name: '渠道名称',
-    type: '渠道类型',
-    base_url: '渠道API地址',
-    key: '密钥',
-    other: '其他参数',
-    models: '模型',
-    model_mapping: '模型映射关系',
-    system_prompt: '系统提示词',
-    groups: '用户组',
+    name: 'Channel Name',
+    type: 'Channel Type',
+    base_url: 'Channel API URL',
+    key: 'Key',
+    other: 'Other Parameters',
+    models: 'Models',
+    model_mapping: 'Model Mapping',
+    system_prompt: 'System Prompt',
+    groups: 'User Groups',
     config: null
   },
   prompt: {
-    type: '请选择渠道类型',
-    name: '请为渠道命名',
-    base_url: '可空，请输入中转API地址，例如通过cloudflare中转',
-    key: '请输入渠道对应的鉴权密钥',
+    type: 'Please select channel type',
+    name: 'Please name the channel',
+    base_url: 'Optional, enter the relay API URL, e.g., relayed via Cloudflare',
+    key: 'Please enter the authentication key for the channel',
     other: '',
-    models: '请选择该渠道所支持的模型',
+    models: 'Please select the models supported by this channel',
     model_mapping:
-      '请输入要修改的模型映射关系，格式为：api请求模型ID:实际转发给渠道的模型ID，使用JSON数组表示，例如：{"gpt-3.5": "gpt-35"}',
-    system_prompt:"此项可选，用于强制设置给定的系统提示词，请配合自定义模型 & 模型重定向使用，首先创建一个唯一的自定义模型名称并在上面填入，之后将该自定义模型重定向映射到该渠道一个原生支持的模型此项可选，用于强制设置给定的系统提示词，请配合自定义模型 & 模型重定向使用，首先创建一个唯一的自定义模型名称并在上面填入，之后将该自定义模型重定向映射到该渠道一个原生支持的模型",
-    groups: '请选择该渠道所支持的用户组',
+      'Enter the model mapping to modify, format: api request model ID: actual model ID forwarded to the channel, expressed as a JSON object, e.g.: {"gpt-3.5": "gpt-35"}',
+    system_prompt:
+      'Optional, used to force a given system prompt. Use together with custom models & model redirection. First create a unique custom model name and fill it in above, then map that custom model to a natively supported model of this channel. Optional, used to force a given system prompt. Use together with custom models & model redirection. First create a unique custom model name and fill it in above, then map that custom model to a natively supported model of this channel.',
+    groups: 'Please select the user groups supported by this channel',
     config: null
   },
   modelGroup: 'openai'
@@ -42,11 +43,11 @@ const typeConfig = {
   3: {
     inputLabel: {
       base_url: 'AZURE_OPENAI_ENDPOINT',
-      other: '默认 API 版本'
+      other: 'Default API Version'
     },
     prompt: {
-      base_url: '请填写AZURE_OPENAI_ENDPOINT',
-      other: '请输入默认API版本，例如：2024-03-01-preview'
+      base_url: 'Please fill in AZURE_OPENAI_ENDPOINT',
+      other: 'Enter the default API version, e.g., 2024-03-01-preview'
     }
   },
   11: {
@@ -66,7 +67,7 @@ const typeConfig = {
       models: ['ERNIE-Bot', 'ERNIE-Bot-turbo', 'ERNIE-Bot-4', 'Embedding-V1']
     },
     prompt: {
-      key: '按照如下格式输入：APIKey|SecretKey'
+      key: 'Enter in the following format: APIKey|SecretKey'
     },
     modelGroup: 'baidu'
   },
@@ -78,26 +79,26 @@ const typeConfig = {
   },
   17: {
     inputLabel: {
-      other: '插件参数'
+      other: 'Plugin Parameters'
     },
     input: {
       models: ['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-max-longcontext', 'text-embedding-v1']
     },
     prompt: {
-      other: '请输入插件参数，即 X-DashScope-Plugin 请求头的取值'
+      other: 'Enter the plugin parameters, i.e., the value of the X-DashScope-Plugin request header'
     },
     modelGroup: 'ali'
   },
   18: {
     inputLabel: {
-      other: '版本号'
+      other: 'Version'
     },
     input: {
       models: ['SparkDesk', 'SparkDesk-v1.1', 'SparkDesk-v2.1', 'SparkDesk-v3.1', 'SparkDesk-v3.1-128K', 'SparkDesk-v3.5', 'SparkDesk-v3.5-32K', 'SparkDesk-v4.0']
     },
     prompt: {
-      key: '按照如下格式输入：APPID|APISecret|APIKey',
-      other: '请输入版本号，例如：v3.1'
+      key: 'Enter in the following format: APPID|APISecret|APIKey',
+      other: 'Enter the version number, e.g., v3.1'
     },
     modelGroup: 'xunfei'
   },
@@ -109,7 +110,7 @@ const typeConfig = {
   },
   22: {
     prompt: {
-      key: '按照如下格式输入：APIKey-AppId，例如：fastgpt-0sp2gtvfdgyi4k30jwlgwf1i-64f335d84283f05518e9e041'
+      key: 'Enter in the following format: APIKey-AppId, e.g., fastgpt-0sp2gtvfdgyi4k30jwlgwf1i-64f335d84283f05518e9e041'
     }
   },
   23: {
@@ -117,19 +118,19 @@ const typeConfig = {
       models: ['hunyuan']
     },
     prompt: {
-      key: '按照如下格式输入：AppId|SecretId|SecretKey'
+      key: 'Enter in the following format: AppId|SecretId|SecretKey'
     },
     modelGroup: 'tencent'
   },
   24: {
     inputLabel: {
-      other: '版本号'
+      other: 'Version'
     },
     input: {
       models: ['gemini-pro']
     },
     prompt: {
-      other: '请输入版本号，例如：v1'
+      other: 'Enter the version number, e.g., v1'
     },
     modelGroup: 'google gemini'
   },
@@ -172,7 +173,7 @@ const typeConfig = {
     prompt: {
       key: '',
       config: {
-        region: 'region，e.g. us-west-2',
+        region: 'region, e.g. us-west-2',
         ak: 'AWS IAM Access Key',
         sk: 'AWS IAM Secret Key'
       }
@@ -187,7 +188,7 @@ const typeConfig = {
     },
     prompt: {
       config: {
-        user_id: '请输入 Account ID，例如：d8d7c61dbc334c32d3ced580e4bf42b4'
+        user_id: 'Enter the Account ID, e.g., d8d7c61dbc334c32d3ced580e4bf42b4'
       }
     },
     modelGroup: 'Cloudflare'
@@ -199,9 +200,9 @@ const typeConfig = {
       }
     },
     prompt: {
-      models: '对于 Coze 而言，模型名称即 Bot ID，你可以添加一个前缀 `bot-`，例如：`bot-123456`',
+      models: 'For Coze, the model name is the Bot ID, you can add a prefix `bot-`, e.g., `bot-123456`',
       config: {
-        user_id: '生成该密钥的用户 ID'
+        user_id: 'The user ID that generated this key'
       }
     },
     modelGroup: 'Coze'

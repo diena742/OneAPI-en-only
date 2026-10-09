@@ -43,16 +43,16 @@ const Footer = () => {
             >
               {systemName} {process.env.REACT_APP_VERSION}{' '}
             </a>
-            由{' '}
+             Built by{' '}
             <a href='https://github.com/songquanpeng' target='_blank'>
               JustSong
             </a>{' '}
-            构建，主题 air 来自{' '}
+             , theme air by{' '}
             <a href='https://github.com/Calcium-Ion' target='_blank'>
               Calon
-            </a>{' '}，源代码遵循{' '}
+            </a>{' '}, source code licensed under{' '}
             <a href='https://opensource.org/licenses/mit-license.php'>
-              MIT 协议
+              MIT License
             </a>
           </div>
         )}

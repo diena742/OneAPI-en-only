@@ -33,18 +33,18 @@ function renderStatus(status, model_limits_enabled = false) {
   switch (status) {
     case 1:
       if (model_limits_enabled) {
-        return <Tag color="green" size="large">已启用：限制模型</Tag>;
+        return <Tag color="green" size="large">Enabled: Model-limited</Tag>;
       } else {
-        return <Tag color="green" size="large">已启用</Tag>;
+        return <Tag color="green" size="large">Enabled</Tag>;
       }
     case 2:
-      return <Tag color="red" size="large"> 已禁用 </Tag>;
+      return <Tag color="red" size="large"> Disabled </Tag>;
     case 3:
-      return <Tag color="yellow" size="large"> 已过期 </Tag>;
+      return <Tag color="yellow" size="large"> Expired </Tag>;
     case 4:
-      return <Tag color="grey" size="large"> 已耗尽 </Tag>;
+      return <Tag color="grey" size="large"> Exhausted </Tag>;
     default:
-      return <Tag color="black" size="large"> 未知状态 </Tag>;
+      return <Tag color="black" size="large"> Unknown Status </Tag>;
   }
 }
 
@@ -56,7 +56,7 @@ const TokensTable = () => {
         onOpenLink('next');
       }
     },
-    { node: 'item', key: 'ama', name: 'AMA 问天', value: 'ama' },
+    { node: 'item', key: 'ama', name: 'AMA Wentian', value: 'ama' },
     {
       node: 'item', key: 'next-mj', name: 'ChatGPT Web & Midjourney', value: 'next-mj', onClick: () => {
         onOpenLink('next-mj');
@@ -72,11 +72,11 @@ const TokensTable = () => {
 
   const columns = [
     {
-      title: '名称',
+      title: 'Name',
       dataIndex: 'name'
     },
     {
-      title: '状态',
+      title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (text, record, index) => {
@@ -88,7 +88,7 @@ const TokensTable = () => {
       }
     },
     {
-      title: '已用额度',
+      title: 'Used Quota',
       dataIndex: 'used_quota',
       render: (text, record, index) => {
         return (
@@ -99,19 +99,19 @@ const TokensTable = () => {
       }
     },
     {
-      title: '剩余额度',
+      title: 'Remaining Quota',
       dataIndex: 'remain_quota',
       render: (text, record, index) => {
         return (
           <div>
-            {record.unlimited_quota ? <Tag size={'large'} color={'white'}>无限制</Tag> :
+            {record.unlimited_quota ? <Tag size={'large'} color={'white'}>Unlimited</Tag> :
               <Tag size={'large'} color={'light-blue'}>{renderQuota(parseInt(text))}</Tag>}
           </div>
         );
       }
     },
     {
-      title: '创建时间',
+      title: 'Created Time',
       dataIndex: 'created_time',
       render: (text, record, index) => {
         return (
@@ -122,12 +122,12 @@ const TokensTable = () => {
       }
     },
     {
-      title: '过期时间',
+      title: 'Expired Time',
       dataIndex: 'expired_time',
       render: (text, record, index) => {
         return (
           <div>
-            {record.expired_time === -1 ? '永不过期' : renderTimestamp(text)}
+            {record.expired_time === -1 ? 'Never expires' : renderTimestamp(text)}
           </div>
         );
       }
@@ -144,17 +144,17 @@ const TokensTable = () => {
             style={{ padding: 20 }}
             position="top"
           >
-            <Button theme="light" type="tertiary" style={{ marginRight: 1 }}>查看</Button>
+            <Button theme="light" type="tertiary" style={{ marginRight: 1 }}>View</Button>
           </Popover>
           <Button theme="light" type="secondary" style={{ marginRight: 1 }}
                   onClick={async (text) => {
                     await copyText('sk-' + record.key);
                   }}
-          >复制</Button>
-          <SplitButtonGroup style={{ marginRight: 1 }} aria-label="项目操作按钮组">
+          >Copy</Button>
+          <SplitButtonGroup style={{ marginRight: 1 }} aria-label="Project operation button group">
             <Button theme="light" style={{ color: 'rgba(var(--semi-teal-7), 1)' }} onClick={() => {
               onOpenLink('next', record.key);
-            }}>聊天</Button>
+            }}>Chat</Button>
             <Dropdown trigger="click" position="bottomRight" menu={
               [
                 {
@@ -176,7 +176,7 @@ const TokensTable = () => {
                   }
                 },
                 {
-                  node: 'item', key: 'ama', name: 'AMA 问天（BotGem）', onClick: () => {
+                  node: 'item', key: 'ama', name: 'AMA Wentian (BotGem)', onClick: () => {
                     onOpenLink('ama', record.key);
                   }
                 },
@@ -198,8 +198,8 @@ const TokensTable = () => {
             </Dropdown>
           </SplitButtonGroup>
           <Popconfirm
-            title="确定是否要删除此令牌？"
-            content="此修改将不可逆"
+            title="Are you sure you want to delete this token?"
+            content="This change is irreversible"
             okType={'danger'}
             position={'left'}
             onConfirm={() => {
@@ -210,7 +210,7 @@ const TokensTable = () => {
               );
             }}
           >
-            <Button theme="light" type="danger" style={{ marginRight: 1 }}>删除</Button>
+            <Button theme="light" type="danger" style={{ marginRight: 1 }}>Delete</Button>
           </Popconfirm>
           {
             record.status === 1 ?
@@ -222,7 +222,7 @@ const TokensTable = () => {
                     record
                   );
                 }
-              }>禁用</Button> :
+              }>Disable</Button> :
               <Button theme="light" type="secondary" style={{ marginRight: 1 }} onClick={
                 async () => {
                   manageToken(
@@ -231,14 +231,14 @@ const TokensTable = () => {
                     record
                   );
                 }
-              }>启用</Button>
+              }>Enable</Button>
           }
           <Button theme="light" type="tertiary" style={{ marginRight: 1 }} onClick={
             () => {
               setEditingToken(record);
               setShowEdit(true);
             }
-          }>编辑</Button>
+          }>Edit</Button>
         </div>
       )
     }
@@ -349,19 +349,19 @@ const TokensTable = () => {
         url = `sk-${key}`;
     }
     // if (await copy(url)) {
-    //     showSuccess('已复制到剪贴板！');
+    //     showSuccess('Copied to clipboard!');
     // } else {
-    //     showWarning('无法复制到剪贴板，请手动复制，已将令牌填入搜索框。');
+    //     showWarning('Unable to copy to clipboard, please copy manually. The token has been filled into the search box.');
     //     setSearchKeyword(url);
     // }
   };
 
   const copyText = async (text) => {
     if (await copy(text)) {
-      showSuccess('已复制到剪贴板！');
+      showSuccess('Copied to clipboard!');
     } else {
       // setSearchKeyword(text);
-      Modal.error({ title: '无法复制到剪贴板，请手动复制', content: text });
+      Modal.error({ title: 'Unable to copy to clipboard, please copy manually', content: text });
     }
   };
 
@@ -399,7 +399,7 @@ const TokensTable = () => {
         break;
       default:
         if (!chatLink) {
-          showError('管理员未设置聊天链接');
+          showError('The administrator has not set the chat link');
           return;
         }
         url = defaultUrl;
@@ -447,7 +447,7 @@ const TokensTable = () => {
     }
     const { success, message } = res.data;
     if (success) {
-      showSuccess('操作成功完成！');
+      showSuccess('Operation completed successfully!');
       let token = res.data.data;
       let newTokens = [...tokens];
       // let realIdx = (activePage - 1) * ITEMS_PER_PAGE + idx;
@@ -547,11 +547,11 @@ const TokensTable = () => {
   const renderSelectedOption = (orderBy) => {
     switch (orderBy) {
       case 'remain_quota':
-        return '按剩余额度排序';
+        return 'Sort by remaining quota';
       case 'used_quota':
-        return '按已用额度排序';
+        return 'Sort by used quota';
       default:
-        return '默认排序';
+        return 'Default sort';
     }
   };
 
@@ -561,8 +561,8 @@ const TokensTable = () => {
       <Form layout="horizontal" style={{ marginTop: 10 }} labelPosition={'left'}>
         <Form.Input
           field="keyword"
-          label="搜索关键字"
-          placeholder="令牌名称"
+          label="Search Keyword"
+          placeholder="Token Name"
           value={searchKeyword}
           loading={searching}
           onChange={handleKeywordChange}
@@ -570,13 +570,13 @@ const TokensTable = () => {
         {/* <Form.Input
           field="token"
           label="Key"
-          placeholder="密钥"
+          placeholder="Secret Key"
           value={searchToken}
           loading={searching}
           onChange={handleSearchTokenChange}
         /> */}
-        <Button label="查询" type="primary" htmlType="submit" className="btn-margin-right"
-                onClick={searchTokens} style={{ marginRight: 8 }}>查询</Button>
+        <Button label="Search" type="primary" htmlType="submit" className="btn-margin-right"
+                onClick={searchTokens} style={{ marginRight: 8 }}>Search</Button>
       </Form>
 
       <Table style={{ marginTop: 20 }} columns={columns} dataSource={pageData} pagination={{
@@ -585,7 +585,7 @@ const TokensTable = () => {
         total: tokenCount,
         showSizeChanger: true,
         pageSizeOptions: [10, 20, 50, 100],
-        formatPageText: (page) => `第 ${page.currentStart} - ${page.currentEnd} 条，共 ${tokens.length} 条`,
+        formatPageText: (page) => `Items ${page.currentStart} - ${page.currentEnd} of ${tokens.length}`,
         onPageSizeChange: (size) => {
           setPageSize(size);
           setActivePage(1);
@@ -600,11 +600,11 @@ const TokensTable = () => {
           });
           setShowEdit(true);
         }
-      }>添加令牌</Button>
-      <Button label="复制所选令牌" type="warning" onClick={
+      }>Add Token</Button>
+      <Button label="Copy selected tokens" type="warning" onClick={
         async () => {
           if (selectedKeys.length === 0) {
-            showError('请至少选择一个令牌！');
+            showError('Please select at least one token!');
             return;
           }
           let keys = '';
@@ -613,7 +613,7 @@ const TokensTable = () => {
           }
           await copyText(keys);
         }
-      }>复制所选令牌到剪贴板</Button>
+      }>Copy Selected Tokens to Clipboard</Button>
       <Dropdown
         trigger="click"
         position="bottomLeft"
@@ -621,9 +621,9 @@ const TokensTable = () => {
         onVisibleChange={(visible) => setDropdownVisible(visible)}
         render={
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: '' })}>默认排序</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'remain_quota' })}>按剩余额度排序</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'used_quota' })}>按已用额度排序</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: '' })}>Default sort</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'remain_quota' })}>Sort by remaining quota</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'used_quota' })}>Sort by used quota</Dropdown.Item>
           </Dropdown.Menu>
         }
       >

@@ -117,7 +117,7 @@ const MenuCard = () => {
                   {account.user?.username}
                 </Typography>
               }
-              secondary={<Typography variant="caption"> 欢迎回来 </Typography>}
+              secondary={<Typography variant="caption"> Welcome back </Typography>}
             />
           </ListItem>
         </List>

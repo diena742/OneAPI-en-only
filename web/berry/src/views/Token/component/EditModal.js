@@ -31,15 +31,15 @@ import { API } from 'utils/api';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { createFilterOptions } from '@mui/material/Autocomplete';
-require('dayjs/locale/zh-cn');
+require('dayjs/locale/en');
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const filter = createFilterOptions();
 
 const validationSchema = Yup.object().shape({
   is_edit: Yup.boolean(),
-  name: Yup.string().required('名称 不能为空'),
-  remain_quota: Yup.number().min(0, '必须大于等于0'),
+  name: Yup.string().required('Name cannot be empty'),
+  remain_quota: Yup.number().min(0, 'Must be greater than or equal to 0'),
   expired_time: Yup.number(),
   unlimited_quota: Yup.boolean()
 });
@@ -73,9 +73,9 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
     const { success, message } = res.data;
     if (success) {
       if (values.is_edit) {
-        showSuccess('令牌更新成功！');
+        showSuccess('Token updated successfully!');
       } else {
-        showSuccess('令牌创建成功，请在列表页面点击复制获取令牌！');
+        showSuccess('Token created successfully. Please click Copy on the list page to get the token!');
       }
       setSubmitting(false);
       setStatus({ success: true });
@@ -131,19 +131,19 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
           fontSize: '1.125rem'
         }}
       >
-        {tokenId ? '编辑令牌' : '新建令牌'}
+        {tokenId ? 'Edit Token' : 'New Token'}
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <Alert severity="info">注意，令牌的额度仅用于限制令牌本身的最大额度使用量，实际的使用受到账户的剩余额度限制。</Alert>
+        <Alert severity="info">Note: the token quota is only used to limit the maximum quota usage of the token itself; actual usage is limited by the account's remaining quota.</Alert>
         <Formik initialValues={inputs} enableReinitialize validationSchema={validationSchema} onSubmit={submit}>
           {({ errors, handleBlur, handleChange, handleSubmit, touched, values, setFieldError, setFieldValue, isSubmitting }) => (
             <form noValidate onSubmit={handleSubmit}>
               <FormControl fullWidth error={Boolean(touched.name && errors.name)} sx={{ ...theme.typography.otherInput }}>
-                <InputLabel htmlFor="channel-name-label">名称</InputLabel>
+                <InputLabel htmlFor="channel-name-label">Name</InputLabel>
                 <OutlinedInput
                   id="channel-name-label"
-                  label="名称"
+                  label="Name"
                   type="text"
                   value={values.name}
                   name="name"
@@ -177,7 +177,7 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
                   onBlur={handleBlur}
                   // filterSelectedOptions
                   disableCloseOnSelect
-                  renderInput={(params) => <TextField {...params} name="models" error={Boolean(errors.models)} label="模型范围" />}
+                  renderInput={(params) => <TextField {...params} name="models" error={Boolean(errors.models)} label="Model Scope" />}
                   filterOptions={(options, params) => {
                     const filtered = filter(options, params);
                     const { inputValue } = params;
@@ -199,14 +199,14 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
                     {errors.models}
                   </FormHelperText>
                 ) : (
-                  <FormHelperText id="helper-tex-channel-models-label">请选择允许使用的模型，留空则不进行限制</FormHelperText>
+                  <FormHelperText id="helper-tex-channel-models-label">Please select the models allowed for use; leave empty for no restriction</FormHelperText>
                 )}
               </FormControl>
               <FormControl fullWidth error={Boolean(touched.subnet && errors.subnet)} sx={{ ...theme.typography.otherInput }}>
-                <InputLabel htmlFor="channel-subnet-label">IP 限制</InputLabel>
+                <InputLabel htmlFor="channel-subnet-label">IP Restriction</InputLabel>
                 <OutlinedInput
                   id="channel-subnet-label"
-                  label="IP 限制"
+                  label="IP Restriction"
                   type="text"
                   value={values.subnet}
                   name="subnet"
@@ -221,22 +221,22 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
                   </FormHelperText>
                 ) : (
                   <FormHelperText id="helper-tex-channel-subnet-label">
-                    请输入允许访问的网段，例如：192.168.0.0/24，请使用英文逗号分隔多个网段
+                    Please enter the network segments allowed to access, e.g., 192.168.0.0/24, separated by English commas.
                   </FormHelperText>
                 )}
               </FormControl>
               {values.expired_time !== -1 && (
                 <FormControl fullWidth error={Boolean(touched.expired_time && errors.expired_time)} sx={{ ...theme.typography.otherInput }}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'zh-cn'}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'en'}>
                     <DateTimePicker
-                      label="过期时间"
+                      label="Expiration Time"
                       ampm={false}
                       value={dayjs.unix(values.expired_time)}
                       onError={(newError) => {
                         if (newError === null) {
                           setFieldError('expired_time', null);
                         } else {
-                          setFieldError('expired_time', '无效的日期');
+                          setFieldError('expired_time', 'Invalid date');
                         }
                       }}
                       onChange={(newValue) => {
@@ -266,12 +266,12 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
                   }
                 }}
               />{' '}
-              永不过期
+              Never Expire
               <FormControl fullWidth error={Boolean(touched.remain_quota && errors.remain_quota)} sx={{ ...theme.typography.otherInput }}>
-                <InputLabel htmlFor="channel-remain_quota-label">额度</InputLabel>
+                <InputLabel htmlFor="channel-remain_quota-label">Quota</InputLabel>
                 <OutlinedInput
                   id="channel-remain_quota-label"
-                  label="额度"
+                  label="Quota"
                   type="number"
                   value={values.remain_quota}
                   name="remain_quota"
@@ -294,11 +294,11 @@ const EditModal = ({ open, tokenId, onCancel, onOk }) => {
                   setFieldValue('unlimited_quota', !values.unlimited_quota);
                 }}
               />{' '}
-              无限额度
+              Unlimited Quota
               <DialogActions>
-                <Button onClick={onCancel}>取消</Button>
+                <Button onClick={onCancel}>Cancel</Button>
                 <Button disableElevation disabled={isSubmitting} type="submit" variant="contained" color="primary">
-                  提交
+                  Submit
                 </Button>
               </DialogActions>
             </form>

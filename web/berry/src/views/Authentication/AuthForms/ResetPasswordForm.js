@@ -24,7 +24,7 @@ const ResetPasswordForm = () => {
     if (success) {
       let password = res.data.data;
       setNewPassword(password);
-      copy(password, '新密码');
+      copy(password, 'New Password');
     } else {
       showError(message);
     }
@@ -43,16 +43,16 @@ const ResetPasswordForm = () => {
     <Stack spacing={3} padding={'24px'} justifyContent={'center'} alignItems={'center'}>
       {!inputs.email || !inputs.token ? (
         <Typography variant="h3" sx={{ textDecoration: 'none' }}>
-          无效的链接
+          Invalid Link
         </Typography>
       ) : newPassword ? (
         <Alert severity="error">
-          你的新密码是: <b>{newPassword}</b> <br />
-          请登录后及时修改密码
+          Your new password is: <b>{newPassword}</b> <br />
+          Please log in and change your password as soon as possible
         </Alert>
       ) : (
         <Button fullWidth onClick={submit} size="large" type="submit" variant="contained" color="primary">
-          点击重置密码
+          Click to Reset Password
         </Button>
       )}
     </Stack>

@@ -9,13 +9,13 @@ import EditUser from '../pages/User/EditUser';
 function renderRole(role) {
   switch (role) {
     case 1:
-      return <Tag size="large">普通用户</Tag>;
+      return <Tag size="large">Regular User</Tag>;
     case 10:
-      return <Tag color="yellow" size="large">管理员</Tag>;
+      return <Tag color="yellow" size="large">Admin</Tag>;
     case 100:
-      return <Tag color="orange" size="large">超级管理员</Tag>;
+      return <Tag color="orange" size="large">Super Admin</Tag>;
     default:
-      return <Tag color="red" size="large">未知身份</Tag>;
+      return <Tag color="red" size="large">Unknown Role</Tag>;
   }
 }
 
@@ -23,24 +23,24 @@ const UsersTable = () => {
   const columns = [{
     title: 'ID', dataIndex: 'id'
   }, {
-    title: '用户名', dataIndex: 'username'
+    title: 'Username', dataIndex: 'username'
   }, {
-    title: '分组', dataIndex: 'group', render: (text, record, index) => {
+    title: 'Group', dataIndex: 'group', render: (text, record, index) => {
       return (<div>
         {renderGroup(text)}
       </div>);
     }
   }, {
-    title: '统计信息', dataIndex: 'info', render: (text, record, index) => {
+    title: 'Statistics', dataIndex: 'info', render: (text, record, index) => {
       return (<div>
         <Space spacing={1}>
-          <Tooltip content={'剩余额度'}>
+          <Tooltip content={'Remaining quota'}>
             <Tag color="white" size="large">{renderQuota(record.quota)}</Tag>
           </Tooltip>
-          <Tooltip content={'已用额度'}>
+          <Tooltip content={'Used quota'}>
             <Tag color="white" size="large">{renderQuota(record.used_quota)}</Tag>
           </Tooltip>
-          <Tooltip content={'调用次数'}>
+          <Tooltip content={'Request count'}>
             <Tag color="white" size="large">{renderNumber(record.request_count)}</Tag>
           </Tooltip>
         </Space>
@@ -48,17 +48,17 @@ const UsersTable = () => {
     }
   },
   // {
-  //   title: '邀请信息', dataIndex: 'invite', render: (text, record, index) => {
+  //   title: 'Invite Info', dataIndex: 'invite', render: (text, record, index) => {
   //     return (<div>
   //       <Space spacing={1}>
-  //         <Tooltip content={'邀请人数'}>
+  //         <Tooltip content={'Invitees'}>
   //           <Tag color="white" size="large">{renderNumber(record.aff_count)}</Tag>
   //         </Tooltip>
-  //         <Tooltip content={'邀请总收益'}>
+  //         <Tooltip content={'Total invite earnings'}>
   //           <Tag color="white" size="large">{renderQuota(record.aff_history_quota)}</Tag>
   //         </Tooltip>
-  //         <Tooltip content={'邀请人ID'}>
-  //           {record.inviter_id === 0 ? <Tag color="white" size="large">无</Tag> :
+  //         <Tooltip content={'Inviter ID'}>
+  //           {record.inviter_id === 0 ? <Tag color="white" size="large">None</Tag> :
   //             <Tag color="white" size="large">{record.inviter_id}</Tag>}
   //         </Tooltip>
   //       </Space>
@@ -66,14 +66,14 @@ const UsersTable = () => {
   //   }
   // },
   {
-    title: '角色', dataIndex: 'role', render: (text, record, index) => {
+    title: 'Role', dataIndex: 'role', render: (text, record, index) => {
       return (<div>
         {renderRole(text)}
       </div>);
     }
   },
   {
-    title: '状态', dataIndex: 'status', render: (text, record, index) => {
+    title: 'Status', dataIndex: 'status', render: (text, record, index) => {
       return (<div>
         {renderStatus(text)}
       </div>);
@@ -83,38 +83,38 @@ const UsersTable = () => {
     title: '', dataIndex: 'operate', render: (text, record, index) => (<div>
       <>
         <Popconfirm
-          title="确定？"
+          title="Are you sure?"
           okType={'warning'}
           onConfirm={() => {
             manageUser(record.username, 'promote', record);
           }}
         >
-          <Button theme="light" type="warning" style={{ marginRight: 1 }}>提升</Button>
+          <Button theme="light" type="warning" style={{ marginRight: 1 }}>Promote</Button>
         </Popconfirm>
         <Popconfirm
-          title="确定？"
+          title="Are you sure?"
           okType={'warning'}
           onConfirm={() => {
             manageUser(record.username, 'demote', record);
           }}
         >
-          <Button theme="light" type="secondary" style={{ marginRight: 1 }}>降级</Button>
+          <Button theme="light" type="secondary" style={{ marginRight: 1 }}>Demote</Button>
         </Popconfirm>
         {record.status === 1 ?
           <Button theme="light" type="warning" style={{ marginRight: 1 }} onClick={async () => {
             manageUser(record.username, 'disable', record);
-          }}>禁用</Button> :
+          }}>Disable</Button> :
           <Button theme="light" type="secondary" style={{ marginRight: 1 }} onClick={async () => {
             manageUser(record.username, 'enable', record);
-          }} disabled={record.status === 3}>启用</Button>}
+          }} disabled={record.status === 3}>Enable</Button>}
         <Button theme="light" type="tertiary" style={{ marginRight: 1 }} onClick={() => {
           setEditingUser(record);
           setShowEditUser(true);
-        }}>编辑</Button>
+        }}>Edit</Button>
       </>
       <Popconfirm
-        title="确定是否要删除此用户？"
-        content="硬删除，此修改将不可逆"
+        title="Are you sure you want to delete this user?"
+        content="Hard delete, this change is irreversible"
         okType={'danger'}
         position={'left'}
         onConfirm={() => {
@@ -123,7 +123,7 @@ const UsersTable = () => {
           });
         }}
       >
-        <Button theme="light" type="danger" style={{ marginRight: 1 }}>删除</Button>
+        <Button theme="light" type="danger" style={{ marginRight: 1 }}>Delete</Button>
       </Popconfirm>
     </div>)
   }];
@@ -206,7 +206,7 @@ const UsersTable = () => {
     });
     const { success, message } = res.data;
     if (success) {
-      showSuccess('操作成功完成！');
+      showSuccess('Operation completed successfully!');
       let user = res.data.data;
       let newUsers = [...users];
       if (action === 'delete') {
@@ -224,14 +224,14 @@ const UsersTable = () => {
   const renderStatus = (status) => {
     switch (status) {
       case 1:
-        return <Tag size="large">已激活</Tag>;
+        return <Tag size="large">Active</Tag>;
       case 2:
         return (<Tag size="large" color="red">
-          已封禁
+          Banned
         </Tag>);
       default:
         return (<Tag size="large" color="grey">
-          未知状态
+          Unknown Status
         </Tag>);
     }
   };
@@ -313,13 +313,13 @@ const UsersTable = () => {
   const renderSelectedOption = (orderBy) => {
     switch (orderBy) {
       case 'quota':
-        return '按剩余额度排序';
+        return 'Sort by remaining quota';
       case 'used_quota':
-        return '按已用额度排序';
+        return 'Sort by used quota';
       case 'request_count':
-        return '按请求次数排序';
+        return 'Sort by request count';
       default:
-        return '默认排序';
+        return 'Default sort';
     }
   };
 
@@ -330,11 +330,11 @@ const UsersTable = () => {
         editingUser={editingUser}></EditUser>
       <Form onSubmit={searchUsers}>
         <Form.Input
-          label="搜索关键字"
+          label="Search Keyword"
           icon="search"
           field="keyword"
           iconPosition="left"
-          placeholder="搜索用户的 ID，用户名，显示名称，以及邮箱地址 ..."
+          placeholder="Search users by ID, username, display name, and email address ..."
           value={searchKeyword}
           loading={searching}
           onChange={value => handleKeywordChange(value)}
@@ -352,7 +352,7 @@ const UsersTable = () => {
         () => {
           setShowAddUser(true);
         }
-      }>添加用户</Button>
+      }>Add User</Button>
       <Dropdown
         trigger="click"
         position="bottomLeft"
@@ -360,10 +360,10 @@ const UsersTable = () => {
         onVisibleChange={(visible) => setDropdownVisible(visible)}
         render={
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: '' })}>默认排序</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'quota' })}>按剩余额度排序</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'used_quota' })}>按已用额度排序</Dropdown.Item>
-            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'request_count' })}>按请求次数排序</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: '' })}>Default sort</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'quota' })}>Sort by remaining quota</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'used_quota' })}>Sort by used quota</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOrderByChange('', { value: 'request_count' })}>Sort by request count</Dropdown.Item>
           </Dropdown.Menu>
         }
       >

@@ -72,22 +72,22 @@ const Header = () => {
         ) : (
           <>
             <Button component={Link} variant="text" to="/" color={pathname === '/' ? 'primary' : 'inherit'}>
-              首页
+              Home
             </Button>
             <Button component={Link} variant="text" to="/about" color={pathname === '/about' ? 'primary' : 'inherit'}>
-              关于
+              About
             </Button>
             <ThemeButton />
             {account.user ? (
               <>
                 <Button component={Link} variant="contained" to="/panel" color="primary">
-                  控制台
+                  Console
                 </Button>
                 <ProfileSection />
               </>
             ) : (
               <Button component={Link} variant="contained" to="/login" color="primary">
-                登录
+                Login
               </Button>
             )}
           </>
@@ -131,20 +131,20 @@ const Header = () => {
                     onClick={handleCloseMenu}
                   >
                     <ListItemButton component={Link} variant="text" to="/">
-                      <ListItemText primary={<Typography variant="body2">首页</Typography>} />
+                      <ListItemText primary={<Typography variant="body2">Home</Typography>} />
                     </ListItemButton>
 
                     <ListItemButton component={Link} variant="text" to="/about">
-                      <ListItemText primary={<Typography variant="body2">关于</Typography>} />
+                      <ListItemText primary={<Typography variant="body2">About</Typography>} />
                     </ListItemButton>
                     <Divider />
                     {account.user ? (
                       <ListItemButton component={Link} variant="contained" to="/panel" color="primary">
-                        控制台
+                        Console
                       </ListItemButton>
                     ) : (
                       <ListItemButton component={Link} variant="contained" to="/login" color="primary">
-                        登录
+                        Login
                       </ListItemButton>
                     )}
                   </List>

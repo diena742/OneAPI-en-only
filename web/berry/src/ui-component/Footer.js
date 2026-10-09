@@ -18,15 +18,15 @@ const Footer = () => {
             <Link href="https://github.com/songquanpeng/one-api" target="_blank">
               {siteInfo.system_name} {process.env.REACT_APP_VERSION}{' '}
             </Link>
-            由{' '}
+              Built by{' '}
             <Link href="https://github.com/songquanpeng" target="_blank">
               JustSong
             </Link>{' '}
-            构建，主题 berry 来自{' '}
+            , theme berry by{' '}
             <Link href="https://github.com/MartialBE" target="_blank">
               MartialBE
-            </Link>{' '}，源代码遵循
-            <Link href="https://opensource.org/licenses/mit-license.php"> MIT 协议</Link>
+            </Link>{' '}, source code licensed under the
+            <Link href="https://opensource.org/licenses/mit-license.php"> MIT License</Link>
           </>
         )}
       </Box>
