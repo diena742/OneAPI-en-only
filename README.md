@@ -1,7 +1,6 @@
 <p align="right">
-   <strong>中文</strong> | <a href="./README.en.md">English</a> | <a href="./README.ja.md">日本語</a>
+    <strong>English</strong> | <a href="./README.ja.md">日本語</a>
 </p>
-
 
 <p align="center">
   <a href="https://github.com/songquanpeng/one-api"><img src="https://raw.githubusercontent.com/songquanpeng/one-api/main/web/default/public/logo.png" width="150" height="150" alt="one-api logo"></a>
@@ -11,7 +10,7 @@
 
 # One API
 
-_✨ 通过标准的 OpenAI API 格式访问所有的大模型，开箱即用 ✨_
+_✨ Access all LLMs through the standard OpenAI API format, ready to use out of the box ✨_
 
 </div>
 
@@ -34,58 +33,56 @@ _✨ 通过标准的 OpenAI API 格式访问所有的大模型，开箱即用 �
 </p>
 
 <p align="center">
-  <a href="https://github.com/songquanpeng/one-api#部署">部署教程</a>
+  <a href="#deployment">Deployment Tutorial</a>
   ·
-  <a href="https://github.com/songquanpeng/one-api#使用方法">使用方法</a>
+  <a href="#usage">Usage</a>
   ·
-  <a href="https://github.com/songquanpeng/one-api/issues">意见反馈</a>
+  <a href="https://github.com/songquanpeng/one-api/issues">Feedback</a>
   ·
-  <a href="https://github.com/songquanpeng/one-api#截图展示">截图展示</a>
+  <a href="#screenshots">Screenshots</a>
   ·
-  <a href="https://openai.justsong.cn/">在线演示</a>
+  <a href="https://openai.justsong.cn/">Live Demo</a>
   ·
-  <a href="https://github.com/songquanpeng/one-api#常见问题">常见问题</a>
+  <a href="#faq">FAQ</a>
   ·
-  <a href="https://github.com/songquanpeng/one-api#相关项目">相关项目</a>
+  <a href="#related-projects">Related Projects</a>
   ·
-  <a href="https://iamazing.cn/page/reward">赞赏支持</a>
+  <a href="https://iamazing.cn/page/reward">Donate</a>
 </p>
 
 > [!NOTE]
-> 本项目为开源项目，使用者必须在遵循 OpenAI 的[使用条款](https://openai.com/policies/terms-of-use)以及**法律法规**的情况下使用，不得用于非法用途。
->
-> 根据[《生成式人工智能服务管理暂行办法》](http://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm)的要求，请勿对中国地区公众提供一切未经备案的生成式人工智能服务。
+> This project is open source. Users must comply with OpenAI's [Terms of Use](https://openai.com/policies/terms-of-use) and **applicable laws and regulations**, and it must not be used for illegal purposes.
 
 > [!NOTE]
-> 稳定版 / 预览版镜像地址：[justsong/one-api](https://hub.docker.com/repository/docker/justsong/one-api)
-> 或者 [ghcr.io/songquanpeng/one-api](https://github.com/songquanpeng/one-api/pkgs/container/one-api)
+> Stable / preview image repository: [justsong/one-api](https://hub.docker.com/repository/docker/justsong/one-api)
+> or [ghcr.io/songquanpeng/one-api](https://github.com/songquanpeng/one-api/pkgs/container/one-api)
 >
-> alpha 版镜像地址：[justsong/one-api-alpha](https://hub.docker.com/repository/docker/justsong/one-api-alpha)
-> 或者 [ghcr.io/songquanpeng/one-api-alpha](https://github.com/songquanpeng/one-api/pkgs/container/one-api-alpha)
+> alpha image repository: [justsong/one-api-alpha](https://hub.docker.com/repository/docker/justsong/one-api-alpha)
+> or [ghcr.io/songquanpeng/one-api-alpha](https://github.com/songquanpeng/one-api/pkgs/container/one-api-alpha)
 
 > [!WARNING]
-> 使用 root 用户初次登录系统后，务必修改默认密码 `123456`！
+> After logging in for the first time with the `root` user, be sure to change the default password `123456`!
 
-## 功能
-1. 支持多种大模型：
-   + [x] [OpenAI ChatGPT 系列模型](https://platform.openai.com/docs/guides/gpt/chat-completions-api)（支持 [Azure OpenAI API](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference)）
-   + [x] [Anthropic Claude 系列模型](https://anthropic.com) (支持 AWS Claude)
-   + [x] [Google PaLM2/Gemini 系列模型](https://developers.generativeai.google)
-   + [x] [Mistral 系列模型](https://mistral.ai/)
-   + [x] [字节跳动豆包大模型（火山引擎）](https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=2QXCA1VI)
-   + [x] [百度文心一言系列模型](https://cloud.baidu.com/doc/WENXINWORKSHOP/index.html)
-   + [x] [阿里通义千问系列模型](https://help.aliyun.com/document_detail/2400395.html)
-   + [x] [讯飞星火认知大模型](https://www.xfyun.cn/doc/spark/Web.html)
-   + [x] [智谱 ChatGLM 系列模型](https://bigmodel.cn)
-   + [x] [360 智脑](https://ai.360.cn)
-   + [x] [腾讯混元大模型](https://cloud.tencent.com/document/product/1729)
+## Features
+1. Support for multiple large models:
+   + [x] [OpenAI ChatGPT Series Models](https://platform.openai.com/docs/guides/gpt/chat-completions-api) (Supports [Azure OpenAI API](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference))
+   + [x] [Anthropic Claude Series Models](https://anthropic.com) (Supports AWS Claude)
+   + [x] [Google PaLM2 / Gemini Series Models](https://developers.generativeai.google)
+   + [x] [Mistral Series Models](https://mistral.ai/)
+   + [x] [ByteDance Doubao (Volcano Engine)](https://www.volcengine.com/experience/ark)
+   + [x] [Baidu Wenxin Yiyuan Series Models](https://cloud.baidu.com/doc/WENXINWORKSHOP/index.html)
+   + [x] [Alibaba Tongyi Qianwen Series Models](https://help.aliyun.com/document_detail/2400395.html)
+   + [x] [iFlytek Spark Cognitive Models](https://www.xfyun.cn/doc/spark/Web.html)
+   + [x] [Zhipu ChatGLM Series Models](https://bigmodel.cn)
+   + [x] [360 Zhibrain](https://ai.360.cn)
+   + [x] [Tencent Hunyuan Models](https://cloud.tencent.com/document/product/1729)
    + [x] [Moonshot AI](https://platform.moonshot.cn/)
-   + [x] [百川大模型](https://platform.baichuan-ai.com)
-   + [x] [MINIMAX](https://api.minimax.chat/)
+   + [x] [Baichuan Models](https://platform.baichuan-ai.com)
+   + [x] [MiniMax](https://api.minimax.chat/)
    + [x] [Groq](https://wow.groq.com/)
    + [x] [Ollama](https://github.com/ollama/ollama)
-   + [x] [零一万物](https://platform.lingyiwanwu.com/)
-   + [x] [阶跃星辰](https://platform.stepfun.com/)
+   + [x] [01.AI](https://platform.lingyiwanwu.com/)
+   + [x] [StepFun](https://platform.stepfun.com/)
    + [x] [Coze](https://www.coze.com/)
    + [x] [Cohere](https://cohere.com/)
    + [x] [DeepSeek](https://www.deepseek.com/)
@@ -93,186 +90,186 @@ _✨ 通过标准的 OpenAI API 格式访问所有的大模型，开箱即用 �
    + [x] [DeepL](https://www.deepl.com/)
    + [x] [together.ai](https://www.together.ai/)
    + [x] [novita.ai](https://www.novita.ai/)
-   + [x] [硅基流动 SiliconCloud](https://cloud.siliconflow.cn/i/rKXmRobW)
+   + [x] [SiliconCloud](https://cloud.siliconflow.cn/)
    + [x] [xAI](https://x.ai/)
-2. 支持配置镜像以及众多[第三方代理服务](https://iamazing.cn/page/openai-api-third-party-services)。
-3. 支持通过**负载均衡**的方式访问多个渠道。
-4. 支持 **stream 模式**，可以通过流式传输实现打字机效果。
-5. 支持**多机部署**，[详见此处](#多机部署)。
-6. 支持**令牌管理**，设置令牌的过期时间、额度、允许的 IP 范围以及允许的模型访问。
-7. 支持**兑换码管理**，支持批量生成和导出兑换码，可使用兑换码为账户进行充值。
-8. 支持**渠道管理**，批量创建渠道。
-9. 支持**用户分组**以及**渠道分组**，支持为不同分组设置不同的倍率。
-10. 支持渠道**设置模型列表**。
-11. 支持**查看额度明细**。
-12. 支持**用户邀请奖励**。
-13. 支持以美元为单位显示额度。
-14. 支持发布公告，设置充值链接，设置新用户初始额度。
-15. 支持模型映射，重定向用户的请求模型，如无必要请不要设置，设置之后会导致请求体被重新构造而非直接透传，会导致部分还未正式支持的字段无法传递成功。
-16. 支持失败自动重试。
-17. 支持绘图接口。
-18. 支持 [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/providers/openai/)，渠道设置的代理部分填写 `https://gateway.ai.cloudflare.com/v1/ACCOUNT_TAG/GATEWAY/openai` 即可。
-19. 支持丰富的**自定义**设置，
-    1. 支持自定义系统名称，logo 以及页脚。
-    2. 支持自定义首页和关于页面，可以选择使用 HTML & Markdown 代码进行自定义，或者使用一个单独的网页通过 iframe 嵌入。
-20. 支持通过系统访问令牌调用管理 API，进而**在无需二开的情况下扩展和自定义** One API 的功能，详情请参考此处 [API 文档](./docs/API.md)。
-21. 支持 Cloudflare Turnstile 用户校验。
-22. 支持用户管理，支持**多种用户登录注册方式**：
-    + 邮箱登录注册（支持注册邮箱白名单）以及通过邮箱进行密码重置。
-    + 支持[飞书授权登录](https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/authen-v1/authorize/get)（[这里有 One API 的实现细节阐述供参考](https://iamazing.cn/page/feishu-oauth-login)）。
-    + 支持 [GitHub 授权登录](https://github.com/settings/applications/new)。
-    + 微信公众号授权（需要额外部署 [WeChat Server](https://github.com/songquanpeng/wechat-server)）。
-23. 支持主题切换，设置环境变量 `THEME` 即可，默认为 `default`，欢迎 PR 更多主题，具体参考[此处](./web/README.md)。
-24. 配合 [Message Pusher](https://github.com/songquanpeng/message-pusher) 可将报警信息推送到多种 App 上。
+2. Supports configuring mirrors and many [third-party proxy services](https://iamazing.cn/page/openai-api-third-party-services).
+3. Supports accessing multiple channels through **load balancing**.
+4. Supports **stream mode**, enabling a typewriter effect through streaming transmission.
+5. Supports **multi-machine deployment**. [See here](#multi-machine-deployment) for more details.
+6. Supports **token management**, allowing you to set token expiration time, quota, allowed IP ranges, and allowed models.
+7. Supports **voucher (redemption code) management**, enabling batch generation and export. Vouchers can be used to top up accounts.
+8. Supports **channel management**, allowing bulk creation of channels.
+9. Supports **user groups** and **channel groups**, allowing different multipliers to be set for different groups.
+10. Supports configuring a **model list** per channel.
+11. Supports **viewing quota details**.
+12. Supports **user invite rewards**.
+13. Supports displaying quota in USD.
+14. Supports publishing announcements, setting top-up links, and setting initial balance for new users.
+15. Supports model mapping to redirect user request models. If not necessary, please do not set it. Setting it will cause the request body to be reconstructed instead of being passed through directly, which may prevent some fields that are not yet officially supported from being transmitted.
+16. Supports automatic retry on failure.
+17. Supports image generation interfaces.
+18. Supports [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/providers/openai/). Set the channel's proxy field to `https://gateway.ai.cloudflare.com/v1/ACCOUNT_TAG/GATEWAY/openai`.
+19. Offers rich **customization** options:
+   1. Supports customizing the system name, logo, and footer.
+   2. Supports customizing the homepage and about page, either with HTML & Markdown code, or by embedding a standalone webpage through an iframe.
+20. Supports calling the management API through a system access token, making it possible to **extend and customize** One API without secondary development. See the [API documentation](./docs/API.md).
+21. Supports Cloudflare Turnstile user verification.
+22. Supports user management and **multiple login/registration methods**:
+    + Email login/registration (supports email whitelist) and password reset via email.
+    + [Feishu (Lark) OAuth](https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/authen-v1/authorize/get).
+    + [GitHub OAuth](https://github.com/settings/applications/new).
+    + WeChat Official Account authorization (requires an additional deployment of [WeChat Server](https://github.com/songquanpeng/wechat-server)).
+23. Supports theme switching by setting the environment variable `THEME` (defaults to `default`). PRs for more themes are welcome. See [here](./web/README.md) for details.
+24. With [Message Pusher](https://github.com/songquanpeng/message-pusher), alert messages can be pushed to various apps.
 
-## 部署
-### 基于 Docker 进行部署
+## Deployment
+### Docker Deployment
 ```shell
-# 使用 SQLite 的部署命令：
+# Deployment command using SQLite:
 docker run --name one-api -d --restart always -p 3000:3000 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api
-# 使用 MySQL 的部署命令，在上面的基础上添加 `-e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi"`，请自行修改数据库连接参数，不清楚如何修改请参见下面环境变量一节。
-# 例如：
+# Deployment command using MySQL: add `-e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi"` to the command above. Modify the database connection parameters yourself; see the environment variables section below if you are unsure how.
+# For example:
 docker run --name one-api -d --restart always -p 3000:3000 -e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi" -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api
 ```
 
-其中，`-p 3000:3000` 中的第一个 `3000` 是宿主机的端口，可以根据需要进行修改。
+The first `3000` in `-p 3000:3000` is the host port and can be modified as needed.
 
-数据和日志将会保存在宿主机的 `/home/ubuntu/data/one-api` 目录，请确保该目录存在且具有写入权限，或者更改为合适的目录。
+Data and logs will be saved in the `/home/ubuntu/data/one-api` directory on the host. Please ensure the directory exists and has write permissions, or change it to a suitable directory.
 
-如果启动失败，请添加 `--privileged=true`，具体参考 https://github.com/songquanpeng/one-api/issues/482 。
+If startup fails, add `--privileged=true`. See https://github.com/songquanpeng/one-api/issues/482.
 
-如果上面的镜像无法拉取，可以尝试使用 GitHub 的 Docker 镜像，将上面的 `justsong/one-api` 替换为 `ghcr.io/songquanpeng/one-api` 即可。
+If the image above cannot be pulled, try the GitHub Docker image by replacing `justsong/one-api` with `ghcr.io/songquanpeng/one-api`.
 
-如果你的并发量较大，**务必**设置 `SQL_DSN`，详见下面[环境变量](#环境变量)一节。
+If your concurrency is high, be **sure** to set `SQL_DSN`. See the [environment variables](#environment-variables) section below.
 
-更新命令：`docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`
+Update command: `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`
 
-Nginx 的参考配置：
+Nginx reference configuration:
 ```
 server{
-   server_name openai.justsong.cn;  # 请根据实际情况修改你的域名
+   server_name openai.justsong.cn;  # Modify your domain name accordingly
 
    location / {
           client_max_body_size  64m;
           proxy_http_version 1.1;
-          proxy_pass http://localhost:3000;  # 请根据实际情况修改你的端口
+          proxy_pass http://localhost:3000;  # Modify your port accordingly
           proxy_set_header Host $host;
           proxy_set_header X-Forwarded-For $remote_addr;
           proxy_cache_bypass $http_upgrade;
           proxy_set_header Accept-Encoding gzip;
-          proxy_read_timeout 300s;  # GPT-4 需要较长的超时时间，请自行调整
+          proxy_read_timeout 300s;  # GPT-4 requires a longer timeout; adjust as needed
    }
 }
 ```
 
-之后使用 Let's Encrypt 的 certbot 配置 HTTPS：
+Then configure HTTPS with Let's Encrypt certbot:
 ```bash
-# Ubuntu 安装 certbot：
+# Install certbot on Ubuntu:
 sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
-# 生成证书 & 修改 Nginx 配置
+# Generate certificates & modify the Nginx configuration
 sudo certbot --nginx
-# 根据指示进行操作
-# 重启 Nginx
+# Follow the prompts
+# Restart Nginx
 sudo service nginx restart
 ```
 
-初始账号用户名为 `root`，密码为 `123456`。
+The initial account username is `root` and the password is `123456`.
 
-### 通过宝塔面板进行一键部署
-1. 安装宝塔面板9.2.0及以上版本，前往 [宝塔面板](https://www.bt.cn/new/download.html?r=dk_oneapi) 官网，选择正式版的脚本下载安装；
-2. 安装后登录宝塔面板，在左侧菜单栏中点击 `Docker`，首次进入会提示安装 `Docker` 服务，点击立即安装，按提示完成安装；
-3. 安装完成后在应用商店中搜索 `One-API`，点击安装，配置域名等基本信息即可完成安装；
+### One-Click Deployment with Baota Panel
+1. Install Baota Panel version 9.2.0 or later. Go to the [Baota Panel](https://www.bt.cn/new/download.html?r=dk_oneapi) official website and download and install the official script;
+2. After installation, log in to the Baota Panel and click `Docker` in the left menu. On first entry it will prompt you to install the `Docker` service. Click install now and follow the prompts;
+3. After installation, search for `One-API` in the app store, click install, configure the domain and other basic information to complete the installation.
 
-### 基于 Docker Compose 进行部署
+### Docker Compose Deployment
 
-> 仅启动方式不同，参数设置不变，请参考基于 Docker 部署部分
+> Only the startup method differs; the parameter settings are unchanged. Please refer to the Docker Deployment section.
 
 ```shell
-# 目前支持 MySQL 启动，数据存储在 ./data/mysql 文件夹内
+# Currently supports MySQL startup, with data stored in the ./data/mysql folder
 docker-compose up -d
 
-# 查看部署状态
+# Check deployment status
 docker-compose ps
 ```
 
-### 手动部署
-1. 从 [GitHub Releases](https://github.com/songquanpeng/one-api/releases/latest) 下载可执行文件或者从源码编译：
+### Manual Deployment
+1. Download the executable file from [GitHub Releases](https://github.com/songquanpeng/one-api/releases/latest) or compile from source:
    ```shell
    git clone https://github.com/songquanpeng/one-api.git
 
-   # 构建前端
+   # Build the frontend
    cd one-api/web/default
    npm install
    npm run build
 
-   # 构建后端
+   # Build the backend
    cd ../..
    go mod download
    go build -ldflags "-s -w" -o one-api
-   ````
-2. 运行：
+   ```
+2. Run:
    ```shell
    chmod u+x one-api
    ./one-api --port 3000 --log-dir ./logs
    ```
-3. 访问 [http://localhost:3000/](http://localhost:3000/) 并登录。初始账号用户名为 `root`，密码为 `123456`。
+3. Visit [http://localhost:3000/](http://localhost:3000/) and log in. The initial account username is `root` and the password is `123456`.
 
-更加详细的部署教程[参见此处](https://iamazing.cn/page/how-to-deploy-a-website)。
+For a more detailed deployment tutorial, [see here](https://iamazing.cn/page/how-to-deploy-a-website).
 
-### 多机部署
-1. 所有服务器 `SESSION_SECRET` 设置一样的值。
-2. 必须设置 `SQL_DSN`，使用 MySQL 数据库而非 SQLite，所有服务器连接同一个数据库。
-3. 所有从服务器必须设置 `NODE_TYPE` 为 `slave`，不设置则默认为主服务器。
-4. 设置 `SYNC_FREQUENCY` 后服务器将定期从数据库同步配置，在使用远程数据库的情况下，推荐设置该项并启用 Redis，无论主从。
-5. 从服务器可以选择设置 `FRONTEND_BASE_URL`，以重定向页面请求到主服务器。
-6. 从服务器上**分别**装好 Redis，设置好 `REDIS_CONN_STRING`，这样可以做到在缓存未过期的情况下数据库零访问，可以减少延迟（Redis 集群或者哨兵模式的支持请参考环境变量说明）。
-7. 如果主服务器访问数据库延迟也比较高，则也需要启用 Redis，并设置 `SYNC_FREQUENCY`，以定期从数据库同步配置。
+### Multi-machine Deployment
+1. Set the same `SESSION_SECRET` value on all servers.
+2. You must set `SQL_DSN` to use a MySQL database instead of SQLite. All servers connect to the same database.
+3. All slave servers must set `NODE_TYPE` to `slave`; if not set, they default to master.
+4. After setting `SYNC_FREQUENCY`, the server will periodically sync configurations from the database. When using a remote database, it is recommended to set this and enable Redis, regardless of master or slave.
+5. Slave servers can optionally set `FRONTEND_BASE_URL` to redirect page requests to the master server.
+6. Install Redis **separately** on slave servers and set `REDIS_CONN_STRING`, so that the database can be accessed with zero latency while the cache has not expired (see the environment variables description for Redis cluster or sentinel mode support).
+7. If the master server also has high latency accessing the database, Redis must also be enabled and `SYNC_FREQUENCY` set, to periodically sync configurations from the database.
 
-环境变量的具体使用方法详见[此处](#环境变量)。
+For details on how to use environment variables, [see here](#environment-variables).
 
-### 宝塔部署教程
+### Baota Deployment Tutorial
 
-详见 [#175](https://github.com/songquanpeng/one-api/issues/175)。
+See [#175](https://github.com/songquanpeng/one-api/issues/175).
 
-如果部署后访问出现空白页面，详见 [#97](https://github.com/songquanpeng/one-api/issues/97)。
+If you encounter a blank page after deployment, see [#97](https://github.com/songquanpeng/one-api/issues/97).
 
-### 部署第三方服务配合 One API 使用
-> 欢迎 PR 添加更多示例。
+### Deploy Third-Party Services with One API
+> PRs adding more examples are welcome.
 
 #### ChatGPT Next Web
-项目主页：https://github.com/Yidadaa/ChatGPT-Next-Web
+Project homepage: https://github.com/Yidadaa/ChatGPT-Next-Web
 
 ```bash
 docker run --name chat-next-web -d -p 3001:3000 yidadaa/chatgpt-next-web
 ```
 
-注意修改端口号，之后在页面上设置接口地址（例如：https://openai.justsong.cn/ ）和 API Key 即可。
+Remember to change the port number, then set the interface address (e.g., https://openai.justsong.cn/) and API Key on the page.
 
 #### ChatGPT Web
-项目主页：https://github.com/Chanzhaoyu/chatgpt-web
+Project homepage: https://github.com/Chanzhaoyu/chatgpt-web
 
 ```bash
 docker run --name chatgpt-web -d -p 3002:3002 -e OPENAI_API_BASE_URL=https://openai.justsong.cn -e OPENAI_API_KEY=sk-xxx chenzhaoyu94/chatgpt-web
 ```
 
-注意修改端口号、`OPENAI_API_BASE_URL` 和 `OPENAI_API_KEY`。
+Remember to change the port number, `OPENAI_API_BASE_URL`, and `OPENAI_API_KEY`.
 
-#### QChatGPT - QQ机器人
-项目主页：https://github.com/RockChinQ/QChatGPT
+#### QChatGPT - QQ bot
+Project homepage: https://github.com/RockChinQ/QChatGPT
 
-根据[文档](https://qchatgpt.rockchin.top)完成部署后，在 `data/provider.json`设置`requester.openai-chat-completions.base-url`为 One API 实例地址，并填写 API Key 到 `keys.openai` 组中，设置 `model` 为要使用的模型名称。
+After completing the deployment according to the [documentation](https://qchatgpt.rockchin.top), set `requester.openai-chat-completions.base-url` in `data/provider.json` to your One API instance address, fill in the API Key in the `keys.openai` group, and set `model` to the model name you want to use.
 
-运行期间可以通过`!model`命令查看、切换可用模型。
+During operation you can use the `!model` command to view and switch available models.
 
-### 部署到第三方平台
+### Deploy to Third-Party Platforms
 <details>
-<summary><strong>部署到 Sealos </strong></summary>
+<summary><strong>Deploy to Sealos</strong></summary>
 <div>
 
-> Sealos 的服务器在国外，不需要额外处理网络问题，支持高并发 & 动态伸缩。
+> Sealos servers are overseas, so no extra network handling is needed. It supports high concurrency & dynamic scaling.
 
-点击以下按钮一键部署（部署后访问出现 404 请等待 3~5 分钟）：
+Click the button below for one-click deployment (if you get a 404 after deployment, wait 3-5 minutes):
 
 [![Deploy-on-Sealos.svg](https://raw.githubusercontent.com/labring-actions/templates/main/Deploy-on-Sealos.svg)](https://cloud.sealos.io/?openapp=system-fastdeploy?templateName=one-api)
 
@@ -280,56 +277,56 @@ docker run --name chatgpt-web -d -p 3002:3002 -e OPENAI_API_BASE_URL=https://ope
 </details>
 
 <details>
-<summary><strong>部署到 Zeabur</strong></summary>
+<summary><strong>Deploy to Zeabur</strong></summary>
 <div>
 
-> Zeabur 的服务器在国外，自动解决了网络的问题，同时免费的额度也足够个人使用
+> Zeabur servers are overseas, which automatically solves network issues, and the free quota is sufficient for personal use.
 
 [![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/7Q0KO3)
 
-1. 首先 fork 一份代码。
-2. 进入 [Zeabur](https://zeabur.com?referralCode=songquanpeng)，登录，进入控制台。
-3. 新建一个 Project，在 Service -> Add Service 选择 Marketplace，选择 MySQL，并记下连接参数（用户名、密码、地址、端口）。
-4. 复制链接参数，运行 ```create database `one-api` ``` 创建数据库。
-5. 然后在 Service -> Add Service，选择 Git（第一次使用需要先授权），选择你 fork 的仓库。
-6. Deploy 会自动开始，先取消。进入下方 Variable，添加一个 `PORT`，值为 `3000`，再添加一个 `SQL_DSN`，值为 `<username>:<password>@tcp(<addr>:<port>)/one-api` ，然后保存。 注意如果不填写 `SQL_DSN`，数据将无法持久化，重新部署后数据会丢失。
-7. 选择 Redeploy。
-8. 进入下方 Domains，选择一个合适的域名前缀，如 "my-one-api"，最终域名为 "my-one-api.zeabur.app"，也可以 CNAME 自己的域名。
-9. 等待部署完成，点击生成的域名进入 One API。
+1. First, fork the code.
+2. Go to [Zeabur](https://zeabur.com?referralCode=songquanpeng), log in, and enter the console.
+3. Create a new Project. In Service -> Add Service, select Marketplace, choose MySQL, and note down the connection parameters (username, password, address, port).
+4. Copy the connection parameters and run ```create database `one-api` ``` to create the database.
+5. Then in Service -> Add Service, select Git (authorization is required the first time), and choose your forked repository.
+6. Deployment will start automatically; cancel it for now. Go to the Variable section below, add a `PORT` with value `3000`, then add a `SQL_DSN` with value `<username>:<password>@tcp(<addr>:<port>)/one-api`, and save. Note: if `SQL_DSN` is not set, data will not be persisted and will be lost after redeployment.
+7. Select Redeploy.
+8. Go to the Domains section below, choose a suitable domain prefix such as "my-one-api". The final domain will be "my-one-api.zeabur.app". You can also CNAME your own domain.
+9. Wait for the deployment to complete, then click the generated domain to enter One API.
 
 </div>
 </details>
 
 <details>
-<summary><strong>部署到 Render</strong></summary>
+<summary><strong>Deploy to Render</strong></summary>
 <div>
 
-> Render 提供免费额度，绑卡后可以进一步提升额度
+> Render provides a free tier, and linking a card can further increase the quota.
 
-Render 可以直接部署 docker 镜像，不需要 fork 仓库：https://dashboard.render.com
+Render can deploy the docker image directly without forking the repository: https://dashboard.render.com
 
 </div>
 </details>
 
-## 配置
-系统本身开箱即用。
+## Configuration
+The system is ready to use out of the box.
 
-你可以通过设置环境变量或者命令行参数进行配置。
+You can configure it by setting environment variables or command line parameters.
 
-等到系统启动后，使用 `root` 用户登录系统并做进一步的配置。
+After the system starts, log in with the `root` user and make further configurations.
 
-**Note**：如果你不知道某个配置项的含义，可以临时删掉值以看到进一步的提示文字。
+**Note**: If you do not know the meaning of a configuration item, you can temporarily remove its value to see further hint text.
 
-## 使用方法
-在`渠道`页面中添加你的 API Key，之后在`令牌`页面中新增访问令牌。
+## Usage
+Add your API Key on the `Channels` page, then add an access token on the `Tokens` page.
 
-之后就可以使用你的令牌访问 One API 了，使用方式与 [OpenAI API](https://platform.openai.com/docs/api-reference/introduction) 一致。
+After that, you can use your token to access One API, exactly like the [OpenAI API](https://platform.openai.com/docs/api-reference/introduction).
 
-你需要在各种用到 OpenAI API 的地方设置 API Base 为你的 One API 的部署地址，例如：`https://openai.justsong.cn`，API Key 则为你在 One API 中生成的令牌。
+In places that use the OpenAI API, set the API Base to your One API deployment address, e.g., `https://openai.justsong.cn`, and set the API Key to the token generated in One API.
 
-注意，具体的 API Base 的格式取决于你所使用的客户端。
+Note that the exact API Base format depends on the client you are using.
 
-例如对于 OpenAI 的官方库：
+For example, for OpenAI's official libraries:
 ```bash
 OPENAI_API_KEY="sk-xxxxxx"
 OPENAI_API_BASE="https://<HOST>:<PORT>/v1"
@@ -337,144 +334,144 @@ OPENAI_API_BASE="https://<HOST>:<PORT>/v1"
 
 ```mermaid
 graph LR
-    A(用户)
-    A --->|使用 One API 分发的 key 进行请求| B(One API)
-    B -->|中继请求| C(OpenAI)
-    B -->|中继请求| D(Azure)
-    B -->|中继请求| E(其他 OpenAI API 格式下游渠道)
-    B -->|中继并修改请求体和返回体| F(非 OpenAI API 格式下游渠道)
+    A(User)
+    A --->|Request using a key distributed by One API| B(One API)
+    B -->|Relay request| C(OpenAI)
+    B -->|Relay request| D(Azure)
+    B -->|Relay request| E(Other downstream channels in OpenAI API format)
+    B -->|Relay, modify request and response body| F(Other downstream channels not in OpenAI API format)
 ```
 
-可以通过在令牌后面添加渠道 ID 的方式指定使用哪一个渠道处理本次请求，例如：`Authorization: Bearer ONE_API_KEY-CHANNEL_ID`。
-注意，需要是管理员用户创建的令牌才能指定渠道 ID。
+To specify which channel handles the current request, you can append the channel ID to the token, e.g., `Authorization: Bearer ONE_API_KEY-CHANNEL_ID`.
+Note: only tokens created by an administrator can specify a channel ID.
 
-不加的话将会使用负载均衡的方式使用多个渠道。
+If no channel ID is given, load balancing will be used across multiple channels.
 
-### 环境变量
-> One API 支持从 `.env` 文件中读取环境变量，请参照 `.env.example` 文件，使用时请将其重命名为 `.env`。
-1. `REDIS_CONN_STRING`：设置之后将使用 Redis 作为缓存使用。
-   + 例子：`REDIS_CONN_STRING=redis://default:redispw@localhost:49153`
-   + 如果数据库访问延迟很低，没有必要启用 Redis，启用后反而会出现数据滞后的问题。
-   + 如果需要使用哨兵或者集群模式：
-     + 则需要把该环境变量设置为节点列表，例如：`localhost:49153,localhost:49154,localhost:49155`。
-     + 除此之外还需要设置以下环境变量：
-       + `REDIS_PASSWORD`：Redis 集群或者哨兵模式下的密码设置。
-       + `REDIS_MASTER_NAME`：Redis 哨兵模式下主节点的名称。
-2. `SESSION_SECRET`：设置之后将使用固定的会话密钥，这样系统重新启动后已登录用户的 cookie 将依旧有效。
-   + 例子：`SESSION_SECRET=random_string`
-3. `SQL_DSN`：设置之后将使用指定数据库而非 SQLite，请使用 MySQL 或 PostgreSQL。
-   + 例子：
-     + MySQL：`SQL_DSN=root:123456@tcp(localhost:3306)/oneapi`
-     + PostgreSQL：`SQL_DSN=postgres://postgres:123456@localhost:5432/oneapi`（适配中，欢迎反馈）
-   + 注意需要提前建立数据库 `oneapi`，无需手动建表，程序将自动建表。
-   + 如果使用本地数据库：部署命令可添加 `--network="host"` 以使得容器内的程序可以访问到宿主机上的 MySQL。
-   + 如果使用云数据库：如果云服务器需要验证身份，需要在连接参数中添加 `?tls=skip-verify`。
-   + 请根据你的数据库配置修改下列参数（或者保持默认值）：
-     + `SQL_MAX_IDLE_CONNS`：最大空闲连接数，默认为 `100`。
-     + `SQL_MAX_OPEN_CONNS`：最大打开连接数，默认为 `1000`。
-       + 如果报错 `Error 1040: Too many connections`，请适当减小该值。
-     + `SQL_CONN_MAX_LIFETIME`：连接的最大生命周期，默认为 `60`，单位分钟。
-4. `LOG_SQL_DSN`：设置之后将为 `logs` 表使用独立的数据库，请使用 MySQL 或 PostgreSQL。
-5. `FRONTEND_BASE_URL`：设置之后将重定向页面请求到指定的地址，仅限从服务器设置。
-   + 例子：`FRONTEND_BASE_URL=https://openai.justsong.cn`
-6. `MEMORY_CACHE_ENABLED`：启用内存缓存，会导致用户额度的更新存在一定的延迟，可选值为 `true` 和 `false`，未设置则默认为 `false`。
-   + 例子：`MEMORY_CACHE_ENABLED=true`
-7. `SYNC_FREQUENCY`：在启用缓存的情况下与数据库同步配置的频率，单位为秒，默认为 `600` 秒。
-   + 例子：`SYNC_FREQUENCY=60`
-8. `NODE_TYPE`：设置之后将指定节点类型，可选值为 `master` 和 `slave`，未设置则默认为 `master`。
-   + 例子：`NODE_TYPE=slave`
-9. `CHANNEL_UPDATE_FREQUENCY`：设置之后将定期更新渠道余额，单位为分钟，未设置则不进行更新。
-   + 例子：`CHANNEL_UPDATE_FREQUENCY=1440`
-10. `CHANNEL_TEST_FREQUENCY`：设置之后将定期检查渠道，单位为分钟，未设置则不进行检查。 
-   +例子：`CHANNEL_TEST_FREQUENCY=1440`
-11. `POLLING_INTERVAL`：批量更新渠道余额以及测试可用性时的请求间隔，单位为秒，默认无间隔。
-    + 例子：`POLLING_INTERVAL=5`
-12. `BATCH_UPDATE_ENABLED`：启用数据库批量更新聚合，会导致用户额度的更新存在一定的延迟可选值为 `true` 和 `false`，未设置则默认为 `false`。
-    + 例子：`BATCH_UPDATE_ENABLED=true`
-    + 如果你遇到了数据库连接数过多的问题，可以尝试启用该选项。
-13. `BATCH_UPDATE_INTERVAL=5`：批量更新聚合的时间间隔，单位为秒，默认为 `5`。
-    + 例子：`BATCH_UPDATE_INTERVAL=5`
-14. 请求频率限制：
-    + `GLOBAL_API_RATE_LIMIT`：全局 API 速率限制（除中继请求外），单 ip 三分钟内的最大请求数，默认为 `180`。
-    + `GLOBAL_WEB_RATE_LIMIT`：全局 Web 速率限制，单 ip 三分钟内的最大请求数，默认为 `60`。
-15. 编码器缓存设置：
-    + `TIKTOKEN_CACHE_DIR`：默认程序启动时会联网下载一些通用的词元的编码，如：`gpt-3.5-turbo`，在一些网络环境不稳定，或者离线情况，可能会导致启动有问题，可以配置此目录缓存数据，可迁移到离线环境。
-    + `DATA_GYM_CACHE_DIR`：目前该配置作用与 `TIKTOKEN_CACHE_DIR` 一致，但是优先级没有它高。
-16. `RELAY_TIMEOUT`：中继超时设置，单位为秒，默认不设置超时时间。
-17. `RELAY_PROXY`：设置后使用该代理来请求 API。
-18. `USER_CONTENT_REQUEST_TIMEOUT`：用户上传内容下载超时时间，单位为秒。
-19. `USER_CONTENT_REQUEST_PROXY`：设置后使用该代理来请求用户上传的内容，例如图片。
-20. `SQLITE_BUSY_TIMEOUT`：SQLite 锁等待超时设置，单位为毫秒，默认 `3000`。
-21. `GEMINI_SAFETY_SETTING`：Gemini 的安全设置，默认 `BLOCK_NONE`。
-22. `GEMINI_VERSION`：One API 所使用的 Gemini 版本，默认为 `v1`。
-23. `THEME`：系统的主题设置，默认为 `default`，具体可选值参考[此处](./web/README.md)。
-24. `ENABLE_METRIC`：是否根据请求成功率禁用渠道，默认不开启，可选值为 `true` 和 `false`。
-25. `METRIC_QUEUE_SIZE`：请求成功率统计队列大小，默认为 `10`。
-26. `METRIC_SUCCESS_RATE_THRESHOLD`：请求成功率阈值，默认为 `0.8`。
-27. `INITIAL_ROOT_TOKEN`：如果设置了该值，则在系统首次启动时会自动创建一个值为该环境变量值的 root 用户令牌。
-28. `INITIAL_ROOT_ACCESS_TOKEN`：如果设置了该值，则在系统首次启动时会自动创建一个值为该环境变量的 root 用户创建系统管理令牌。
-29. `ENFORCE_INCLUDE_USAGE`：是否强制在 stream 模型下返回 usage，默认不开启，可选值为 `true` 和 `false`。
-30. `TEST_PROMPT`：测试模型时的用户 prompt，默认为 `Print your model name exactly and do not output without any other text.`。
+### Environment Variables
+> One API supports reading environment variables from a `.env` file. Please refer to the `.env.example` file and rename it to `.env` when using.
+1. `REDIS_CONN_STRING`: When set, Redis will be used as cache.
+   + Example: `REDIS_CONN_STRING=redis://default:redispw@localhost:49153`
+   + If database access latency is very low, enabling Redis is unnecessary; enabling it may actually cause data lag.
+   + If you need to use sentinel or cluster mode:
+     + Set this environment variable to the node list, e.g., `localhost:49153,localhost:49154,localhost:49155`.
+     + In addition, set the following environment variables:
+       + `REDIS_PASSWORD`: The password setting for Redis cluster or sentinel mode.
+       + `REDIS_MASTER_NAME`: The name of the master node in Redis sentinel mode.
+2. `SESSION_SECRET`: When set, a fixed session key will be used, so that cookies of logged-in users remain valid after the system restarts.
+   + Example: `SESSION_SECRET=random_string`
+3. `SQL_DSN`: When set, the specified database will be used instead of SQLite. Please use MySQL or PostgreSQL.
+   + Examples:
+     + MySQL: `SQL_DSN=root:123456@tcp(localhost:3306)/oneapi`
+     + PostgreSQL: `SQL_DSN=postgres://postgres:123456@localhost:5432/oneapi` (in adaptation; feedback welcome)
+   + Note that you need to create the database `oneapi` in advance. No manual table creation is needed; the program will create tables automatically.
+   + If using a local database: you can add `--network="host"` to the deployment command so that the program inside the container can access MySQL on the host.
+   + If using a cloud database: if the cloud server requires identity verification, add `?tls=skip-verify` to the connection parameters.
+   + Modify the following parameters according to your database configuration (or keep the defaults):
+     + `SQL_MAX_IDLE_CONNS`: Maximum number of idle connections, default `100`.
+     + `SQL_MAX_OPEN_CONNS`: Maximum number of open connections, default `1000`.
+       + If you get the error `Error 1040: Too many connections`, reduce this value appropriately.
+     + `SQL_CONN_MAX_LIFETIME`: Maximum connection lifetime, default `60` minutes.
+4. `LOG_SQL_DSN`: When set, a separate database will be used for the `logs` table; please use MySQL or PostgreSQL.
+5. `FRONTEND_BASE_URL`: When set, page requests will be redirected to the specified address. Only set on slave servers.
+   + Example: `FRONTEND_BASE_URL=https://openai.justsong.cn`
+6. `MEMORY_CACHE_ENABLED`: Enabling memory cache will cause a certain delay in updating user quotas. Valid values are `true` and `false`; defaults to `false` if not set.
+   + Example: `MEMORY_CACHE_ENABLED=true`
+7. `SYNC_FREQUENCY`: The frequency of syncing configurations with the database when caching is enabled, in seconds; defaults to `600`.
+   + Example: `SYNC_FREQUENCY=60`
+8. `NODE_TYPE`: When set, specifies the node type. Valid values are `master` and `slave`; defaults to `master` if not set.
+   + Example: `NODE_TYPE=slave`
+9. `CHANNEL_UPDATE_FREQUENCY`: When set, channel balances will be updated periodically, in minutes; if not set, no update happens.
+   + Example: `CHANNEL_UPDATE_FREQUENCY=1440`
+10. `CHANNEL_TEST_FREQUENCY`: When set, channels will be tested periodically, in minutes; if not set, no testing happens.
+    + Example: `CHANNEL_TEST_FREQUENCY=1440`
+11. `POLLING_INTERVAL`: The request interval when batch-updating channel balances and testing availability, in seconds; no interval by default.
+    + Example: `POLLING_INTERVAL=5`
+12. `BATCH_UPDATE_ENABLED`: Enabling batch database update aggregation will cause a certain delay in updating user quotas. Valid values are `true` and `false`; defaults to `false` if not set.
+    + Example: `BATCH_UPDATE_ENABLED=true`
+    + If you encounter too many database connections, you can try enabling this option.
+13. `BATCH_UPDATE_INTERVAL`: The time interval for batch update aggregation, in seconds; defaults to `5`.
+    + Example: `BATCH_UPDATE_INTERVAL=5`
+14. Request rate limiting:
+    + `GLOBAL_API_RATE_LIMIT`: Global API rate limit (excluding relay requests); the maximum number of requests per IP within three minutes, defaults to `180`.
+    + `GLOBAL_WEB_RATE_LIMIT`: Global web rate limit; the maximum number of requests per IP within three minutes, defaults to `60`.
+15. Encoder cache settings:
+    + `TIKTOKEN_CACHE_DIR`: By default, the program downloads the encodings of some common tokens (e.g., `gpt-3.5-turbo`) from the internet at startup. In unstable network environments or offline situations, this may cause startup issues. This directory can be configured to cache data and can be migrated to an offline environment.
+    + `DATA_GYM_CACHE_DIR`: Currently has the same effect as `TIKTOKEN_CACHE_DIR`, but with lower priority.
+16. `RELAY_TIMEOUT`: Relay timeout setting, in seconds; no timeout by default.
+17. `RELAY_PROXY`: When set, this proxy is used to request APIs.
+18. `USER_CONTENT_REQUEST_TIMEOUT`: The timeout for downloading user-uploaded content, in seconds.
+19. `USER_CONTENT_REQUEST_PROXY`: When set, this proxy is used to request user-uploaded content, such as images.
+20. `SQLITE_BUSY_TIMEOUT`: SQLite lock wait timeout, in milliseconds; defaults to `3000`.
+21. `GEMINI_SAFETY_SETTING`: Gemini safety settings; defaults to `BLOCK_NONE`.
+22. `GEMINI_VERSION`: The Gemini version used by One API; defaults to `v1`.
+23. `THEME`: The system's theme setting; defaults to `default`. See [here](./web/README.md) for the available values.
+24. `ENABLE_METRIC`: Whether to disable channels based on request success rate; disabled by default. Valid values are `true` and `false`.
+25. `METRIC_QUEUE_SIZE`: The request success rate statistics queue size; defaults to `10`.
+26. `METRIC_SUCCESS_RATE_THRESHOLD`: The request success rate threshold; defaults to `0.8`.
+27. `INITIAL_ROOT_TOKEN`: If set, a root user token with this value will be automatically created on the first system startup.
+28. `INITIAL_ROOT_ACCESS_TOKEN`: If set, a system management token with this value will be automatically created for the root user on the first system startup.
+29. `ENFORCE_INCLUDE_USAGE`: Whether to force returning `usage` in stream mode; disabled by default. Valid values are `true` and `false`.
+30. `TEST_PROMPT`: The user prompt used when testing models; defaults to `Print your model name exactly and do not output without any other text.`
 
-### 命令行参数
-1. `--port <port_number>`: 指定服务器监听的端口号，默认为 `3000`。
-   + 例子：`--port 3000`
-2. `--log-dir <log_dir>`: 指定日志文件夹，如果没有设置，默认保存至工作目录的 `logs` 文件夹下。
-   + 例子：`--log-dir ./logs`
-3. `--version`: 打印系统版本号并退出。
-4. `--help`: 查看命令的使用帮助和参数说明。
+### Command Line Parameters
+1. `--port <port_number>`: Specifies the port number the server listens on; defaults to `3000`.
+   + Example: `--port 3000`
+2. `--log-dir <log_dir>`: Specifies the log directory. If not set, logs are saved in the `logs` folder of the working directory by default.
+   + Example: `--log-dir ./logs`
+3. `--version`: Prints the system version number and exits.
+4. `--help`: Displays command usage help and parameter descriptions.
 
-## 演示
-### 在线演示
-注意，该演示站不提供对外服务：
+## Demo
+### Online Demo
+Note: this demo site does not provide external services:
 https://openai.justsong.cn
 
-### 截图展示
+### Screenshots
 ![channel](https://user-images.githubusercontent.com/39998050/233837954-ae6683aa-5c4f-429f-a949-6645a83c9490.png)
 ![token](https://user-images.githubusercontent.com/39998050/233837971-dab488b7-6d96-43af-b640-a168e8d1c9bf.png)
 
-## 常见问题
-1. 额度是什么？怎么计算的？One API 的额度计算有问题？
-   + 额度 = 分组倍率 * 模型倍率 * （提示 token 数 + 补全 token 数 * 补全倍率）
-   + 其中补全倍率对于 GPT3.5 固定为 1.33，GPT4 为 2，与官方保持一致。
-   + 如果是非流模式，官方接口会返回消耗的总 token，但是你要注意提示和补全的消耗倍率不一样。
-   + 注意，One API 的默认倍率就是官方倍率，是已经调整过的。
-2. 账户额度足够为什么提示额度不足？
-   + 请检查你的令牌额度是否足够，这个和账户额度是分开的。
-   + 令牌额度仅供用户设置最大使用量，用户可自由设置。
-3. 提示无可用渠道？
-   + 请检查的用户分组和渠道分组设置。
-   + 以及渠道的模型设置。
-4. 渠道测试报错：`invalid character '<' looking for beginning of value`
-   + 这是因为返回值不是合法的 JSON，而是一个 HTML 页面。
-   + 大概率是你的部署站的 IP 或代理的节点被 CloudFlare 封禁了。
-5. ChatGPT Next Web 报错：`Failed to fetch`
-   + 部署的时候不要设置 `BASE_URL`。
-   + 检查你的接口地址和 API Key 有没有填对。
-   + 检查是否启用了 HTTPS，浏览器会拦截 HTTPS 域名下的 HTTP 请求。
-6. 报错：`当前分组负载已饱和，请稍后再试`
-   + 上游渠道 429 了。
-7. 升级之后我的数据会丢失吗？
-   + 如果使用 MySQL，不会。
-   + 如果使用 SQLite，需要按照我所给的部署命令挂载 volume 持久化 one-api.db 数据库文件，否则容器重启后数据会丢失。
-8. 升级之前数据库需要做变更吗？
-   + 一般情况下不需要，系统将在初始化的时候自动调整。
-   + 如果需要的话，我会在更新日志中说明，并给出脚本。
-9. 手动修改数据库后报错：`数据库一致性已被破坏，请联系管理员`？
-   + 这是检测到 ability 表里有些记录的渠道 id 是不存在的，这大概率是因为你删了 channel 表里的记录但是没有同步在 ability 表里清理无效的渠道。
-   + 对于每一个渠道，其所支持的模型都需要有一个专门的 ability 表的记录，表示该渠道支持该模型。
+## FAQ
+1. What is quota? How is it calculated? Does One API have quota calculation issues?
+   + Quota = group multiplier * model multiplier * (number of prompt tokens + number of completion tokens * completion multiplier)
+   + The completion multiplier is fixed at 1.33 for GPT3.5 and 2 for GPT4, consistent with the official definitions.
+   + In non-stream mode, the official API returns the total tokens consumed, but note that the consumption multipliers for prompts and completions differ.
+   + Note: One API's default multipliers are the official multipliers and have already been adjusted.
+2. Why does it prompt "insufficient quota" even though my account balance is sufficient?
+   + Please check if your token quota is sufficient. It is separate from the account balance.
+   + The token quota is only used to set the maximum usage and can be freely set by the user.
+3. It says "No available channels"?
+   + Please check the user group and channel group settings.
+   + Also check the channel's model settings.
+4. Channel testing reports an error: `invalid character '<' looking for beginning of value`
+   + This is because the returned value is not valid JSON but an HTML page.
+   + Most likely, the IP of your deployment site or the node of your proxy has been blocked by CloudFlare.
+5. ChatGPT Next Web reports an error: `Failed to fetch`
+   + Do not set `BASE_URL` during deployment.
+   + Check whether your interface address and API Key are correct.
+   + Check whether HTTPS is enabled; browsers will block HTTP requests under an HTTPS domain.
+6. Error: `The current group load is saturated, please try again later`
+   + The upstream channel returned 429.
+7. Will my data be lost after upgrading?
+   + If using MySQL, no.
+   + If using SQLite, you must follow the deployment command I provided and mount a volume to persist the one-api.db database file; otherwise the data will be lost after the container restarts.
+8. Do I need to make any database changes before upgrading?
+   + Generally no; the system will adjust automatically during initialization.
+   + If needed, I will describe it in the changelog and provide a script.
+9. After manually modifying the database, it reports an error: `Database consistency has been broken, please contact the administrator`?
+   + This is because some records in the ability table have channel IDs that do not exist, most likely because you deleted records from the channel table without cleaning up the invalid channels in the ability table.
+   + For each channel, each supported model needs a dedicated record in the ability table, indicating that the channel supports that model.
 
-## 相关项目
-* [FastGPT](https://github.com/labring/FastGPT): 基于 LLM 大语言模型的知识库问答系统
-* [ChatGPT Next Web](https://github.com/Yidadaa/ChatGPT-Next-Web):  一键拥有你自己的跨平台 ChatGPT 应用
-* [VChart](https://github.com/VisActor/VChart):  不只是开箱即用的多端图表库，更是生动灵活的数据故事讲述者。
-* [VMind](https://github.com/VisActor/VMind):  不仅自动，还很智能。开源智能可视化解决方案。
-* [CherryStudio](https://github.com/CherryHQ/cherry-studio):  全平台支持的AI客户端, 多服务商集成管理、本地知识库支持。
+## Related Projects
+* [FastGPT](https://github.com/labring/FastGPT): Knowledge question answering system based on LLMs
+* [ChatGPT Next Web](https://github.com/Yidadaa/ChatGPT-Next-Web): One-click deployment of your own cross-platform ChatGPT application
+* [VChart](https://github.com/VisActor/VChart): Not just a ready-to-use cross-platform charting library, but also a vivid and flexible data storyteller.
+* [VMind](https://github.com/VisActor/VMind): Not just automatic, but also smart. An open-source intelligent visualization solution.
+* [CherryStudio](https://github.com/CherryHQ/cherry-studio): A cross-platform AI client with multi-provider integration management and local knowledge base support.
 
-## 注意
+## Note
 
-本项目使用 MIT 协议进行开源，**在此基础上**，必须在页面底部保留署名以及指向本项目的链接。如果不想保留署名，必须首先获得授权。
+This project is released under the MIT license. **On this basis**, the attribution and a link to this project must be retained at the bottom of the page. If you do not wish to keep the attribution, you must first obtain authorization.
 
-同样适用于基于本项目的二开项目。
+The same applies to derivative projects based on this project.
 
-依据 MIT 协议，使用者需自行承担使用本项目的风险与责任，本开源项目开发者与此无关。
+According to the MIT license, users must bear the risk and responsibility of using this project, and the developer of this open-source project is not responsible for it.
